@@ -1,0 +1,378 @@
+{
+    "queries": [
+      {
+        "id": "staffViewPart_Query",
+        "title": "staffViewPart_Query",
+        "description": "Staff view part query for fetching staff view data based on various filters and parameters.",
+        "code": "query staffViewPart_Query(\n    $id: ID!\n    $intervalType: IntervalType!\n    $personFiltersOpt: PersonOnAssignmentFiltersInput\n    $projectFiltersOpt: ProjectWithAssignmentsFiltersInput\n    $showAll: Boolean\n    $sort: StaffViewSort\n    $utilizationWindow: UtilizationWindowInput\n) {\n    node(id: $id) {\n        ... on Scenario {\n            ...staffViewPart_ScenarioFragment\n                @arguments(\n                    scenarioId: $id\n                    intervalType: $intervalType\n                    personFiltersOpt: $personFiltersOpt\n                    projectFiltersOpt: $projectFiltersOpt\n                    showAll: $showAll\n                    sort: $sort\n                    utilizationWindow: $utilizationWindow\n                )\n        }\n    }\n}",
+        "usedFragments": [
+          "staffViewPart_ScenarioFragment"
+        ]
+      },
+      {
+        "id": "executivesSelect_Query",
+        "title": "executivesSelect_Query",
+        "description": "Query to fetch a list of executives filtered by name, specific IDs to include, or scenario ID.",
+        "code": "query executivesSelect_Query($filterByName: String, $alwaysIncludeIds: [ID!], $scenarioId: ID) {\n    Staff {\n        Executives(\n            first: 20\n            filterByName: $filterByName\n            alwaysIncludeIds: $alwaysIncludeIds\n            scenarioId: $scenarioId\n        ) {\n            edges {\n                node {\n                    ...executivesSelect_PersonFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "executivesSelect_PersonFragment"
+        ]
+      },
+      {
+        "id": "personDetailsModalContent_Query",
+        "title": "personDetailsModalContent_Query",
+        "description": "Query to fetch details of a person and their assignments for display in a modal.",
+        "code": "query personDetailsModalContent_Query($personId: ID!, $scenarioId: ID!) {\n    node(id: $personId) {\n        ... on Person {\n            ...personDetailsControl_PersonFragment @arguments(scenarioId: $scenarioId)\n        }\n    }\n    ...personDetailsControl_AssignmentListFragment\n        @arguments(filterByPerson: $personId, filterByScenario: $scenarioId)\n}",
+        "usedFragments": [
+          "personDetailsControl_PersonFragment",
+          "personDetailsControl_AssignmentListFragment"
+        ]
+      },
+      {
+        "id": "PeopleTable_Query",
+        "title": "PeopleTable_Query",
+        "description": "Query to fetch a paginated list of people for display in a table view.",
+        "code": "query PeopleTable_Query($first: Int, $filterByName: String) {\n    ...PeopleTable_PeopleListFragment @arguments(first: $first, filterByName: $filterByName)\n}",
+        "usedFragments": [
+          "PeopleTable_PeopleListFragment"
+        ]
+      },
+      {
+        "id": "PersonSelect_Query",
+        "title": "PersonSelect_Query",
+        "description": "Query to fetch a list of people filtered by name, excluded IDs, or specific IDs to include.",
+        "code": "query PersonSelect_Query($filterByName: String, $excludeIds: [ID!], $alwaysIncludeIds: [ID!]) {\n    Staff {\n        People(\n            first: 20\n            excludeIds: $excludeIds\n            filterByName: $filterByName\n            alwaysIncludeIds: $alwaysIncludeIds\n        ) {\n            edges {\n                node {\n                    ...PersonSelect_PersonFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "PersonSelect_PersonFragment"
+        ]
+      },
+      {
+        "id": "peopleSelect_Query",
+        "title": "peopleSelect_Query",
+        "description": "Query to fetch a list of people filtered by name, excluded IDs, or specific IDs to include, using a different fragment.",
+        "code": "query peopleSelect_Query($filterByName: String, $excludeIds: [ID!], $alwaysIncludeIds: [ID!]) {\n    Staff {\n        People(\n            first: 20\n            excludeIds: $excludeIds\n            filterByName: $filterByName\n            alwaysIncludeIds: $alwaysIncludeIds\n        ) {\n            edges {\n                node {\n                    ...peopleSelect_PersonFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "peopleSelect_PersonFragment"
+        ]
+      },
+      {
+        "id": "selectUserInAccountField_PeopleQuery",
+        "title": "selectUserInAccountField_PeopleQuery",
+        "description": "Query to fetch people associated with an account, filtered by name, excluded IDs, or specific IDs to include.",
+        "code": "query selectUserInAccountField_PeopleQuery(\n    $accountId: ID!\n    $filterByName: String\n    $alwaysIncludeIds: [ID!]\n    $excludeIds: [ID!]\n    $first: Int\n) {\n    Assessment {\n        PeopleInAccount(\n            accountId: $accountId\n            first: $first\n            filterByName: $filterByName\n            alwaysIncludeIds: $alwaysIncludeIds\n            excludeIds: $excludeIds\n        ) {\n            edges {\n                node {\n                    ...selectUserInAccountField_PersonFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "selectUserInAccountField_PersonFragment"
+        ]
+      }
+    ],
+    "mutations": [
+      {
+        "id": "ChangePersonActivationButton_Mutation",
+        "title": "ChangePersonActivationButton_Mutation",
+        "description": "Mutation to activate or deactivate a person.",
+        "code": "mutation ChangePersonActivationButton_Mutation($input: SetPersonActivationInput!) {\n    Staff {\n        setPersonActivation(input: $input) {\n            edge {\n                node {\n                    id\n                    isDeactivated\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "DeletePeopleButton_DeleteMutation",
+        "title": "DeletePeopleButton_DeleteMutation",
+        "description": "Mutation to delete people and remove them from associated connections.",
+        "code": "mutation DeletePeopleButton_DeleteMutation($input: DeletePersonInput!, $connections: [ID!]!) {\n    Staff {\n        deletePerson(input: $input) {\n            deletedIds @deleteEdge(connections: $connections)\n        }\n    }\n\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "EditPersonModal_CreateMutation",
+        "title": "EditPersonModal_CreateMutation",
+        "description": "Mutation to create a new person and append them to a connection.",
+        "code": "mutation EditPersonModal_CreateMutation($input: CreatePersonInput!, $connections: [ID!]!) {\n    Staff {\n        createPerson(input: $input) {\n            edge @appendEdge(connections: $connections) {\n                node {\n                    id\n                    ...EditPersonButton_PersonFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "EditPersonButton_PersonFragment"
+        ]
+      },
+      {
+        "id": "EditPersonModal_EditMutation",
+        "title": "EditPersonModal_EditMutation",
+        "description": "",
+        "code": "mutation EditPersonModal_EditMutation($input: EditPersonInput!) {\n    Staff {\n        editPerson(input: $input) {\n            edge {\n                node {\n                    id\n                    ...EditPersonButton_PersonFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "EditPersonButton_PersonFragment"
+        ]
+      },
+      {
+        "id": "ExportPeopleButton_ExportMutation",
+        "title": "ExportPeopleButton_ExportMutation",
+        "description": "",
+        "code": "mutation ExportPeopleButton_ExportMutation {\n    Staff {\n        exportPeople(input: {}) {\n            file {\n                url\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "ImportPeopleButton_ImportMutation",
+        "title": "ImportPeopleButton_ImportMutation",
+        "description": "",
+        "code": "mutation ImportPeopleButton_ImportMutation($input: ImportPeopleInput!) {\n    Staff {\n        importPeople(input: $input) {\n            result {\n                editedEntities\n                newEntities\n                issues {\n                    row\n                    issue\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "importPeoplesoftButton_DownloadPeopleDataFromS3Mutation",
+        "title": "importPeoplesoftButton_DownloadPeopleDataFromS3Mutation",
+        "description": "",
+        "code": "mutation importPeoplesoftButton_DownloadPeopleDataFromS3Mutation(\n    $input: DownloadPeopleDataFromS3Input!\n) {\n    Peoplesoft {\n        downloadPeopleDataFromS3(input: $input) {\n            edited\n            imported\n            clientMutationId\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "allocationBarProvider_ApproximateAssignmentResizeMutation",
+        "title": "allocationBarProvider_ApproximateAssignmentResizeMutation",
+        "description": "",
+        "code": "mutation allocationBarProvider_ApproximateAssignmentResizeMutation(\n    $input: ApproximateAssignmentResizeInput!\n) {\n    Staffview {\n        approximateAssignmentResize(input: $input) {\n            startDate\n            endDate\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "allocationBarProvider_ApproximateMoveAssignmentMutation",
+        "title": "allocationBarProvider_ApproximateMoveAssignmentMutation",
+        "description": "",
+        "code": "mutation allocationBarProvider_ApproximateMoveAssignmentMutation(\n    $input: ApproximateMoveAssignmentInput!\n) {\n    Staffview {\n        approximateMoveAssignment(input: $input) {\n            startDate\n            endDate\n        }\n    }\n}",
+        "usedFragments": []
+      }
+    ],
+    "fragments": [
+      {
+        "id": "staffViewPart_ScenarioFragment",
+        "title": "staffViewPart_ScenarioFragment",
+        "description": "",
+        "code": "fragment staffViewPart_ScenarioFragment on Scenario\n@argumentDefinitions(\n    scenarioId: { type: \"ID!\" }\n    intervalType: { type: \"IntervalType!\" }\n    showAll: { type: \"Boolean\" }\n    personFiltersOpt: { type: \"PersonOnAssignmentFiltersInput\" }\n    projectFiltersOpt: { type: \"ProjectWithAssignmentsFiltersInput\" }\n    sort: { type: \"StaffViewSort\" }\n    utilizationWindow: { type: \"UtilizationWindowInput\" }\n)\n@refetchable(queryName: \"staffViewPart_RefetchQuery\") {\n    staffView(\n        intervalType: $intervalType\n        showAll: $showAll\n        sort: $sort\n        projectWithAssignmentsFilters: $projectFiltersOpt\n        peopleOnAssignmentFilters: $personFiltersOpt\n        utilizationWindow: $utilizationWindow\n    ) {\n        intervalType\n        intervals {\n            index\n            ...IntervalHeaderComponent_IntervalFragment\n            ...allocationBarProvider_IntervalFragment\n        }\n        allocationGroups {\n            groupType\n            allocations {\n                person {\n                    id\n                    assignmentRole {\n                        id\n                        name\n                    }\n                    name\n                    sumOfProjectVolume(scenarioRef: $scenarioId)\n                    ...personCard_PersonFragment @arguments(scenarioId: $scenarioId)\n                }\n                lanes {\n                    allocations {\n                        id\n                        assignment {\n                            person {\n                                id\n                                name\n                            }\n                            id\n                        }\n                        startDate\n                        endDate\n\n                        ...allocationBarProvider_AllocationFragment\n                    }\n                }\n                gapDays\n            }\n            ... on ProjectGroup {\n                project {\n                    name\n                }\n            }\n            ... on AssignmentRoleGroup {\n                assignmentRole {\n                    name\n                }\n            }\n        }\n    }\n    utilizationWithStandAndEndDate(utilizationWindow: $utilizationWindow) {\n        ...personCard_ScenarioUtilizationFragment\n    }\n    ...personCard_ScenarioFragment\n    ...allocationBarProvider_ScenarioFragment\n}",
+        "fragmentId": "staffViewPart_ScenarioFragment"
+      },
+      {
+        "id": "IntervalHeaderComponent_IntervalFragment",
+        "title": "IntervalHeaderComponent_IntervalFragment",
+        "description": "",
+        "code": "fragment IntervalHeaderComponent_IntervalFragment on IntervalDescription {\n    startDate\n    endDate\n    fallsIntoCustomUtilizationWindow\n}",
+        "fragmentId": "IntervalHeaderComponent_IntervalFragment"
+      },
+      {
+        "id": "allocationBarProvider_IntervalFragment",
+        "title": "allocationBarProvider_IntervalFragment",
+        "description": "",
+        "code": "fragment allocationBarProvider_IntervalFragment on IntervalDescription @inline {\n    index\n    startDate\n    endDate\n    fallsIntoCustomUtilizationWindow\n}",
+        "fragmentId": "allocationBarProvider_IntervalFragment"
+      },
+      {
+        "id": "personCard_PersonFragment",
+        "title": "personCard_PersonFragment",
+        "description": "",
+        "code": "fragment personCard_PersonFragment on Person @argumentDefinitions(scenarioId: { type: \"ID!\" }) {\n    id\n    name\n    assignmentRole {\n        id\n        name\n    }\n    sumOfProjectVolume(scenarioRef: $scenarioId)\n    comment\n    ...personDetailsButton_PersonFragment\n}",
+        "fragmentId": "personCard_PersonFragment"
+      },
+      {
+        "id": "personDetailsButton_PersonFragment",
+        "title": "personDetailsButton_PersonFragment",
+        "description": "",
+        "code": "fragment personDetailsButton_PersonFragment on Person {\n        id\n        name\n        comment\n        assignmentRole {\n            name\n        }\n    }\n\nfragment allocationBarProvider_AllocationFragment on LaneAllocation @inline {\n    id\n    fromInterval\n    fromIntervalPercentage\n    toInterval\n    toIntervalPercentage\n    startDate\n    endDate\n    assignment {\n        id\n        startDate\n        endDate\n        isExecutive\n        validAssignmentRoles {\n            id\n        }\n        comment\n        importId\n        weight\n        person {\n            id\n        }\n\n        project {\n            id\n            name\n            volume\n            stage {\n                id\n                name\n                color\n            }\n            milestones {\n                name\n                date\n            }\n        }\n        validAssignmentRoles {\n            name\n        }\n        person {\n            name\n            assignmentRole {\n                id\n                name\n            }\n        }\n    }\n    isGap\n    lengthInDays\n}",
+        "fragmentId": "personDetailsButton_PersonFragment"
+      },
+      {
+        "id": "personCard_ScenarioUtilizationFragment",
+        "title": "personCard_ScenarioUtilizationFragment",
+        "description": "",
+        "code": "fragment personCard_ScenarioUtilizationFragment on ScenarioUtilization {\n    personUtilizations {\n        personRef\n        utilizationPercentage\n        status\n    }\n    ...personDetailsButton_ScenarioUtilizationFragment\n}",
+        "fragmentId": "personCard_ScenarioUtilizationFragment"
+      },
+      {
+        "id": "personCard_ScenarioFragment",
+        "title": "personCard_ScenarioFragment",
+        "description": "",
+        "code": "fragment personCard_ScenarioFragment on Scenario {\n    id\n    ...personDetailsButton_ScenarioFragment\n}",
+        "fragmentId": "personCard_ScenarioFragment"
+      },
+      {
+        "id": "allocationBarProvider_ScenarioFragment",
+        "title": "allocationBarProvider_ScenarioFragment",
+        "description": "",
+        "code": "fragment allocationBarProvider_ScenarioFragment on Scenario {\n    id\n    isMasterPlan\n}",
+        "fragmentId": "allocationBarProvider_ScenarioFragment"
+      },
+      {
+        "id": "personDetailsButton_ScenarioUtilizationFragment",
+        "title": "personDetailsButton_ScenarioUtilizationFragment",
+        "description": "",
+        "code": "fragment personDetailsButton_ScenarioUtilizationFragment on ScenarioUtilization {\n    personUtilizations {\n        personRef\n        utilizationPercentage\n    }\n}",
+        "fragmentId": "personDetailsButton_ScenarioUtilizationFragment"
+      },
+      {
+        "id": "personDetailsButton_ScenarioFragment",
+        "title": "personDetailsButton_ScenarioFragment",
+        "description": "",
+        "code": "fragment personDetailsButton_ScenarioFragment on Scenario {\n    id\n    gapDays {\n        personGapDays {\n            personRef\n            gapDays\n        }\n    }\n}",
+        "fragmentId": "personDetailsButton_ScenarioFragment"
+      },
+      {
+        "id": "executivesSelect_PersonFragment",
+        "title": "executivesSelect_PersonFragment",
+        "description": "",
+        "code": "fragment executivesSelect_PersonFragment on Person @inline {\n    id\n    name\n}",
+        "fragmentId": "executivesSelect_PersonFragment"
+      },
+      {
+        "id": "personDetailsControl_PersonFragment",
+        "title": "personDetailsControl_PersonFragment",
+        "description": "",
+        "code": "fragment personDetailsControl_PersonFragment on Person\n@argumentDefinitions(scenarioId: { type: \"ID!\" }) {\n    id\n    name\n    assignmentRole {\n        name\n    }\n    phone\n    email\n    address {\n        lineOne\n        postalCode\n        city\n        country\n        state\n        latitude\n        longitude\n    }\n    comment\n    avatar {\n        url\n    }\n    associatedWithRegions {\n        id\n        name\n    }\n    associatedWithDivisions {\n        id\n        name\n    }\n\n    ...skillsDisplay_PersonFragment\n    ...UtilizationOverTimeGraph_PersonFragment @arguments(scenarioId: $scenarioId)\n}",
+        "fragmentId": "personDetailsControl_PersonFragment"
+      },
+      {
+        "id": "personDetailsControl_AssignmentListFragment",
+        "title": "personDetailsControl_AssignmentListFragment",
+        "description": "",
+        "code": "fragment personDetailsControl_AssignmentListFragment on Query\n@refetchable(queryName: \"PersonDetailsControl_Refetch\")\n@argumentDefinitions(\n    first: { type: \"Int\", defaultValue: 50 }\n    after: { type: \"String\" }\n    filterByPerson: { type: \"ID\" }\n    filterByScenario: { type: \"ID\" }\n) {\n    Assignments {\n        Assignments(\n            first: $first\n            after: $after\n            filterByPerson: $filterByPerson\n            filterByScenario: $filterByScenario\n        ) @connection(key: \"PersonDetailsControl_Assignments\") {\n            pageInfo {\n                endCursor\n                hasPreviousPage\n                hasNextPage\n                startCursor\n            }\n            edges {\n                node {\n                    id\n                    time\n                    ...AssignmentProjectCard_AssignmentFragment\n                }\n            }\n        }\n    }\n}",
+        "fragmentId": "personDetailsControl_AssignmentListFragment"
+      },
+      {
+        "id": "skillsDisplay_PersonFragment",
+        "title": "skillsDisplay_PersonFragment",
+        "description": "",
+        "code": "fragment skillsDisplay_PersonFragment on Person {\n    id\n    skills(first: 100) {\n        edges {\n            node {\n                ...skillsDisplay_SkillAssociationInlineFragment\n            }\n        }\n    }\n}",
+        "fragmentId": "skillsDisplay_PersonFragment"
+      },
+      {
+        "id": "UtilizationOverTimeGraph_PersonFragment",
+        "title": "UtilizationOverTimeGraph_PersonFragment",
+        "description": "",
+        "code": "fragment UtilizationOverTimeGraph_PersonFragment on Person @argumentDefinitions(scenarioId: {type: \"ID!\"}) {\n    name\n    utilizationOverTime(scenarioRef: $scenarioId) {\n        date\n        utilizationPercentage\n    }\n}",
+        "fragmentId": "UtilizationOverTimeGraph_PersonFragment"
+      },
+      {
+        "id": "AssignmentProjectCard_AssignmentFragment",
+        "title": "AssignmentProjectCard_AssignmentFragment",
+        "description": "",
+        "code": "fragment AssignmentProjectCard_AssignmentFragment on Assignment {\n    id\n\n    project {\n        name\n        id\n        isDeactivated\n    }\n    person {\n        name\n    }\n    startDate\n    endDate\n    validAssignmentRoles {\n        id\n        name\n    }\n}",
+        "fragmentId": "AssignmentProjectCard_AssignmentFragment"
+      },
+      {
+        "id": "skillsDisplay_SkillAssociationInlineFragment",
+        "title": "skillsDisplay_SkillAssociationInlineFragment",
+        "description": "",
+        "code": "fragment skillsDisplay_SkillAssociationInlineFragment on SkillAssociation @inline {\n    id\n    data {\n        value {\n            ... on NumericalAssessmentValue {\n                kind\n                number\n            }\n            ... on BinaryAssessmentValue {\n                hasSkill\n                kind\n            }\n        }\n\n        skill {\n            id\n            name\n            dimension {\n                kind\n                ... on NumericalDimension {\n                    kind\n                    dimensionCount\n                }\n            }\n            skillCategory {\n                id\n                name\n            }\n        }\n    }\n}",
+        "fragmentId": "skillsDisplay_SkillAssociationInlineFragment"
+      },
+      {
+        "id": "PeopleTable_PeopleListFragment",
+        "title": "PeopleTable_PeopleListFragment",
+        "description": "",
+        "code": "fragment PeopleTable_PeopleListFragment on Query\n@refetchable(queryName: \"PeopleTable_Refetch\")\n@argumentDefinitions(\n    first: { type: \"Int\", defaultValue: 250 }\n    after: { type: \"String\" }\n    filterByName: { type: \"String\" }\n) {\n    Staff {\n        People(\n            first: $first\n            after: $after\n            filterByName: $filterByName\n            showDeactivated: true\n        ) @connection(key: \"PeopleTable_People\") {\n            __id\n            pageInfo {\n                endCursor\n                hasPreviousPage\n                hasNextPage\n                startCursor\n            }\n            edges {\n                node {\n                    id\n                    ...PeopleTable_PersonFragment\n                }\n            }\n        }\n    }\n}",
+        "fragmentId": "PeopleTable_PeopleListFragment"
+      },
+      {
+        "id": "PeopleTable_PersonFragment",
+        "title": "PeopleTable_PersonFragment",
+        "description": "",
+        "code": "fragment PeopleTable_PersonFragment on Person @inline {\n    id\n    isDeactivated\n    name\n    address {\n        longitude\n        latitude\n        ...GoogleMapsClickout_AddressFragment\n    }\n    startDate\n    assignmentRole {\n        name\n    }\n    associatedWithDivisions {\n        id\n        name\n    }\n    associatedWithRegions {\n        id\n        name\n    }\n    skills(first: 100) {\n        edges {\n            node {\n                id\n                data {\n                    value {\n                        ... on NumericalAssessmentValue {\n                            kind\n                            number\n                        }\n                        ... on BinaryAssessmentValue {\n                            hasSkill\n                            kind\n                        }\n                    }\n                }\n            }\n        }\n    }\n    avatar {\n        url\n    }\n    comment\n    ...EditPersonButton_PersonFragment\n    ...editPersonSkillAssociationsButton_PersonFragment\n    ...ChangePersonActivationButton_PersonFragment\n}",
+        "fragmentId": "PeopleTable_PersonFragment"
+      },
+      {
+        "id": "GoogleMapsClickout_AddressFragment",
+        "title": "GoogleMapsClickout_AddressFragment",
+        "description": "",
+        "code": "fragment GoogleMapsClickout_AddressFragment on Address {\n    latitude\n    longitude\n}",
+        "fragmentId": "GoogleMapsClickout_AddressFragment"
+      },
+      {
+        "id": "EditPersonButton_PersonFragment",
+        "title": "EditPersonButton_PersonFragment",
+        "description": "",
+        "code": "fragment EditPersonButton_PersonFragment on Person {\n    ...EditPersonModal_PersonFragment\n}",
+        "fragmentId": "EditPersonButton_PersonFragment"
+      },
+      {
+        "id": "EditPersonModal_PersonFragment",
+        "title": "EditPersonModal_PersonFragment",
+        "description": "",
+        "code": "fragment EditPersonModal_PersonFragment on Person {\n    id\n    name\n    email\n    phone\n    salary\n    laborBurdenMultiplier\n    startDate\n    assignmentRole {\n        id\n        name\n    }\n    associatedWithDivisions {\n        id\n        name\n    }\n    associatedWithRegions {\n        id\n        name\n    }\n    address {\n        lineOne\n        postalCode\n        city\n        state\n        country\n        longitude\n        latitude\n    }\n    comment\n    avatar {\n        id\n        url\n    }\n}",
+        "fragmentId": "EditPersonModal_PersonFragment"
+      },
+      {
+        "id": "editPersonSkillAssociationsButton_PersonFragment",
+        "title": "editPersonSkillAssociationsButton_PersonFragment",
+        "description": "",
+        "code": "fragment editPersonSkillAssociationsButton_PersonFragment on Person {\n    name\n    ...editPersonSkillAssociationsModalContent_PersonFragment\n}",
+        "fragmentId": "editPersonSkillAssociationsButton_PersonFragment"
+      },
+      {
+        "id": "editPersonSkillAssociationsModalContent_PersonFragment",
+        "title": "editPersonSkillAssociationsModalContent_PersonFragment",
+        "description": "",
+        "code": "fragment editPersonSkillAssociationsModalContent_PersonFragment on Person {\n    id\n    name\n    skills(first: 100) @connection(key: \"Person_skills\") {\n        __id\n        edges {\n            node {\n                id\n                data {\n                    value {\n                        ... on NumericalAssessmentValue {\n                            kind\n                            number\n                        }\n                        ... on BinaryAssessmentValue {\n                            hasSkill\n                            kind\n                        }\n                    }\n                    skill {\n                        id\n                        name\n                        dimension {\n                            ... on NumericalDimension {\n                                kind\n                                dimensionCount\n                                dimensionExplanations\n                            }\n                            ... on BinaryDimension {\n                                kind\n                            }\n                        }\n                    }\n                }\n                ...editSkillAssociationModal_SkillAssociationFragment\n            }\n        }\n    }\n    ...editSkillAssociationModal_PersonFragment\n}",
+        "fragmentId": "editPersonSkillAssociationsModalContent_PersonFragment"
+      },
+      {
+        "id": "ChangePersonActivationButton_PersonFragment",
+        "title": "ChangePersonActivationButton_PersonFragment",
+        "description": "",
+        "code": "fragment ChangePersonActivationButton_PersonFragment on Person {\n    id\n    isDeactivated\n}",
+        "fragmentId": "ChangePersonActivationButton_PersonFragment"
+      },
+      {
+        "id": "editSkillAssociationModal_SkillAssociationFragment",
+        "title": "editSkillAssociationModal_SkillAssociationFragment",
+        "description": "",
+        "code": "fragment editSkillAssociationModal_SkillAssociationFragment on SkillAssociation {\n    id\n    data {\n        value {\n            ... on NumericalAssessmentValue {\n                kind\n                number\n            }\n            ... on BinaryAssessmentValue {\n                kind\n                hasSkill\n            }\n        }\n        skill {\n            name\n            skillCategory {\n                name\n            }\n            dimension {\n                ... on BinaryDimension {\n                    kind\n                }\n                ... on NumericalDimension {\n                    dimensionCount\n                    kind\n                }\n            }\n        }\n    }\n\n    ...editNumericalSkillAssociationModal_SkillAssociationFragment\n    ...editBinarySkillAssociationModal_SkillAssociationFragment\n}",
+        "fragmentId": "editSkillAssociationModal_SkillAssociationFragment"
+      },
+      {
+        "id": "editSkillAssociationModal_PersonFragment",
+        "title": "editSkillAssociationModal_PersonFragment",
+        "description": "",
+        "code": "fragment editSkillAssociationModal_PersonFragment on Person {\n    name\n    id\n    ...editNumericalSkillAssociationModal_PersonFragment\n    ...editBinarySkillAssociationModal_PersonFragment\n}",
+        "fragmentId": "editSkillAssociationModal_PersonFragment"
+      },
+      {
+        "id": "editNumericalSkillAssociationModal_SkillAssociationFragment",
+        "title": "editNumericalSkillAssociationModal_SkillAssociationFragment",
+        "description": "",
+        "code": "fragment editNumericalSkillAssociationModal_SkillAssociationFragment on SkillAssociation {\n    id\n    data {\n        skill {\n            id\n            name\n            skillCategory {\n                name\n            }\n            dimension {\n                ... on BinaryDimension {\n                    kind\n                }\n                ... on NumericalDimension {\n                    dimensionCount\n                    kind\n                }\n            }\n        }\n        value {\n            ... on BinaryAssessmentValue {\n                hasSkill\n                kind\n            }\n            ... on NumericalAssessmentValue {\n                number\n                kind\n            }\n        }\n    }\n}",
+        "fragmentId": "editNumericalSkillAssociationModal_SkillAssociationFragment"
+      },
+      {
+        "id": "editBinarySkillAssociationModal_SkillAssociationFragment",
+        "title": "editBinarySkillAssociationModal_SkillAssociationFragment",
+        "description": "",
+        "code": "fragment editBinarySkillAssociationModal_SkillAssociationFragment on SkillAssociation {\n    id\n    data {\n        value {\n            ... on BinaryAssessmentValue {\n                kind\n                hasSkill\n            }\n            ... on NumericalAssessmentValue {\n                kind\n                number\n            }\n        }\n        skill {\n            id\n            name\n            skillCategory {\n                name\n            }\n            dimension {\n                ... on BinaryDimension {\n                    kind\n                }\n                ... on NumericalDimension {\n                    dimensionCount\n                    kind\n                }\n            }\n        }\n    }\n}",
+        "fragmentId": "editBinarySkillAssociationModal_SkillAssociationFragment"
+      },
+      {
+        "id": "editNumericalSkillAssociationModal_PersonFragment",
+        "title": "editNumericalSkillAssociationModal_PersonFragment",
+        "description": "",
+        "code": "fragment editNumericalSkillAssociationModal_PersonFragment on Person {\n    id\n    name\n}",
+        "fragmentId": "editNumericalSkillAssociationModal_PersonFragment"
+      },
+      {
+        "id": "editBinarySkillAssociationModal_PersonFragment",
+        "title": "editBinarySkillAssociationModal_PersonFragment",
+        "description": "",
+        "code": "fragment editBinarySkillAssociationModal_PersonFragment on Person {\n    id\n    name\n}",
+        "fragmentId": "editBinarySkillAssociationModal_PersonFragment"
+      },
+      {
+        "id": "PersonSelect_PersonFragment",
+        "title": "PersonSelect_PersonFragment",
+        "description": "",
+        "code": "fragment PersonSelect_PersonFragment on Person @inline {\n    id\n    name\n}",
+        "fragmentId": "PersonSelect_PersonFragment"
+      },
+      {
+        "id": "peopleSelect_PersonFragment",
+        "title": "peopleSelect_PersonFragment",
+        "description": "",
+        "code": "fragment peopleSelect_PersonFragment on Person @inline {\n    id\n    name\n}",
+        "fragmentId": "peopleSelect_PersonFragment"
+      },
+      {
+        "id": "selectUserInAccountField_PersonFragment",
+        "title": "selectUserInAccountField_PersonFragment",
+        "description": "",
+        "code": "fragment selectUserInAccountField_PersonFragment on Person @inline {\n    id\n    name\n}",
+        "fragmentId": "selectUserInAccountField_PersonFragment"
+      }
+    ]
+  }
+  

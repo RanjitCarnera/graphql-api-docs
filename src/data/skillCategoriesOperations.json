@@ -1,0 +1,107 @@
+{
+  "queries": [
+    {
+      "id": "SkillCategorySelect_Query",
+      "title": "SkillCategorySelect_Query",
+      "description": "Query to fetch a list of skill categories filtered by name or specific IDs to always include.",
+      "code": "query SkillCategorySelect_Query($filterByName: String, $alwaysIncludeIds: [ID!]) {\n    Skills {\n        SkillCategories(\n            first: 20\n            filterByName: $filterByName\n            alwaysIncludeIds: $alwaysIncludeIds\n        ) {\n            edges {\n                node {\n                    ...SkillCategorySelect_SkillCategoryFragment\n                }\n            }\n        }\n    }\n}",
+      "usedFragments": [
+        "SkillCategorySelect_SkillCategoryFragment"
+      ]
+    },
+    {
+      "id": "skillCategoriesTable_Query",
+      "title": "skillCategoriesTable_Query",
+      "description": "Query to fetch a paginated list of skill categories for display in a table view.",
+      "code": "query skillCategoriesTable_Query($first: Int, $filterByName: String) {\n    ...skillCategoriesTable_QueryFragment @arguments(first: $first, filterByName: $filterByName)\n}",
+      "usedFragments": [
+        "skillCategoriesTable_QueryFragment"
+      ]
+    }
+  ],
+  "mutations": [
+    {
+      "id": "createSkillCategoryButton_CreateSkillCategoryMutation",
+      "title": "createSkillCategoryButton_CreateSkillCategoryMutation",
+      "description": "Mutation to create a new skill category and append it to a connection.",
+      "code": "mutation createSkillCategoryButton_CreateSkillCategoryMutation(\n    $input: CreateSkillCategoryInput!\n    $connections: [ID!]!\n) {\n    Skills {\n        createSkillCategory(input: $input) {\n            edge @appendEdge(connections: $connections) {\n                node {\n                    id\n                    ...editSkillCategoryButton_SkillCategoryFragment\n                }\n            }\n        }\n    }\n}",
+      "usedFragments": [
+        "editSkillCategoryButton_SkillCategoryFragment"
+      ]
+    },
+    {
+      "id": "deleteSkillCategoriesButton_DeleteSkillCategoryMutation",
+      "title": "deleteSkillCategoriesButton_DeleteSkillCategoryMutation",
+      "description": "Mutation to delete skill categories and remove them from associated connections.",
+      "code": "mutation deleteSkillCategoriesButton_DeleteSkillCategoryMutation(\n    $input: DeleteSkillCategoryInput!\n    $connections: [ID!]!\n) {\n    Skills {\n        deleteSkillCategory(input: $input) {\n            deletedIds @deleteEdge(connections: $connections)\n        }\n    }\n}",
+      "usedFragments": []
+    },
+    {
+      "id": "editSkillCategoryButton_EditSkillCategoryMutation",
+      "title": "editSkillCategoryButton_EditSkillCategoryMutation",
+      "description": "Mutation to edit an existing skill category and update its details.",
+      "code": "mutation editSkillCategoryButton_EditSkillCategoryMutation($input: EditSkillCategoryInput!) {\n    Skills {\n        editSkillCategory(input: $input) {\n            edge {\n                node {\n                    id\n                    ...editSkillCategoryButton_SkillCategoryFragment\n                }\n            }\n        }\n    }\n}",
+      "usedFragments": [
+        "editSkillCategoryButton_SkillCategoryFragment"
+      ]
+    },
+    {
+      "id": "exportSkillCategoriesButton_ExportSkillCategoriesMutation",
+      "title": "exportSkillCategoriesButton_ExportSkillCategoriesMutation",
+      "description": "Mutation to export skill categories and retrieve the file URL.",
+      "code": "mutation exportSkillCategoriesButton_ExportSkillCategoriesMutation {\n    Skills {\n        exportSkillCategories(input: {}) {\n            file {\n                url\n            }\n        }\n    }\n}",
+      "usedFragments": []
+    },
+    {
+      "id": "importSkillCategoriesButton_ImportSkillCategoriesMutation",
+      "title": "importSkillCategoriesButton_ImportSkillCategoriesMutation",
+      "description": "Mutation to import skill categories from a file and retrieve the result details.",
+      "code": "mutation importSkillCategoriesButton_ImportSkillCategoriesMutation($input: ImportSkillCategoriesInput!) {\n    Skills {\n        importSkillCategories(input: $input) {\n            result {\n                editedEntities\n                newEntities\n                issues {\n                    row\n                    issue\n                }\n            }\n        }\n    }\n}",
+      "usedFragments": []
+    },
+    {
+      "id": "SkillCategorySortOrderButtons_IncreaseMutation",
+      "title": "SkillCategorySortOrderButtons_IncreaseMutation",
+      "description": "Mutation to increase the sort order of a skill category.",
+      "code": "mutation SkillCategorySortOrderButtons_IncreaseMutation(\n    $input: IncreaseSkillCategorySortOrderInput!\n) {\n    Skills {\n        increaseSkillCategorySortOrder(input: $input) {\n            edge {\n                node {\n                    id\n                    sortOrder\n                }\n            }\n        }\n    }\n}",
+      "usedFragments": []
+    },
+    {
+      "id": "SkillCategorySortOrderButtons_DecreaseMutation",
+      "title": "SkillCategorySortOrderButtons_DecreaseMutation",
+      "description": "Mutation to decrease the sort order of a skill category.",
+      "code": "mutation SkillCategorySortOrderButtons_DecreaseMutation(\n    $input: DecreaseSkillCategorySortOrderInput!\n) {\n    Skills {\n        decreaseSkillCategorySortOrder(input: $input) {\n            edge {\n                node {\n                    id\n                    sortOrder\n                }\n            }\n        }\n    }\n}",
+      "usedFragments": []
+    }
+  ],
+  "fragments": [
+    {
+      "id": "SkillCategorySelect_SkillCategoryFragment",
+      "title": "SkillCategorySelect_SkillCategoryFragment",
+      "description": "Fragment to fetch basic details of a skill category, including ID and name.",
+      "code": "fragment SkillCategorySelect_SkillCategoryFragment on SkillCategory @inline {\n    id\n    name\n}",
+      "fragmentId": "SkillCategorySelect_SkillCategoryFragment"
+    },
+    {
+      "id": "skillCategoriesTable_QueryFragment",
+      "title": "skillCategoriesTable_QueryFragment",
+      "description": "Fragment to fetch skill categories for a table view, including pagination and sorting details.",
+      "code": "fragment skillCategoriesTable_QueryFragment on Query\n@refetchable(queryName: \"skillCategoriesTable_Refetch\")\n@argumentDefinitions(\n    first: { type: \"Int\", defaultValue: 20 }\n    after: { type: \"String\" }\n    filterByName: { type: \"String\" }\n) {\n    Skills {\n        SkillCategories(first: $first, after: $after, filterByName: $filterByName)\n            @connection(key: \"skillCategoriesTable_SkillCategories\") {\n            __id\n            pageInfo {\n                endCursor\n                hasPreviousPage\n                hasNextPage\n                startCursor\n            }\n            edges {\n                node {\n                    id\n                    name\n                    sortOrder\n                    ...editSkillCategoryButton_SkillCategoryFragment\n\n                    ...SkillCategorySortOrderButtons_AssignmentRoleFragment\n                }\n            }\n        }\n    }\n}",
+      "fragmentId": "skillCategoriesTable_QueryFragment"
+    },
+    {
+      "id": "editSkillCategoryButton_SkillCategoryFragment",
+      "title": "editSkillCategoryButton_SkillCategoryFragment",
+      "description": "Fragment to fetch details of a skill category for editing purposes.",
+      "code": "fragment editSkillCategoryButton_SkillCategoryFragment on SkillCategory {\n    id\n    name\n}",
+      "fragmentId": "editSkillCategoryButton_SkillCategoryFragment"
+    },
+    {
+      "id": "SkillCategorySortOrderButtons_AssignmentRoleFragment",
+      "title": "SkillCategorySortOrderButtons_AssignmentRoleFragment",
+      "description": "Fragment to fetch sort order details of a skill category.",
+      "code": "fragment SkillCategorySortOrderButtons_AssignmentRoleFragment on SkillCategory {\n    id\n    name\n    sortOrder\n}",
+      "fragmentId": "SkillCategorySortOrderButtons_AssignmentRoleFragment"
+    }
+  ]
+}

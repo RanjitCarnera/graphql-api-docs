@@ -1,0 +1,775 @@
+{
+    "queries": [
+      {
+        "id": "ScenarioMapViewScreen_Query",
+        "title": "ScenarioMapViewScreen_Query",
+       "description": "Query to fetch scenario details for the map view screen, including staff, filters, and base screen data.",
+       "code": "query ScenarioMapViewScreen_Query(\n    $id: ID!\n    $filterByName: String\n    $filterByAssignmentRoles: [ID!]\n    $filterByUtilizationStatus: [UtilizationStatus!]\n    $filterBySalaryMinimum: BigDecimal\n    $filterBySalaryMaximum: BigDecimal\n    $filterByFreeDateMinimum: LocalDate\n    $filterByFreeDateMaximum: LocalDate\n    $filterByAllocatedDateMinimum: LocalDate\n    $filterByAllocatedDateMaximum: LocalDate\n    $filterByGapDaysMinimum: Int\n    $filterByGapDaysMaximum: Int\n    $filterByDistanceMinimum: Int\n    $filterByDistanceMaximum: Int\n    $sortByClosestToProject: ID\n    $utilizationWindow: UtilizationWindowInput\n) {\n    node(id: $id) {\n        ... on Scenario {\n            ...ScenarioMapViewScreen_ScenarioFragment\n        }\n    }\n    ...rosterPart_StaffFragment\n        @arguments(\n            filterByName: $filterByName\n            scenarioRef: $id\n            filterByAssignmentRoles: $filterByAssignmentRoles\n            filterByUtilizationStatus: $filterByUtilizationStatus\n            filterBySalaryMinimum: $filterBySalaryMinimum\n            filterBySalaryMaximum: $filterBySalaryMaximum\n            filterByFreeDateMinimum: $filterByFreeDateMinimum\n            filterByFreeDateMaximum: $filterByFreeDateMaximum\n            filterByAllocatedDateMinimum: $filterByAllocatedDateMinimum\n            filterByAllocatedDateMaximum: $filterByAllocatedDateMaximum\n            filterByGapDaysMinimum: $filterByGapDaysMinimum\n            filterByGapDaysMaximum: $filterByGapDaysMaximum\n            filterByDistanceMinimum: $filterByDistanceMinimum\n            filterByDistanceMaximum: $filterByDistanceMaximum\n            sortByClosestToProject: $sortByClosestToProject\n            utilizationWindow: $utilizationWindow\n        )\n    ...baseScreen_QueryFragment\n    ...rosterPart_FilterFragment\n}",
+        "usedFragments": [
+          "ScenarioMapViewScreen_ScenarioFragment",
+          "rosterPart_StaffFragment",
+          "baseScreen_QueryFragment",
+          "rosterPart_FilterFragment"
+        ]
+      },
+      {
+        "id": "ScenarioProjectViewScreen_Query",
+        "title": "ScenarioProjectViewScreen_Query",
+       "description": "Query to fetch scenario details for the project view screen, including staff, projects, filters, and base screen data.",
+         "code": "query ScenarioProjectViewScreen_Query(\n    $id: ID!\n    $filterByName: String\n    $filterByAssignmentRoles: [ID!]\n    $filterByUtilizationStatus: [UtilizationStatus!]\n    $filterBySalaryMinimum: BigDecimal\n    $filterBySalaryMaximum: BigDecimal\n    $filterByFreeDateMinimum: LocalDate\n    $filterByFreeDateMaximum: LocalDate\n    $filterByAllocatedDateMinimum: LocalDate\n    $filterByAllocatedDateMaximum: LocalDate\n    $filterByGapDaysMinimum: Int\n    $filterByGapDaysMaximum: Int\n    $filterByDistanceMinimum: Int\n    $filterByDistanceMaximum: Int\n    $sortByClosestToProject: ID\n    $utilizationWindow: UtilizationWindowInput\n    $projectFilters: ProjectWithAssignmentsFiltersInput\n    $peopleOnAssignmentFilters: PersonOnAssignmentFiltersInput\n) {\n    node(id: $id) {\n        ... on Scenario {\n            ...ScenarioProjectViewScreen_ScenarioFragment\n                @arguments(\n                    utilizationWindow: $utilizationWindow\n                    projectFilters: $projectFilters\n                    personOnAssignmentFilters: $peopleOnAssignmentFilters\n                )\n        }\n    }\n    ...rosterPart_StaffFragment\n        @arguments(\n            filterByName: $filterByName\n            scenarioRef: $id\n            filterByAssignmentRoles: $filterByAssignmentRoles\n            filterByUtilizationStatus: $filterByUtilizationStatus\n            filterBySalaryMinimum: $filterBySalaryMinimum\n            filterBySalaryMaximum: $filterBySalaryMaximum\n            filterByFreeDateMinimum: $filterByFreeDateMinimum\n            filterByFreeDateMaximum: $filterByFreeDateMaximum\n            filterByAllocatedDateMinimum: $filterByAllocatedDateMinimum\n            filterByAllocatedDateMaximum: $filterByAllocatedDateMaximum\n            filterByGapDaysMinimum: $filterByGapDaysMinimum\n            filterByGapDaysMaximum: $filterByGapDaysMaximum\n            filterByDistanceMinimum: $filterByDistanceMinimum\n            filterByDistanceMaximum: $filterByDistanceMaximum\n            sortByClosestToProject: $sortByClosestToProject\n            utilizationWindow: $utilizationWindow\n        )\n    ...ProjectsGridPart_QueryFragment\n\n    ...baseScreen_QueryFragment\n    ...rosterPart_FilterFragment\n\n    Views {\n        ViewOptions(first: 20, filterByViewType: ProjectView)\n            @connection(key: \"FilterViewSelector_ViewOptions\") {\n            __id\n            edges {\n                node {\n                    id\n                    name\n                    viewType\n                    url\n                    isDefault\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "ScenarioProjectViewScreen_ScenarioFragment",
+          "rosterPart_StaffFragment",
+          "ProjectsGridPart_QueryFragment",
+          "baseScreen_QueryFragment",
+          "rosterPart_FilterFragment"
+        ]
+      },
+      {
+        "id": "ScenariosTable_Query",
+        "title": "ScenariosTable_Query",
+        "description": "Query to fetch a paginated list of scenarios for display in a table view.",
+        "code": "query ScenariosTable_Query($first: Int, $filterByName: String) {\n    ...ScenariosTable_ScenariosListFragment\n        @arguments(first: $first, filterByName: $filterByName)\n}",
+        "usedFragments": [
+          "ScenariosTable_ScenariosListFragment"
+        ]
+      },
+      {
+        "id": "UserScenariosTable_Query",
+        "title": "UserScenariosTable_Query",
+        "description": "Query to fetch a paginated list of user-specific scenarios for display in a table view.",
+        "code": "query UserScenariosTable_Query($first: Int, $onlyShowMine: Boolean) {\n    ...UserScenariosTable_ScenariosListFragment\n        @arguments(first: $first, onlyShowMine: $onlyShowMine)\n}",
+        "usedFragments": [
+          "UserScenariosTable_ScenariosListFragment"
+        ]
+      },
+      {
+        "id": "scenarioSelectField_Query",
+        "title": "scenarioSelectField_Query",
+        "description": "Query to fetch a list of scenarios for a select field, filtered by name, master status, or ownership.",
+        "code": "query scenarioSelectField_Query(\n    $last: Int\n    $after: String\n    $before: String\n    $filterByName: String\n    $onlyMaster: Boolean\n    $onlyMine: Boolean\n    $alwaysIncludeIds: [ID!]\n    $excludeIds: [ID!]\n) {\n    Scenario {\n        Scenarios(\n            first: 20\n            last: $last\n            after: $after\n            before: $before\n            alwaysIncludeIds: $alwaysIncludeIds\n            excludeIds: $excludeIds\n            filterByName: $filterByName\n            onlyMaster: $onlyMaster\n            onlyShowMine: $onlyMine\n        ) {\n            pageInfo {\n                startCursor\n                endCursor\n                hasNextPage\n                hasPreviousPage\n            }\n            edges {\n                cursor\n                node {\n                    id\n                    ...scenarioSelectField_ScenarioInlineFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "scenarioSelectField_ScenarioInlineFragment"
+        ]
+      },
+      {
+        "id": "availabilityForecastScreen_Query",
+        "title": "availabilityForecastScreen_Query",
+        "description": "Query to fetch ",
+        "code": "query availabilityForecastScreen_Query($id: ID!) {\n    node(id: $id) {\n        ... on Scenario {\n            ...availabilityForecastScreen_ScenarioFragment\n        }\n    }\n    ...baseScreen_QueryFragment\n}",
+        "usedFragments": [
+          "availabilityForecastScreen_ScenarioFragment",
+          "baseScreen_QueryFragment"
+        ]
+      },
+      {
+        "id": "ScenarioStaffViewScreen_Query",
+        "title": "ScenarioStaffViewScreen_Query",
+        "description": "",
+        "code": "query ScenarioStaffViewScreen_Query($id: ID!) {\n    node(id: $id) {\n        ... on Scenario {\n            ...ScenarioStaffViewScreen_ScenarioFragment\n        }\n    }\n    ...baseScreen_QueryFragment\n    ...FilterViewSelector_QueryFragment @arguments(filterByViewType: StaffView)\n    ...staffViewFiltersPart_QueryFragment\n\n    Views {\n        ViewOptions(first: 20, filterByViewType: StaffView)\n            @connection(key: \"FilterViewSelector_ViewOptions\") {\n            __id\n            edges {\n                node {\n                    id\n                    name\n                    viewType\n                    url\n                    isDefault\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "ScenarioStaffViewScreen_ScenarioFragment",
+          "baseScreen_QueryFragment",
+          "FilterViewSelector_QueryFragment",
+          "staffViewFiltersPart_QueryFragment"
+        ]
+      },
+      {
+        "id": "StartScreen_Query",
+        "title": "StartScreen_Query",
+        "description": "",
+        "code": "query StartScreen_Query {\n    Scenario {\n        Scenarios(first: 1, onlyMaster: true) {\n            edges {\n                node {\n                    id\n                }\n            }\n        }\n    }\n    ...baseScreen_QueryFragment\n}",
+        "usedFragments": [
+          "baseScreen_QueryFragment"
+        ]
+      }
+    ],
+    "mutations": [
+      {
+        "id": "addProjectToScenarioModal_AddNewMutation",
+        "title": "addProjectToScenarioModal_AddNewMutation",
+        "description": "Mutation to add a new project to a scenario and append it to a connection.",
+        "code": "mutation addProjectToScenarioModal_AddNewMutation(\n    $input: AddNewProjectToScenarioInput!\n    $connectionIds: [ID!]!\n) {\n    Scenario {\n        addNewProjectToScenario(input: $input) {\n            edge @appendEdge(connections: $connectionIds) {\n                node {\n                    id\n                    ...ProjectsGridPart_ScenarioFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "ProjectsGridPart_ScenarioFragment"
+        ]
+      },
+      {
+        "id": "addProjectToScenarioModal_AddExistingMutation",
+        "title": "addProjectToScenarioModal_AddExistingMutation",
+        "description": "Mutation to add existing projects to a scenario.",
+        "code": "mutation addProjectToScenarioModal_AddExistingMutation(\n    $input: AddExistingProjectsToScenarioInput!\n) {\n    Scenario {\n        addExistingProjectsToScenario(input: $input) {\n            edge {\n                node {\n                    id\n                    ...ProjectsGridPart_ScenarioFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "ProjectsGridPart_ScenarioFragment"
+        ]
+      },
+      {
+        "id": "CloneScenarioButton_CloneMutation",
+        "title": "CloneScenarioButton_CloneMutation",
+        "description": "Mutation to clone an existing scenario and append it to a connection.",
+        "code": "mutation CloneScenarioButton_CloneMutation($input: CloneScenarioInput!, $connections: [ID!]!) {\n    Scenario {\n        cloneScenario(input: $input) {\n            edge @appendEdge(connections: $connections) {\n                node {\n                    id\n                    ...UserScenariosTable_ScenarioFragment\n                    ...ScenariosTable_ScenarioFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "UserScenariosTable_ScenarioFragment",
+          "ScenariosTable_ScenarioFragment"
+        ]
+      },
+      {
+        "id": "DeleteScenariosButton_DeleteMutation",
+        "title": "DeleteScenariosButton_DeleteMutation",
+        "description": "Mutation to delete scenarios and remove them from associated connections.",
+        "code": "mutation DeleteScenariosButton_DeleteMutation($input: DeleteScenarioInput!, $connections: [ID!]!) {\n    Scenario {\n        deleteScenario(input: $input) {\n            deletedIds @deleteEdge(connections: $connections)\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "EditScenarioButton_EditMutation",
+        "title": "EditScenarioButton_EditMutation",
+        "description": "Mutation to edit an existing scenario and update its details.",
+        "code": "mutation EditScenarioButton_EditMutation($input: EditScenarioInput!) {\n    Scenario {\n        editScenario(input: $input) {\n            edge {\n                node {\n                    id\n                    name\n                    isMasterPlan\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "ExportScenariosButton_ExportMutation",
+        "title": "ExportScenariosButton_ExportMutation",
+        "description": "",
+        "code": "mutation ExportScenariosButton_ExportMutation {\n    Scenario {\n        exportScenarios(input: {}) {\n            file {\n                url\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "ImportScenariosButton_ImportMutation",
+        "title": "ImportScenariosButton_ImportMutation",
+        "description": "",
+        "code": "mutation ImportScenariosButton_ImportMutation($input: ImportScenariosInput!) {\n    Scenario {\n        importScenarios(input: $input) {\n            result {\n                editedEntities\n                newEntities\n                issues {\n                    row\n                    issue\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "MakeMasterPlanButton_MakeMasterPlanMutation",
+        "title": "MakeMasterPlanButton_MakeMasterPlanMutation",
+        "description": "",
+        "code": "mutation MakeMasterPlanButton_MakeMasterPlanMutation($input: ChangeMasterPlanInput!) {\n    Scenario {\n        changeMasterPlan(input: $input) {\n            edge {\n                node {\n                    ...MakeMasterPlanButton_ScenarioFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "MakeMasterPlanButton_ScenarioFragment"
+        ]
+      },
+      {
+        "id": "ToggleVisibilityButton_ToggleVisibilityMutation",
+        "title": "ToggleVisibilityButton_ToggleVisibilityMutation",
+        "description": "",
+        "code": "mutation ToggleVisibilityButton_ToggleVisibilityMutation($input: ChangeScenarioVisibilityInput!) {\n    Scenario {\n        changeScenarioVisibility(input: $input) {\n            edge {\n                node {\n                    ...ToggleVisibilityButton_ScenarioFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "ToggleVisibilityButton_ScenarioFragment"
+        ]
+      },
+      {
+        "id": "CreateScenarioButton_CreateMutation",
+        "title": "CreateScenarioButton_CreateMutation",
+        "description": "",
+        "code": "mutation CreateScenarioButton_CreateMutation($input: CreateScenarioInput!, $connectionId: ID!) {\n    Scenario {\n        createScenario(input: $input) {\n            edge @appendEdge(connections: [$connectionId]) {\n                node {\n                    id\n                    name\n                    isMasterPlan\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      }
+    ],
+    "fragments": [
+      {
+        "id": "ScenarioMapViewScreen_ScenarioFragment",
+        "title": "ScenarioMapViewScreen_ScenarioFragment",
+        "description": "",
+        "code": "fragment ScenarioMapViewScreen_ScenarioFragment on Scenario {\n    id\n    ...ProjectMapPart_ScenarioFragment\n    ...rosterPart_ScenarioFragment\n    ...DashboardHeader_ScenarioFragment\n    projects {\n        edges {\n            node {\n                id\n                project {\n                    id\n                }\n                ...ProjectMapPart_ProjectInScenarioFragment\n            }\n        }\n    }\n}",
+        "fragmentId": "ScenarioMapViewScreen_ScenarioFragment"
+      },
+      {
+        "id": "rosterPart_ScenarioFragment",
+        "title": "rosterPart_ScenarioFragment",
+        "description": "",
+        "code": "fragment rosterPart_ScenarioFragment on Scenario\n{\n    ...RosterList_ScenarioFragment\n    ...rosterListActiveFilters_ScenarioFragment\n}",
+        "fragmentId": "rosterPart_ScenarioFragment"
+      },
+      {
+        "id": "DashboardHeader_ScenarioFragment",
+        "title": "DashboardHeader_ScenarioFragment",
+        "description": "",
+        "code": "fragment DashboardHeader_ScenarioFragment on Scenario {\nid\n...CurrentScenarioControl_ScenarioFragment\n...ScenarioStatistics_ScenarioFragment\n}",
+        "fragmentId": "DashboardHeader_ScenarioFragment"
+      },
+      {
+        "id": "ProjectMapPart_ProjectInScenarioFragment",
+        "title": "ProjectMapPart_ProjectInScenarioFragment",
+        "description": "",
+        "code": "fragment ProjectMapPart_ProjectInScenarioFragment on ProjectInScenario {\n    project {\n        name\n    }\n    ...AssignmentsInProjectList_ProjectFragment\n    ...ProjectMap_ProjectFragment\n}",
+        "fragmentId": "ProjectMapPart_ProjectInScenarioFragment"
+      },
+      {
+        "id": "ProjectMapPart_ScenarioFragment",
+        "title": "ProjectMapPart_ScenarioFragment",
+        "description": "",
+        "code": "fragment ProjectMapPart_ScenarioFragment on Scenario {\n    id\n    ...AssignmentsInProjectList_ScenarioFragment\n}",
+        "fragmentId": "ProjectMapPart_ScenarioFragment"
+      },
+      {
+        "id": "RosterList_ScenarioFragment",
+        "title": "RosterList_ScenarioFragment",
+        "description": "",
+        "code": "fragment RosterList_ScenarioFragment on Scenario {\n    id\n    ...CheckScenarioPermissions_ScenarioFragment\n    ...personCardDraggable_ScenarioFragment\n    ...personCard_ScenarioFragment\n\n    utilization {\n        ...personCard_ScenarioUtilizationFragment\n    }\n}",
+        "fragmentId": "RosterList_ScenarioFragment"
+      },
+      {
+        "id": "rosterListActiveFilters_ScenarioFragment",
+        "title": "rosterListActiveFilters_ScenarioFragment",
+        "description": "",
+        "code": "fragment rosterListActiveFilters_ScenarioFragment on Scenario {\n    utilization {\n        personUtilizations {\n            status\n        }\n    }\n}",
+        "fragmentId": "rosterListActiveFilters_ScenarioFragment"
+      },
+      {
+        "id": "CurrentScenarioControl_ScenarioFragment",
+        "title": "CurrentScenarioControl_ScenarioFragment",
+        "description": "",
+        "code": "fragment CurrentScenarioControl_ScenarioFragment on Scenario {\n    id\n    name\n    isMasterPlan\n}",
+        "fragmentId": "CurrentScenarioControl_ScenarioFragment"
+      },
+      {
+        "id": "ScenarioStatistics_ScenarioFragment",
+        "title": "ScenarioStatistics_ScenarioFragment",
+        "description": "",
+        "code": "fragment ScenarioStatistics_ScenarioFragment on Scenario {\n    gapDays {\n        ...GapDaysDisplay_GapDaysFragment\n    }\n    utilization {\n        ...UtilizationDisplay_UtilizationFragment\n    }\n}",
+        "fragmentId": "ScenarioStatistics_ScenarioFragment"
+      },
+      {
+        "id": "AssignmentsInProjectList_ProjectFragment",
+        "title": "AssignmentsInProjectList_ProjectFragment",
+        "description": "",
+        "code": "fragment AssignmentsInProjectList_ProjectFragment on ProjectInScenario {\n    id\n\n    project {\n        ...CreateAssignmentButton_ProjectFragment\n        ...CreateAssignmentsFromTemplateButton_ProjectFragment\n    }\n    assignments {\n        __id\n        edges {\n            node {\n                id\n                endDate\n                ...AssignmentCard_AssignmentFragment\n                validAssignmentRoles {\n                    sortOrder\n                }\n            }\n        }\n    }\n}",
+        "fragmentId": "AssignmentsInProjectList_ProjectFragment"
+      },
+      {
+        "id": "ProjectMap_ProjectFragment",
+        "title": "ProjectMap_ProjectFragment",
+        "description": "",
+        "code": "fragment ProjectMap_ProjectFragment on ProjectInScenario {\n    id\n    project {\n        name\n        address {\n            latitude\n            longitude\n        }\n    }\n}",
+        "fragmentId": "ProjectMap_ProjectFragment"
+      },
+      {
+        "id": "AssignmentsInProjectList_ScenarioFragment",
+        "title": "AssignmentsInProjectList_ScenarioFragment",
+        "description": "",
+        "code": "fragment AssignmentsInProjectList_ScenarioFragment on Scenario {\n    id\n    ...AssignmentCard_ScenarioFragment\n    ...CheckScenarioPermissions_ScenarioFragment\n}",
+        "fragmentId": "AssignmentsInProjectList_ScenarioFragment"
+      },
+      {
+        "id": "CheckScenarioPermissions_ScenarioFragment",
+        "title": "CheckScenarioPermissions_ScenarioFragment",
+        "description": "",
+        "code": "fragment CheckScenarioPermissions_ScenarioFragment on Scenario {\n    isMasterPlan\n}",
+        "fragmentId": "CheckScenarioPermissions_ScenarioFragment"
+      },
+      {
+        "id": "personCardDraggable_ScenarioFragment",
+        "title": "personCardDraggable_ScenarioFragment",
+        "description": "",
+        "code": "fragment personCardDraggable_ScenarioFragment on Scenario {\n    id\n    utilization {\n        personUtilizations {\n            personRef\n            status\n        }\n        ...personCard_ScenarioUtilizationFragment\n    }\n    ...personCard_ScenarioFragment\n}",
+        "fragmentId": "personCardDraggable_ScenarioFragment"
+      },
+      {
+        "id": "personCard_ScenarioFragment",
+        "title": "personCard_ScenarioFragment",
+        "description": "",
+        "code": "fragment personCard_ScenarioFragment on Scenario {\n    id\n    ...personDetailsButton_ScenarioFragment\n}",
+        "fragmentId": "personCard_ScenarioFragment"
+      },
+      {
+        "id": "personCard_ScenarioUtilizationFragment",
+        "title": "personCard_ScenarioUtilizationFragment",
+        "description": "",
+        "code": "fragment personCard_ScenarioUtilizationFragment on ScenarioUtilization {\n    personUtilizations {\n        personRef\n        utilizationPercentage\n        status\n    }\n    ...personDetailsButton_ScenarioUtilizationFragment\n}",
+        "fragmentId": "personCard_ScenarioUtilizationFragment"
+      },
+      {
+        "id": "GapDaysDisplay_GapDaysFragment",
+        "title": "GapDaysDisplay_GapDaysFragment",
+        "description": "",
+        "code": "fragment GapDaysDisplay_GapDaysFragment on ScenarioGapDays {\n    gapDays\n    gapSalary\n}",
+        "fragmentId": "GapDaysDisplay_GapDaysFragment"
+      },
+      {
+        "id": "UtilizationDisplay_UtilizationFragment",
+        "title": "UtilizationDisplay_UtilizationFragment",
+        "description": "",
+        "code": "fragment UtilizationDisplay_UtilizationFragment on ScenarioUtilization {\n    averageUtilizationPercentage\n    unusedSalary\n}",
+        "fragmentId": "UtilizationDisplay_UtilizationFragment"
+      },
+      {
+        "id": "CreateAssignmentButton_ProjectFragment",
+        "title": "CreateAssignmentButton_ProjectFragment",
+        "description": "",
+        "code": "fragment CreateAssignmentButton_ProjectFragment on Project {\n    id\n    ...EditAssignmentForm_ProjectFragment\n}",
+        "fragmentId": "CreateAssignmentButton_ProjectFragment"
+      },
+      {
+        "id": "CreateAssignmentsFromTemplateButton_ProjectFragment",
+        "title": "CreateAssignmentsFromTemplateButton_ProjectFragment",
+        "description": "",
+        "code": "fragment CreateAssignmentsFromTemplateButton_ProjectFragment on Project {\n    id\n    ...EditAssignmentForm_ProjectFragment\n}",
+        "fragmentId": "CreateAssignmentsFromTemplateButton_ProjectFragment"
+      },
+      {
+        "id": "EditAssignmentForm_ProjectFragment",
+        "title": "EditAssignmentForm_ProjectFragment",
+        "description": "",
+        "code": "fragment EditAssignmentForm_ProjectFragment on Project {\n    startDate\n    endDate\n}",
+        "fragmentId": "EditAssignmentForm_ProjectFragment"
+      },
+      {
+        "id": "AssignmentCard_AssignmentFragment",
+        "title": "AssignmentCard_AssignmentFragment",
+        "description": "",
+        "code": "fragment AssignmentCard_AssignmentFragment on Assignment {\n    id\n    comment\n    person {\n        name\n        assignmentRole {\n            id\n        }\n        ...personDetailsButton_PersonFragment\n    }\n    project {\n        id\n        ...EditAssignmentButton_ProjectFragment\n    }\n    startDate\n    endDate\n    validAssignmentRoles {\n        id\n        name\n    }\n    isExecutive\n    ...EditAssignmentButton_AssignmentFragment\n    ...EmptyAssignmentButton_AssignmentFragment\n    ...DeleteAssignmentButton_AssignmentFragment\n}",
+        "fragmentId": "AssignmentCard_AssignmentFragment"
+      },
+      {
+        "id": "AssignmentCard_ScenarioFragment",
+        "title": "AssignmentCard_ScenarioFragment",
+        "description": "",
+        "code": "fragment AssignmentCard_ScenarioFragment on Scenario {\n    ...CheckScenarioPermissions_ScenarioFragment\n    ...personDetailsButton_ScenarioFragment\n    budget {\n        projectBudgets {\n            projectRef\n            assignmentBudgets {\n                assignmentRef\n                budgetedCost\n                utilizedCost\n                months\n            }\n        }\n    }\n    utilization {\n        ...personDetailsButton_ScenarioUtilizationFragment\n    }\n}",
+        "fragmentId": "AssignmentCard_ScenarioFragment"
+      },
+      {
+        "id": "personDetailsButton_ScenarioFragment",
+        "title": "personDetailsButton_ScenarioFragment",
+        "description": "",
+        "code": "fragment personDetailsButton_ScenarioFragment on Scenario {\n    id\n    gapDays {\n        personGapDays {\n            personRef\n            gapDays\n        }\n    }\n}",
+        "fragmentId": "personDetailsButton_ScenarioFragment"
+      },
+      {
+        "id": "personDetailsButton_ScenarioUtilizationFragment",
+        "title": "personDetailsButton_ScenarioUtilizationFragment",
+        "description": "",
+        "code": "fragment personDetailsButton_ScenarioUtilizationFragment on ScenarioUtilization {\n    personUtilizations {\n        personRef\n        utilizationPercentage\n    }\n}",
+        "fragmentId": "personDetailsButton_ScenarioUtilizationFragment"
+      },
+      {
+        "id": "personDetailsButton_PersonFragment",
+        "title": "personDetailsButton_PersonFragment",
+        "description": "",
+        "code": "fragment personDetailsButton_PersonFragment on Person {\n    id\n    name\n    comment\n    assignmentRole {\n        name\n    }\n}",
+        "fragmentId": "personDetailsButton_PersonFragment"
+      },
+      {
+        "id": "EditAssignmentButton_ProjectFragment",
+        "title": "EditAssignmentButton_ProjectFragment",
+        "description": "",
+        "code": "fragment EditAssignmentButton_ProjectFragment on Project {\n    id\n    ...EditAssignmentForm_ProjectFragment\n}",
+        "fragmentId": "EditAssignmentButton_ProjectFragment"
+      },
+      {
+        "id": "EditAssignmentButton_AssignmentFragment",
+        "title": "EditAssignmentButton_AssignmentFragment",
+        "description": "",
+        "code": "fragment EditAssignmentButton_AssignmentFragment on Assignment {\n    id\n    startDate\n    endDate\n    person {\n        id\n    }\n    validAssignmentRoles {\n        id\n    }\n    importId\n    isExecutive\n    comment\n    weight\n}",
+        "fragmentId": "EditAssignmentButton_AssignmentFragment"
+      },
+      {
+        "id": "EmptyAssignmentButton_AssignmentFragment",
+        "title": "EmptyAssignmentButton_AssignmentFragment",
+        "description": "",
+        "code": "fragment EmptyAssignmentButton_AssignmentFragment on Assignment {\n    id\n    validAssignmentRoles {\n        name\n    }\n}",
+        "fragmentId": "EmptyAssignmentButton_AssignmentFragment"
+      },
+      {
+        "id": "DeleteAssignmentButton_AssignmentFragment",
+        "title": "DeleteAssignmentButton_AssignmentFragment",
+        "description": "",
+        "code": "fragment DeleteAssignmentButton_AssignmentFragment on Assignment {\n    id\n    validAssignmentRoles {\n        name\n    }\n}",
+        "fragmentId": "DeleteAssignmentButton_AssignmentFragment"
+      },
+      {
+        "id": "rosterPart_StaffFragment",
+        "title": "rosterPart_StaffFragment",
+        "description": "",
+        "code": "fragment rosterPart_StaffFragment on Query\n@argumentDefinitions(\n    scenarioRef: { type: \"ID!\" }\n    first: { type: \"Int\", defaultValue: 250 }\n    after: { type: \"String\" }\n    filterByName: { type: \"String\" }\n    filterByAssignmentRoles: { type: \"[ID!]\" }\n    filterByUtilizationStatus: { type: \"[UtilizationStatus!]\" }\n    filterBySalaryMinimum: { type: \"BigDecimal\" }\n    filterBySalaryMaximum: { type: \"BigDecimal\" }\n    filterByFreeDateMinimum: { type: \"LocalDate\" }\n    filterByFreeDateMaximum: { type: \"LocalDate\" }\n    filterByAllocatedDateMinimum: { type: \"LocalDate\" }\n    filterByAllocatedDateMaximum: { type: \"LocalDate\" }\n    filterByGapDaysMinimum: { type: \"Int\" }\n    filterByGapDaysMaximum: { type: \"Int\" }\n    filterByDistanceMinimum: { type: \"Int\" }\n    filterByDistanceMaximum: { type: \"Int\" }\n    filterBySkills: { type: \"[SkillFilter!]\" }\n    sortByClosestToProject: { type: \"ID\" }\n    filterByRegions: { type: \"[ID!]\" }\n    filterByDivisions: { type: \"[ID!]\" }\n    utilizationWindow: { type: \"UtilizationWindowInput\" }\n) {\n    ...RosterList_StaffFragment\n        @arguments(\n            first: $first\n            after: $after\n            filterByName: $filterByName\n            scenarioRef: $scenarioRef\n            filterBySkills: $filterBySkills\n            filterByRegions: $filterByRegions\n            filterByDivisions: $filterByDivisions\n            filterByAssignmentRoles: $filterByAssignmentRoles\n            filterByUtilizationStatus: $filterByUtilizationStatus\n            filterBySalaryMinimum: $filterBySalaryMinimum\n            filterBySalaryMaximum: $filterBySalaryMaximum\n            filterByFreeDateMinimum: $filterByFreeDateMinimum\n            filterByFreeDateMaximum: $filterByFreeDateMaximum\n            filterByAllocatedDateMinimum: $filterByAllocatedDateMinimum\n            filterByAllocatedDateMaximum: $filterByAllocatedDateMaximum\n            filterByGapDaysMinimum: $filterByGapDaysMinimum\n            filterByGapDaysMaximum: $filterByGapDaysMaximum\n            filterByDistanceMinimum: $filterByDistanceMinimum\n            filterByDistanceMaximum: $filterByDistanceMaximum\n            sortByClosestToProject: $sortByClosestToProject\n            utilizationWindow: $utilizationWindow\n        )\n}",
+        "fragmentId": "rosterPart_StaffFragment"
+      },
+      {
+        "id": "baseScreen_QueryFragment",
+        "title": "baseScreen_QueryFragment",
+        "description": "",
+        "code": "fragment baseScreen_QueryFragment on Query {\n    Viewer {\n        Auth {\n            currentAccount {\n                extensions {\n                    kind\n                    ... on AccountSettingsAccountExtension {\n                        kind\n                        logo {\n                            ...BaseHeader_LogoFragment\n                        }\n                    }\n                }\n            }\n        }\n    }\n}",
+        "fragmentId": "baseScreen_QueryFragment"
+      },
+      {
+        "id": "rosterPart_FilterFragment",
+        "title": "rosterPart_FilterFragment",
+        "description": "",
+        "code": "fragment rosterPart_FilterFragment on Query {\n    ...rosterListActiveFilters_DivisionRegionFragment\n}",
+        "fragmentId": "rosterPart_FilterFragment"
+      },
+      {
+        "id": "RosterList_StaffFragment",
+        "title": "RosterList_StaffFragment",
+        "description": "",
+        "code": "fragment RosterList_StaffFragment on Query\n@refetchable(queryName: \"RosterList_StaffRefetch\")\n@argumentDefinitions(\n    first: { type: \"Int\", defaultValue: 250 }\n    after: { type: \"String\" }\n    filterByName: { type: \"String\" }\n    scenarioRef: { type: \"ID!\" }\n    filterByAssignmentRoles: { type: \"[ID!]\" }\n    filterByUtilizationStatus: { type: \"[UtilizationStatus!]\" }\n    filterBySalaryMinimum: { type: \"BigDecimal\" }\n    filterBySalaryMaximum: { type: \"BigDecimal\" }\n    filterByFreeDateMinimum: { type: \"LocalDate\" }\n    filterByFreeDateMaximum: { type: \"LocalDate\" }\n    filterByAllocatedDateMinimum: { type: \"LocalDate\" }\n    filterByAllocatedDateMaximum: { type: \"LocalDate\" }\n    filterByGapDaysMinimum: { type: \"Int\" }\n    filterByGapDaysMaximum: { type: \"Int\" }\n    filterByDistanceMinimum: { type: \"Int\" }\n    filterByDistanceMaximum: { type: \"Int\" }\n    filterBySkills: { type: \"[SkillFilter!]\" }\n    filterByStaff: { type: \"[ID!]\" }\n    sortByClosestToProject: { type: \"ID\" }\n    filterByRegions: { type: \"[ID!]\" }\n    filterByDivisions: { type: \"[ID!]\" }\n    utilizationWindow: { type: \"UtilizationWindowInput\" }\n) {\n    node(id: $scenarioRef) {\n        ... on Scenario {\n            utilizationWithStandAndEndDate(utilizationWindow: $utilizationWindow) {\n                ...personCard_ScenarioUtilizationFragment\n            }\n        }\n    }\n    Staff {\n        People(\n            first: $first\n            after: $after\n            filterByName: $filterByName\n            scenarioRef: $scenarioRef\n            alwaysIncludeIds: $filterByStaff\n            filterByAssignmentRoles: $filterByAssignmentRoles\n            filterByUtilizationStatus: $filterByUtilizationStatus\n            filterBySalaryMinimum: $filterBySalaryMinimum\n            filterBySalaryMaximum: $filterBySalaryMaximum\n            filterByFreeDateMinimum: $filterByFreeDateMinimum\n            filterByFreeDateMaximum: $filterByFreeDateMaximum\n            filterByAllocatedDateMinimum: $filterByAllocatedDateMinimum\n            filterByAllocatedDateMaximum: $filterByAllocatedDateMaximum\n            filterByGapDaysMinimum: $filterByGapDaysMinimum\n            filterByGapDaysMaximum: $filterByGapDaysMaximum\n            filterByDistanceMinimum: $filterByDistanceMinimum\n            filterByDistanceMaximum: $filterByDistanceMaximum\n            filterBySkills: $filterBySkills\n            sortByClosestToProject: $sortByClosestToProject\n            filterByDivisions: $filterByDivisions\n            filterByRegions: $filterByRegions\n            utilizationWindow: $utilizationWindow\n        ) @connection(key: \"RosterList_People\") {\n            pageInfo {\n                endCursor\n                hasPreviousPage\n                hasNextPage\n                startCursor\n            }\n            edges {\n                node {\n                    id\n                    ...personCardDraggable_PersonFragment @arguments(scenarioId: $scenarioRef)\n                    ...personCard_PersonFragment @arguments(scenarioId: $scenarioRef)\n\n                    distance(projectRef: $sortByClosestToProject)\n                    name\n                    address {\n                        latitude\n                        longitude\n                        lineOne\n                        postalCode\n                        city\n                        state\n                    }\n                }\n            }\n        }\n    }\n}",
+        "fragmentId": "RosterList_StaffFragment"
+      },
+      {
+        "id": "BaseHeader_LogoFragment",
+        "title": "BaseHeader_LogoFragment",
+        "description": "",
+        "code": "fragment BaseHeader_LogoFragment on File {\n    url\n}",
+        "fragmentId": "BaseHeader_LogoFragment"
+      },
+      {
+        "id": "rosterListActiveFilters_DivisionRegionFragment",
+        "title": "rosterListActiveFilters_DivisionRegionFragment",
+        "description": "",
+        "code": "fragment rosterListActiveFilters_DivisionRegionFragment on Query {\n    Skills {\n        Skills {\n            edges {\n                node {\n                    id\n                    name\n                    skillCategory {\n                        id\n                        name\n                        sortOrder\n                    }\n                }\n            }\n        }\n        SkillCategories {\n            edges {\n                node {\n                    id\n                    name\n                    sortOrder\n                }\n            }\n        }\n    }\n    Assignments {\n        AssignmentRoles {\n            edges {\n                node {\n                    id\n                    name\n                }\n            }\n        }\n    }\n    Division {\n        Divisions {\n            edges {\n                node {\n                    id\n                    name\n                }\n            }\n        }\n    }\n    Region {\n        Regions {\n            edges {\n                node {\n                    id\n                    name\n                    ...rosterListActiveFilters_RegionFragment\n                }\n            }\n        }\n    }\n}",
+        "fragmentId": "rosterListActiveFilters_DivisionRegionFragment"
+      },
+      {
+        "id": "rosterListActiveFilters_RegionFragment",
+        "title": "rosterListActiveFilters_RegionFragment",
+        "description": "",
+        "code": "fragment rosterListActiveFilters_RegionFragment on Region {\n    id\n    name\n}",
+        "fragmentId": "rosterListActiveFilters_RegionFragment"
+      },
+      {
+        "id": "personCardDraggable_PersonFragment",
+        "title": "personCardDraggable_PersonFragment",
+        "description": "",
+        "code": "fragment personCardDraggable_PersonFragment on Person\n@argumentDefinitions(scenarioId: { type: \"ID!\" }) {\n    id\n    name\n    assignmentRole {\n        id\n        name\n    }\n    ...personCard_PersonFragment @arguments(scenarioId: $scenarioId)\n}",
+        "fragmentId": "personCardDraggable_PersonFragment"
+      },
+      {
+        "id": "personCard_PersonFragment",
+        "title": "personCard_PersonFragment",
+        "description": "",
+        "code": "fragment personCard_PersonFragment on Person @argumentDefinitions(scenarioId: { type: \"ID!\" }) {\n    id\n    name\n    assignmentRole {\n        id\n        name\n    }\n    sumOfProjectVolume(scenarioRef: $scenarioId)\n    comment\n    ...personDetailsButton_PersonFragment\n}",
+        "fragmentId": "personCard_PersonFragment"
+      },
+      {
+        "id": "ScenarioProjectViewScreen_ScenarioFragment",
+        "title": "ScenarioProjectViewScreen_ScenarioFragment",
+        "description": "",
+        "code": "fragment ScenarioProjectViewScreen_ScenarioFragment on Scenario\n@argumentDefinitions(\n    utilizationWindow: { type: \"UtilizationWindowInput\" }\n    projectFilters: { type: \"ProjectWithAssignmentsFiltersInput\" }\n    personOnAssignmentFilters: { type: \"PersonOnAssignmentFiltersInput\" }\n) {\n    id\n    ...ProjectsGridPart_ScenarioFragment\n        @arguments(\n            projectFilters: $projectFilters\n            personOnAssignmentFilters: $personOnAssignmentFilters\n        )\n    ...rosterPart_ScenarioFragment\n    ...DashboardHeader_ScenarioFragment\n\n    utilizationWithStandAndEndDate(utilizationWindow: $utilizationWindow) {\n        ...personCard_ScenarioUtilizationFragment\n    }\n}",
+        "fragmentId": "ScenarioProjectViewScreen_ScenarioFragment"
+      },
+      {
+        "id": "ProjectsGridPart_ScenarioFragment",
+        "title": "ProjectsGridPart_ScenarioFragment",
+        "description": "",
+        "code": "fragment ProjectsGridPart_ScenarioFragment on Scenario\n@argumentDefinitions(\n    projectFilters: { type: \"ProjectWithAssignmentsFiltersInput\" }\n    personOnAssignmentFilters: { type: \"PersonOnAssignmentFiltersInput\" }\n) {\n    id\n    ...projectsGridPartContent_ScenarioFragment\n        @arguments(\n            projectFilters: $projectFilters\n            personOnAssignmentFilters: $personOnAssignmentFilters\n        )\n    ...updateAssignmentsFromDynamicsButton_ScenarioFragment\n    ...projectViewFiltersPart_ScenarioFragment\n    ...syncWithRandPreconDwhButton_ScenarioFragment\n    ...loadPursuitProjectsFromRandDwhButton_ScenarioFragment\n}",
+        "fragmentId": "ProjectsGridPart_ScenarioFragment"
+      },
+      {
+        "id": "ProjectsGridPart_QueryFragment",
+        "title": "ProjectsGridPart_QueryFragment",
+        "description": "",
+        "code": "fragment ProjectsGridPart_QueryFragment on Query {\n    ...projectStagesTabs_ProjectStages\n    ...FilterViewSelector_QueryFragment @arguments(filterByViewType: ProjectView)\n    ...projectViewFiltersPart_QueryFragment\n    Viewer {\n        Auth {\n            currentAccount {\n                ...updateAssignmentsFromDynamicsButton_AccountFragment\n            }\n        }\n    }\n}",
+        "fragmentId": "ProjectsGridPart_QueryFragment"
+      },
+      {
+        "id": "projectsGridPartContent_ScenarioFragment",
+        "title": "projectsGridPartContent_ScenarioFragment",
+        "description": "",
+        "code": "fragment projectsGridPartContent_ScenarioFragment on Scenario\n@argumentDefinitions(\n    projectFilters: { type: \"ProjectWithAssignmentsFiltersInput\" }\n    personOnAssignmentFilters: { type: \"PersonOnAssignmentFiltersInput\" }\n) {\n    id\n    ...projectsGridPartContent_ScenarioRefetchableFragment\n        @arguments(\n            projectFilters: $projectFilters\n            personOnAssignmentFilters: $personOnAssignmentFilters\n        )\n    ...addProjectToScenarioCard_ScenarioFragment\n        @arguments(\n            projectFilters: $projectFilters\n            personOnAssignmentFilters: $personOnAssignmentFilters\n        )\n    ...projectCard_ScenarioFragment\n}",
+        "fragmentId": "projectsGridPartContent_ScenarioFragment"
+      },
+      {
+        "id": "updateAssignmentsFromDynamicsButton_ScenarioFragment",
+        "title": "updateAssignmentsFromDynamicsButton_ScenarioFragment",
+        "description": "",
+        "code": "fragment updateAssignmentsFromDynamicsButton_ScenarioFragment on Scenario {\n    id\n}",
+        "fragmentId": "updateAssignmentsFromDynamicsButton_ScenarioFragment"
+      },
+      {
+        "id": "projectViewFiltersPart_ScenarioFragment",
+        "title": "projectViewFiltersPart_ScenarioFragment",
+        "description": "",
+        "code": "fragment projectViewFiltersPart_ScenarioFragment on Scenario {\n    id\n}",
+        "fragmentId": "projectViewFiltersPart_ScenarioFragment"
+      },
+      {
+        "id": "syncWithRandPreconDwhButton_ScenarioFragment",
+        "title": "syncWithRandPreconDwhButton_ScenarioFragment",
+        "description": "",
+        "code": "fragment syncWithRandPreconDwhButton_ScenarioFragment on Scenario {\n    id\n    isMasterPlan\n}",
+        "fragmentId": "syncWithRandPreconDwhButton_ScenarioFragment"
+      },
+      {
+        "id": "loadPursuitProjectsFromRandDwhButton_ScenarioFragment",
+        "title": "loadPursuitProjectsFromRandDwhButton_ScenarioFragment",
+        "description": "",
+        "code": "fragment loadPursuitProjectsFromRandDwhButton_ScenarioFragment on Scenario {\n    id\n    isMasterPlan\n}",
+        "fragmentId": "loadPursuitProjectsFromRandDwhButton_ScenarioFragment"
+      },
+      {
+        "id": "projectStagesTabs_ProjectStages",
+        "title": "projectStagesTabs_ProjectStages",
+        "description": "",
+        "code": "fragment projectStagesTabs_ProjectStages on Query {\n    Project {\n        ProjectStages(first: 100) {\n            edges {\n                node {\n                    id\n                    name\n                    sortOrder\n                    ...projectStagesTab_ProjectStageFragment\n                }\n            }\n        }\n    }\n}",
+        "fragmentId": "projectStagesTabs_ProjectStages"
+      },
+      {
+        "id": "projectStagesTab_ProjectStageFragment",
+        "title": "projectStagesTab_ProjectStageFragment",
+        "description": "",
+        "code": "fragment projectStagesTab_ProjectStageFragment on ProjectStage {\n    id\n    name\n    sortOrder\n}",
+        "fragmentId": "projectStagesTab_ProjectStageFragment"
+      },
+      {
+        "id": "FilterViewSelector_QueryFragment",
+        "title": "FilterViewSelector_QueryFragment",
+        "description": "",
+        "code": "fragment FilterViewSelector_QueryFragment on Query\n@argumentDefinitions(filterByViewType: { type: \"ViewType!\" }) {\n    Views {\n        ViewOptions(first: 20, filterByViewType: $filterByViewType)\n            @connection(key: \"FilterViewSelector_ViewOptions\") {\n            __id\n            edges {\n                node {\n                    id\n                    name\n                    viewType\n                    url\n                    isDefault\n                }\n            }\n        }\n    }\n}",
+        "fragmentId": "FilterViewSelector_QueryFragment"
+      },
+      {
+        "id": "projectViewFiltersPart_QueryFragment",
+        "title": "projectViewFiltersPart_QueryFragment",
+        "description": "",
+        "code": "fragment projectViewFiltersPart_QueryFragment on Query {\n    Division {\n        Divisions {\n            edges {\n                node {\n                    id\n                    name\n                }\n            }\n        }\n    }\n    Region {\n        Regions {\n            edges {\n                node {\n                    id\n                    name\n                }\n            }\n        }\n    }\n    Project {\n        ProjectStages(first: 100) {\n            edges {\n                node {\n                    id\n                    name\n                }\n            }\n        }\n    }\n}",
+        "fragmentId": "projectViewFiltersPart_QueryFragment"
+      },
+      {
+        "id": "updateAssignmentsFromDynamicsButton_AccountFragment",
+        "title": "updateAssignmentsFromDynamicsButton_AccountFragment",
+        "description": "",
+        "code": "fragment updateAssignmentsFromDynamicsButton_AccountFragment on Account {\n    id\n}",
+        "fragmentId": "updateAssignmentsFromDynamicsButton_AccountFragment"
+      },
+      {
+        "id": "projectsGridPartContent_ScenarioRefetchableFragment",
+        "title": "projectsGridPartContent_ScenarioRefetchableFragment",
+        "description": "",
+        "code": "fragment projectsGridPartContent_ScenarioRefetchableFragment on Scenario\n@refetchable(queryName: \"projectsGridPartContent_Refetch\")\n@argumentDefinitions(\n    projectFilters: { type: \"ProjectWithAssignmentsFiltersInput\" }\n    personOnAssignmentFilters: { type: \"PersonOnAssignmentFiltersInput\" }\n) {\n    projects(\n        projectWithAssignmentsFilters: $projectFilters\n        peopleOnAssignmentFilters: $personOnAssignmentFilters\n    ) {\n        edges {\n            node {\n                id\n                ...projectsGridPartContent_ProjectInScenarioInlineFragment\n            }\n        }\n    }\n}",
+        "fragmentId": "projectsGridPartContent_ScenarioRefetchableFragment"
+      },
+      {
+        "id": "addProjectToScenarioCard_ScenarioFragment",
+        "title": "addProjectToScenarioCard_ScenarioFragment",
+        "description": "",
+        "code": "fragment addProjectToScenarioCard_ScenarioFragment on Scenario\n@argumentDefinitions(\n    projectFilters: { type: \"ProjectWithAssignmentsFiltersInput\" }\n    personOnAssignmentFilters: { type: \"PersonOnAssignmentFiltersInput\" }\n) {\n    ...addProjectToScenarioModal_ScenarioFragment\n        @arguments(\n            projectFilters: $projectFilters\n            personOnAssignmentFilters: $personOnAssignmentFilters\n        )\n    isMasterPlan\n}",
+        "fragmentId": "addProjectToScenarioCard_ScenarioFragment"
+      },
+      {
+        "id": "projectCard_ScenarioFragment",
+        "title": "projectCard_ScenarioFragment",
+        "description": "",
+        "code": "fragment projectCard_ScenarioFragment on Scenario {\n    id\n    ...AssignmentsInProjectList_ScenarioFragment\n\n    budget {\n        projectBudgets {\n            projectRef\n            maximumBudget\n            budgetedCost\n            utilizedCost\n        }\n    }\n}",
+        "fragmentId": "projectCard_ScenarioFragment"
+      },
+      {
+        "id": "projectsGridPartContent_ProjectInScenarioInlineFragment",
+        "title": "projectsGridPartContent_ProjectInScenarioInlineFragment",
+        "description": "",
+        "code": "fragment projectsGridPartContent_ProjectInScenarioInlineFragment on ProjectInScenario @inline {\n    id\n    project {\n        name\n        startDate\n        endDate\n        stage {\n            id\n            name\n        }\n\n        division {\n            id\n        }\n        region {\n            id\n        }\n    }\n    assignments {\n        edges {\n            node {\n                isExecutive\n                validAssignmentRoles {\n                    name\n                }\n                project {\n                    id\n                }\n                person {\n                    id\n                    assignmentRole {\n                        name\n                        id\n                    }\n                }\n            }\n        }\n    }\n    ...projectCard_ProjectFragment\n}",
+        "fragmentId": "projectsGridPartContent_ProjectInScenarioInlineFragment"
+      },
+      {
+        "id": "addProjectToScenarioModal_ScenarioFragment",
+        "title": "addProjectToScenarioModal_ScenarioFragment",
+        "description": "",
+        "code": "fragment addProjectToScenarioModal_ScenarioFragment on Scenario\n@argumentDefinitions(\n    projectFilters: { type: \"ProjectWithAssignmentsFiltersInput\" }\n    personOnAssignmentFilters: { type: \"PersonOnAssignmentFiltersInput\" }\n) {\n    id\n    projects(\n        projectWithAssignmentsFilters: $projectFilters\n        peopleOnAssignmentFilters: $personOnAssignmentFilters\n    ) {\n        edges {\n            node {\n                id\n                project {\n                    name\n                    source\n                }\n            }\n        }\n    }\n}",
+        "fragmentId": "addProjectToScenarioModal_ScenarioFragment"
+      },
+      {
+        "id": "projectCard_ProjectFragment",
+        "title": "projectCard_ProjectFragment",
+        "description": "",
+        "code": "fragment projectCard_ProjectFragment on ProjectInScenario {\n    id\n    project {\n        id\n        name\n        startDate\n        endDate\n        address {\n            lineOne\n            city\n            country\n            postalCode\n            state\n            latitude\n            longitude\n        }\n        stage {\n            color\n        }\n        ...editProjectButton_ProjectFragment\n        ...ProjectDateTimeDisplay_ProjectFragment\n    }\n    assignments {\n        edges {\n            node {\n                person {\n                    id\n                }\n            }\n        }\n    }\n    ...AssignmentsInProjectList_ProjectFragment\n    ...projectDetailsButton_ProjectInScenario\n}",
+        "fragmentId": "projectCard_ProjectFragment"
+      },
+      {
+        "id": "editProjectButton_ProjectFragment",
+        "title": "editProjectButton_ProjectFragment",
+        "description": "",
+        "code": "fragment editProjectButton_ProjectFragment on Project {\n    id\n    name\n    startDate\n    endDate\n    address {\n        lineOne\n        city\n        postalCode\n        state\n        country\n        latitude\n        longitude\n    }\n    source\n    architectName\n    clientName\n    stage {\n        id\n        name\n    }\n    skills {\n        id\n    }\n    volume\n    generalConditionsPercentage\n    budgetedLaborCosts\n    division {\n        id\n    }\n    region {\n        id\n    }\n    projectIdentifier\n    durationInMonths\n    avatar {\n        id\n        url\n    }\n    milestones {\n        name\n        date\n    }\n    comments\n    source\n}",
+        "fragmentId": "editProjectButton_ProjectFragment"
+      },
+      {
+        "id": "ProjectDateTimeDisplay_ProjectFragment",
+        "title": "ProjectDateTimeDisplay_ProjectFragment",
+        "description": "",
+        "code": "fragment ProjectDateTimeDisplay_ProjectFragment on Project {\n    startDate\n    endDate\n    durationInMonths\n}",
+        "fragmentId": "ProjectDateTimeDisplay_ProjectFragment"
+      },
+      {
+        "id": "AssignmentsInProjectList_ProjectFragment",
+        "title": "AssignmentsInProjectList_ProjectFragment",
+        "description": "",
+        "code": "fragment AssignmentsInProjectList_ProjectFragment on ProjectInScenario {\n    id\n\n    project {\n        ...CreateAssignmentButton_ProjectFragment\n        ...CreateAssignmentsFromTemplateButton_ProjectFragment\n    }\n    assignments {\n        __id\n        edges {\n            node {\n                id\n                endDate\n                ...AssignmentCard_AssignmentFragment\n                validAssignmentRoles {\n                    sortOrder\n                }\n            }\n        }\n    }\n}",
+        "fragmentId": "AssignmentsInProjectList_ProjectFragment"
+      },
+      {
+        "id": "CreateAssignmentButton_ProjectFragment",
+        "title": "CreateAssignmentButton_ProjectFragment",
+        "description": "",
+        "code": "fragment CreateAssignmentButton_ProjectFragment on Project {\n    id\n    ...EditAssignmentForm_ProjectFragment\n}",
+        "fragmentId": "CreateAssignmentButton_ProjectFragment"
+      },
+      {
+        "id": "CreateAssignmentsFromTemplateButton_ProjectFragment",
+        "title": "CreateAssignmentsFromTemplateButton_ProjectFragment",
+        "description": "",
+        "code": "fragment CreateAssignmentsFromTemplateButton_ProjectFragment on Project {\n    id\n    ...EditAssignmentForm_ProjectFragment\n}",
+        "fragmentId": "CreateAssignmentsFromTemplateButton_ProjectFragment"
+      },
+      {
+        "id": "EditAssignmentForm_ProjectFragment",
+        "title": "EditAssignmentForm_ProjectFragment",
+        "description": "",
+        "code": "fragment EditAssignmentForm_ProjectFragment on Project {\n    startDate\n    endDate\n}",
+        "fragmentId": "EditAssignmentForm_ProjectFragment"
+      },
+      {
+        "id": "AssignmentCard_AssignmentFragment",
+        "title": "AssignmentCard_AssignmentFragment",
+        "description": "",
+        "code": "fragment AssignmentCard_AssignmentFragment on Assignment {\n    id\n    comment\n    person {\n        name\n        assignmentRole {\n            id\n        }\n        ...personDetailsButton_PersonFragment\n    }\n    project {\n        id\n        ...EditAssignmentButton_ProjectFragment\n    }\n    startDate\n    endDate\n    validAssignmentRoles {\n        id\n        name\n    }\n    isExecutive\n    ...EditAssignmentButton_AssignmentFragment\n    ...EmptyAssignmentButton_AssignmentFragment\n    ...DeleteAssignmentButton_AssignmentFragment\n}",
+        "fragmentId": "AssignmentCard_AssignmentFragment"
+      },
+      {
+        "id": "personDetailsButton_PersonFragment",
+        "title": "personDetailsButton_PersonFragment",
+        "description": "",
+        "code": "fragment personDetailsButton_PersonFragment on Person {\n    id\n    name\n    comment\n    assignmentRole {\n        name\n    }\n}",
+        "fragmentId": "personDetailsButton_PersonFragment"
+      },
+      {
+        "id": "EditAssignmentButton_ProjectFragment",
+        "title": "EditAssignmentButton_ProjectFragment",
+        "description": "",
+        "code": "fragment EditAssignmentButton_ProjectFragment on Project {\n    id\n    ...EditAssignmentForm_ProjectFragment\n}",
+        "fragmentId": "EditAssignmentButton_ProjectFragment"
+      },
+      {
+        "id": "EditAssignmentForm_ProjectFragment",
+        "title": "EditAssignmentForm_ProjectFragment",
+        "description": "",
+        "code": "fragment EditAssignmentForm_ProjectFragment on Project {\n    startDate\n    endDate\n}",
+        "fragmentId": "EditAssignmentForm_ProjectFragment"
+      },
+      {
+        "id": "EditAssignmentButton_AssignmentFragment",
+        "title": "EditAssignmentButton_AssignmentFragment",
+        "description": "",
+        "code": "fragment EditAssignmentButton_AssignmentFragment on Assignment {\n    id\n    startDate\n    endDate\n    person {\n        id\n    }\n    validAssignmentRoles {\n        id\n    }\n    importId\n    isExecutive\n    comment\n    weight\n}",
+        "fragmentId": "EditAssignmentButton_AssignmentFragment"
+      },
+      {
+        "id": "EmptyAssignmentButton_AssignmentFragment",
+        "title": "EmptyAssignmentButton_AssignmentFragment",
+        "description": "",
+        "code": "fragment EmptyAssignmentButton_AssignmentFragment on Assignment {\n    id\n    validAssignmentRoles {\n        name\n    }\n}",
+        "fragmentId": "EmptyAssignmentButton_AssignmentFragment"
+      },
+      {
+        "id": "DeleteAssignmentButton_AssignmentFragment",
+        "title": "DeleteAssignmentButton_AssignmentFragment",
+        "description": "",
+        "code": "fragment DeleteAssignmentButton_AssignmentFragment on Assignment {\n    id\n    validAssignmentRoles {\n        name\n    }\n}",
+        "fragmentId": "DeleteAssignmentButton_AssignmentFragment"
+      },
+      {
+        "id": "projectDetailsButton_ProjectInScenario",
+        "title": "projectDetailsButton_ProjectInScenario",
+        "description": "",
+        "code": "fragment projectDetailsButton_ProjectInScenario on ProjectInScenario {\n    project {\n        id\n        name\n    }\n}",
+        "fragmentId": "projectDetailsButton_ProjectInScenario"
+      },
+      {
+        "id": "ScenariosTable_ScenariosListFragment",
+        "title": "ScenariosTable_ScenariosListFragment",
+        "description": "",
+        "code": "fragment ScenariosTable_ScenariosListFragment on Query\n@refetchable(queryName: \"ScenariosTable_Refetch\")\n@argumentDefinitions(\n    first: { type: \"Int\", defaultValue: 20 }\n    after: { type: \"String\" }\n    filterByName: { type: \"String\" }\n) {\n    Scenario {\n        Scenarios(first: $first, after: $after, filterByName: $filterByName)\n            @connection(key: \"ScenariosTable_Scenarios\") {\n            __id\n            pageInfo {\n                endCursor\n                hasPreviousPage\n                hasNextPage\n                startCursor\n            }\n            edges {\n                node {\n                    id\n                    ...ScenariosTable_ScenarioFragment\n                }\n            }\n        }\n    }\n}",
+        "fragmentId": "ScenariosTable_ScenariosListFragment"
+      },
+      {
+        "id": "ScenariosTable_ScenarioFragment",
+        "title": "ScenariosTable_ScenarioFragment",
+        "description": "",
+        "code": "fragment ScenariosTable_ScenarioFragment on Scenario @inline {\n    id\n    name\n    isMasterPlan\n    lastUpdatedAt\n    ...EditScenarioButton_ScenarioFragment\n    ...CheckScenarioPermissions_ScenarioFragment\n    ...MakeMasterPlanButton_ScenarioFragment\n    ...CloneScenarioButton_ScenarioFragment\n    ...ToggleVisibilityButton_ScenarioFragment\n}",
+        "fragmentId": "ScenariosTable_ScenarioFragment"
+      },
+      {
+        "id": "EditScenarioButton_ScenarioFragment",
+        "title": "EditScenarioButton_ScenarioFragment",
+        "description": "",
+        "code": "fragment EditScenarioButton_ScenarioFragment on Scenario {\n    id\n    name\n}",
+        "fragmentId": "EditScenarioButton_ScenarioFragment"
+      },
+      {
+        "id": "CheckScenarioPermissions_ScenarioFragment",
+        "title": "CheckScenarioPermissions_ScenarioFragment",
+        "description": "",
+        "code": "fragment CheckScenarioPermissions_ScenarioFragment on Scenario {\n    isMasterPlan\n}",
+        "fragmentId": "CheckScenarioPermissions_ScenarioFragment"
+      },
+      {
+        "id": "MakeMasterPlanButton_ScenarioFragment",
+        "title": "MakeMasterPlanButton_ScenarioFragment",
+        "description": "",
+        "code": "fragment MakeMasterPlanButton_ScenarioFragment on Scenario {\n    id\n    isMasterPlan\n}",
+        "fragmentId": "MakeMasterPlanButton_ScenarioFragment"
+      },
+      {
+        "id": "CloneScenarioButton_ScenarioFragment",
+        "title": "CloneScenarioButton_ScenarioFragment",
+        "description": "",
+        "code": "fragment CloneScenarioButton_ScenarioFragment on Scenario {\n    id\n    name\n}",
+        "fragmentId": "CloneScenarioButton_ScenarioFragment"
+      },
+      {
+        "id": "ToggleVisibilityButton_ScenarioFragment",
+        "title": "ToggleVisibilityButton_ScenarioFragment",
+        "description": "",
+        "code": "fragment ToggleVisibilityButton_ScenarioFragment on Scenario {\n    id\n    isPublic\n    isMasterPlan\n}",
+        "fragmentId": "ToggleVisibilityButton_ScenarioFragment"
+      },
+      {
+        "id": "UserScenariosTable_ScenariosListFragment",
+        "title": "UserScenariosTable_ScenariosListFragment",
+        "description": "",
+        "code": "fragment UserScenariosTable_ScenariosListFragment on Query\n@refetchable(queryName: \"UserScenariosTable_Refetch\")\n@argumentDefinitions(\n    first: { type: \"Int\", defaultValue: 20 }\n    after: { type: \"String\" }\n    onlyShowMine: { type: \"Boolean\" }\n) {\n    Scenario {\n        Scenarios(first: $first, after: $after, onlyShowMine: $onlyShowMine)\n            @connection(key: \"UserScenariosTable_Scenarios\") {\n            __id\n            pageInfo {\n                endCursor\n                hasPreviousPage\n                hasNextPage\n                startCursor\n            }\n            edges {\n                node {\n                    id\n                    ...UserScenariosTable_ScenarioFragment\n                }\n            }\n        }\n    }\n}",
+        "fragmentId": "UserScenariosTable_ScenariosListFragment"
+      },
+      {
+        "id": "UserScenariosTable_ScenarioFragment",
+        "title": "UserScenariosTable_ScenarioFragment",
+        "description": "",
+        "code": "fragment UserScenariosTable_ScenarioFragment on Scenario @inline {\n    id\n    name\n    isMasterPlan\n    lastUpdatedAt\n    gapDays {\n        gapDays\n        gapSalary\n    }\n    utilization {\n        unusedSalary\n        averageUtilizationPercentage\n    }\n    ...CheckScenarioPermissions_ScenarioFragment\n    ...MakeMasterPlanButton_ScenarioFragment\n    ...CloneScenarioButton_ScenarioFragment\n    ...ToggleVisibilityButton_ScenarioFragment\n}",
+        "fragmentId": "UserScenariosTable_ScenarioFragment"
+      },
+      {
+        "id": "scenarioSelectField_ScenarioInlineFragment",
+        "title": "scenarioSelectField_ScenarioInlineFragment",
+        "description": "",
+        "code": "fragment scenarioSelectField_ScenarioInlineFragment on Scenario @inline {\n    id\n    name\n    isMasterPlan\n    isPublic\n}",
+        "fragmentId": "scenarioSelectField_ScenarioInlineFragment"
+      },
+      {
+        "id": "availabilityForecastScreen_ScenarioFragment",
+        "title": "availabilityForecastScreen_ScenarioFragment",
+        "description": "",
+        "code": "fragment availabilityForecastScreen_ScenarioFragment on Scenario {\n    id\n    ...DashboardHeader_ScenarioFragment\n}",
+        "fragmentId": "availabilityForecastScreen_ScenarioFragment"
+      },
+      {
+        "id": "ScenarioStaffViewScreen_ScenarioFragment",
+        "title": "ScenarioStaffViewScreen_ScenarioFragment",
+        "description": "",
+        "code": "fragment ScenarioStaffViewScreen_ScenarioFragment on Scenario {\n    id\n    ...DashboardHeader_ScenarioFragment\n    ...staffViewFiltersPart_ScenarioFragment\n    ...updateAssignmentsFromDynamicsButton_ScenarioFragment\n    ...syncWithRandPreconDwhButton_ScenarioFragment\n    ...loadPursuitProjectsFromRandDwhButton_ScenarioFragment\n}",
+        "fragmentId": "ScenarioStaffViewScreen_ScenarioFragment"
+      },
+      {
+        "id": "staffViewFiltersPart_ScenarioFragment",
+        "title": "staffViewFiltersPart_ScenarioFragment",
+        "description": "",
+        "code": "fragment staffViewFiltersPart_ScenarioFragment on Scenario {\n    id\n    utilization {\n        personUtilizations {\n            status\n        }\n    }\n}",
+        "fragmentId": "staffViewFiltersPart_ScenarioFragment"
+      },
+      {
+        "id": "staffViewFiltersPart_QueryFragment",
+        "title": "staffViewFiltersPart_QueryFragment",
+        "description": "",
+        "code": "fragment staffViewFiltersPart_QueryFragment on Query {\n    Assignments {\n        AssignmentRoles {\n            edges {\n                node {\n                    id\n                    name\n                }\n            }\n        }\n    }\n    Division {\n        Divisions {\n            edges {\n                node {\n                    id\n                    name\n                }\n            }\n        }\n    }\n    Region {\n        Regions {\n            edges {\n                node {\n                    id\n                    name\n                }\n            }\n        }\n    }\n}",
+        "fragmentId": "staffViewFiltersPart_QueryFragment"
+      }
+    ]
+  }
+ 

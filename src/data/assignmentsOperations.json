@@ -1,0 +1,207 @@
+{
+    "queries": [
+      {
+        "id": "fileSelectionField",
+        "title": "FileSelectionField_Query",
+        "description": "Fetches file metadata by ID and lists available files filtered by file types and tags.",
+        "code": "query FileSelectionField_Query($fileId: ID!, $skip: Boolean!, $filterByFileTypes: [String!], $tagsIncluded: [String!]) {\n  ...FilesTable_FilesListFragment @arguments(filterByFileTypes:$filterByFileTypes, tagsIncluded: $tagsIncluded)\n\n  node(id: $fileId) @skip(if: $skip) {\n    ...on File {\n      name\n      url\n    }\n  }\n}",
+        "usedFragments": ["FilesTable_FilesListFragment"]
+      }
+    ],
+    "mutations": [
+      {
+        "id": "assignmentCard",
+        "title": "AssignmentCard_AssignMutation",
+        "description": "Fills an assignment within a scenario and returns updated project information.",
+        "code": "mutation AssignmentCard_AssignMutation($input: FillAssignmentInput!) {\n  Scenario {\n    fillAssignment(input: $input) {\n      update {\n        project {\n          id\n          ...projectCard_ProjectFragment\n        }\n      }\n    }\n  }\n}",
+        "usedFragments": [
+          "projectCard_ProjectFragment"
+        ]
+      },{
+        "id": "createAssignmentButton",
+        "title": "CreateAssignmentButton_CreateMutation",
+        "description": "Creates a new assignment and returns the updated project and assignment list.",
+        "code": "mutation CreateAssignmentButton_CreateMutation($input: CreateAssignmentInput!) {\n  Scenario {\n    createAssignment(input: $input) {\n      edge {\n        node {\n          id\n          ...AssignmentsInProjectList_ProjectFragment\n          ...projectCard_ProjectFragment\n        }\n      }\n    }\n  }\n}",
+        "usedFragments": ["AssignmentsInProjectList_ProjectFragment", "projectCard_ProjectFragment"]
+      },
+      {
+        "id": "createAssignmentsFromTemplateButton",
+        "title": "CreateAssignmentsFromTemplateButton_CreateMutation",
+        "description": "Creates assignments from a predefined template and returns the updated project and assignment list.",
+        "code": "mutation CreateAssignmentsFromTemplateButton_CreateMutation($input: CreateAssignmentsFromTemplateInput!) {\n  Scenario {\n    createAssignmentsFromTemplate(input: $input) {\n      edge {\n        node {\n          id\n          ...AssignmentsInProjectList_ProjectFragment\n          ...projectCard_ProjectFragment\n        }\n      }\n    }\n  }\n}",
+        "usedFragments": ["AssignmentsInProjectList_ProjectFragment", "projectCard_ProjectFragment"]
+      },
+      {
+        "id": "deleteAssignmentButton",
+        "title": "DeleteAssignmentButton_DeleteMutation",
+        "description": "Deletes an assignment and returns the updated project details.",
+        "code": "mutation DeleteAssignmentButton_DeleteMutation($input: DeleteAssignmentInput!) {\n  Scenario {\n    deleteAssignment(input: $input) {\n      update {\n        project {\n          id\n          ...projectCard_ProjectFragment\n        }\n      }\n    }\n  }\n}",
+        "usedFragments": ["projectCard_ProjectFragment"]
+      },
+      {
+        "id": "editAssignmentButton",
+        "title": "EditAssignmentButton_EditMutation",
+        "description": "Edits an assignment and returns updated project and assignment data.",
+        "code": "mutation EditAssignmentButton_EditMutation($input: EditAssignmentInput!) {\n  Scenario {\n    editAssignment(input: $input) {\n      update {\n        project {\n          id\n          ...AssignmentsInProjectList_ProjectFragment\n          ...projectCard_ProjectFragment\n          assignments {\n            edges {\n              node {\n                ...EditAssignmentButton_AssignmentFragment\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}",
+        "usedFragments": ["AssignmentsInProjectList_ProjectFragment", "projectCard_ProjectFragment", "EditAssignmentButton_AssignmentFragment"]
+      },
+      {
+        "id": "emptyAssignmentButton",
+        "title": "EmptyAssignmentButton_EmptyMutation",
+        "description": "Empties an assignment and returns updated project data.",
+        "code": "mutation EmptyAssignmentButton_EmptyMutation($input: EmptyAssignmentInput!) {\n  Scenario {\n    emptyAssignment(input: $input) {\n      update {\n        project {\n          id\n          ...projectCard_ProjectFragment\n        }\n      }\n    }\n  }\n}",
+        "usedFragments": ["projectCard_ProjectFragment"]
+      },
+      {
+        "id": "exportAssignmentsButton",
+        "title": "ExportAssignmentsButton_ExportMutation",
+        "description": "Exports the current set of assignments to a downloadable file.",
+        "code": "mutation ExportAssignmentsButton_ExportMutation($input: ExportAssignmentsInput!) {\n  Scenario {\n    exportAssignments(input: $input) {\n      file {\n        url\n      }\n    }\n  }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "importAssignmentsButton",
+        "title": "ImportAssignmentsButton_ImportMutation",
+        "description": "Imports assignments from a provided data source and returns import results.",
+        "code": "mutation ImportAssignmentsButton_ImportMutation($input: ImportAssignmentsInput!) {\n  Scenario {\n    importAssignments(input: $input) {\n      result {\n        editedEntities\n        newEntities\n        issues {\n          row\n          issue\n        }\n      }\n    }\n  }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "moveAssignmentDialogue",
+        "title": "moveAssignmentDialogue_UpdateAssigmentMutation",
+        "description": "Updates an assignment's timing via drag-and-drop (move).",
+        "code": "mutation moveAssignmentDialogue_UpdateAssigmentMutation($input: EditAssignmentInput!) {\n  Scenario {\n    editAssignment(input: $input) {\n      clientMutationId\n    }\n  }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "resizeAssignmentDialogue",
+        "title": "resizeAssignmentDialogue_UpdateAssigmentMutation",
+        "description": "Updates an assignment's timing via resizing.",
+        "code": "mutation resizeAssignmentDialogue_UpdateAssigmentMutation($input: EditAssignmentInput!) {\n  Scenario {\n    editAssignment(input: $input) {\n      clientMutationId\n    }\n  }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "writeAssignmentsToDynamicsButton",
+        "title": "writeAssignmentsToDynamicsButton_WriteMutation",
+        "description": "Writes assignments to Microsoft Dynamics system.",
+        "code": "mutation writeAssignmentsToDynamicsButton_WriteMutation($input: WriteAssignmentsToDynamicsInput!) {\n  Dynamics {\n    writeAssignmentsToDynamics(input: $input) {\n      clientMutationId\n    }\n  }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "updateAssignmentsFromDynamicsButton",
+        "title": "updateAssignmentsFromDynamicsButton_ImportAssignmentsFromDynamicsMutation",
+        "description": "Imports assignments from Microsoft Dynamics into the platform.",
+        "code": "mutation updateAssignmentsFromDynamicsButton_ImportAssignmentsFromDynamicsMutation($input: ImportAssignmentsFromDynamicsInput!) {\n  DynamicsPreCon {\n    importAssignmentsFromDynamics(input: $input) {\n      clientMutationId\n    }\n  }\n}",
+        "usedFragments": []
+      }
+    ],
+    "fragments": [
+      {
+        "id": "projectCard",
+        "title": "projectCard_ProjectFragment",
+        "description": "Fragment showing full details for a project in scenario, including assignments and linked fragments.",
+        "code": "fragment projectCard_ProjectFragment on ProjectInScenario {\n  id\n  project {\n    id\n    name\n    startDate\n    endDate\n    address {\n      lineOne\n      city\n      country\n      postalCode\n      state\n      latitude\n      longitude\n    }\n    stage {\n      color\n    }\n    ...editProjectButton_ProjectFragment\n    ...ProjectDateTimeDisplay_ProjectFragment\n  }\n  assignments {\n    edges {\n      node {\n        person {\n          id\n        }\n      }\n    }\n  }\n  ...AssignmentsInProjectList_ProjectFragment\n  ...projectDetailsButton_ProjectInScenario\n}",
+        "fragmentId": "projectCard_ProjectFragment"
+      },
+      {
+        "id": "editProjectButton",
+        "title": "editProjectButton_ProjectFragment",
+        "description": "Full project details used in the edit project form.",
+        "code": "fragment editProjectButton_ProjectFragment on Project {\n  id\n  name\n  startDate\n  endDate\n  address {\n    lineOne\n    city\n    postalCode\n    state\n    country\n    latitude\n    longitude\n  }\n  source\n  architectName\n  clientName\n  stage {\n    id\n    name\n  }\n  skills {\n    id\n  }\n  volume\n  generalConditionsPercentage\n  budgetedLaborCosts\n  division {\n    id\n  }\n  region {\n    id\n  }\n  projectIdentifier\n  durationInMonths\n  avatar {\n    id\n    url\n  }\n  milestones {\n    name\n    date\n  }\n  comments\n  source\n}",
+        "fragmentId": "editProjectButton_ProjectFragment"
+      },
+      {
+        "id": "projectDateTimeDisplay",
+        "title": "ProjectDateTimeDisplay_ProjectFragment",
+        "description": "Displays project duration and key dates.",
+        "code": "fragment ProjectDateTimeDisplay_ProjectFragment on Project {\n  startDate\n  endDate\n  durationInMonths\n}",
+        "fragmentId": "ProjectDateTimeDisplay_ProjectFragment"
+      },
+      {
+        "id": "assignmentsInProjectList",
+        "title": "AssignmentsInProjectList_ProjectFragment",
+        "description": "Details all assignments under a project in scenario.",
+        "code": "fragment AssignmentsInProjectList_ProjectFragment on ProjectInScenario {\n  id\n  project {\n    ...CreateAssignmentButton_ProjectFragment\n    ...CreateAssignmentsFromTemplateButton_ProjectFragment\n  }\n  assignments {\n    __id\n    edges {\n      node {\n        id\n        endDate\n        ...AssignmentCard_AssignmentFragment\n        validAssignmentRoles {\n          sortOrder\n        }\n      }\n    }\n  }\n}",
+        "fragmentId": "AssignmentsInProjectList_ProjectFragment"
+      },
+      {
+        "id": "createAssignmentButton",
+        "title": "CreateAssignmentButton_ProjectFragment",
+        "description": "Used to create assignments for a project.",
+        "code": "fragment CreateAssignmentButton_ProjectFragment on Project {\n  id\n  ...EditAssignmentForm_ProjectFragment\n}",
+        "fragmentId": "CreateAssignmentButton_ProjectFragment"
+      },
+      {
+        "id": "createAssignmentsFromTemplateButton",
+        "title": "CreateAssignmentsFromTemplateButton_ProjectFragment",
+        "description": "Used to bulk create assignments using templates.",
+        "code": "fragment CreateAssignmentsFromTemplateButton_ProjectFragment on Project {\n  id\n  ...EditAssignmentForm_ProjectFragment\n}",
+        "fragmentId": "CreateAssignmentsFromTemplateButton_ProjectFragment"
+      },
+      {
+        "id": "editAssignmentForm",
+        "title": "EditAssignmentForm_ProjectFragment",
+        "description": "Holds editable assignment form fields.",
+        "code": "fragment EditAssignmentForm_ProjectFragment on Project {\n  startDate\n  endDate\n}",
+        "fragmentId": "EditAssignmentForm_ProjectFragment"
+      },
+      {
+        "id": "assignmentCard",
+        "title": "AssignmentCard_AssignmentFragment",
+        "description": "Detailed data of an assignment including related person and project.",
+        "code": "fragment AssignmentCard_AssignmentFragment on Assignment {\n  id\n  comment\n  person {\n    name\n    assignmentRole {\n      id\n    }\n    ...personDetailsButton_PersonFragment\n  }\n  project {\n    id\n    ...EditAssignmentButton_ProjectFragment\n  }\n  startDate\n  endDate\n  validAssignmentRoles {\n    id\n    name\n  }\n  isExecutive\n  ...EditAssignmentButton_AssignmentFragment\n  ...EmptyAssignmentButton_AssignmentFragment\n  ...DeleteAssignmentButton_AssignmentFragment\n}",
+        "fragmentId": "AssignmentCard_AssignmentFragment"
+      },
+      {
+        "id": "personDetailsButton",
+        "title": "personDetailsButton_PersonFragment",
+        "description": "Basic details of a person including role and comments.",
+        "code": "fragment personDetailsButton_PersonFragment on Person {\n  id\n  name\n  comment\n  assignmentRole {\n    name\n  }\n}",
+        "fragmentId": "personDetailsButton_PersonFragment"
+      },
+      {
+        "id": "editAssignmentButton_project",
+        "title": "EditAssignmentButton_ProjectFragment",
+        "description": "Project-specific assignment editing support.",
+        "code": "fragment EditAssignmentButton_ProjectFragment on Project {\n  id\n  ...EditAssignmentForm_ProjectFragment\n}",
+        "fragmentId": "EditAssignmentButton_ProjectFragment"
+      },
+      {
+        "id": "editAssignmentButton",
+        "title": "EditAssignmentButton_AssignmentFragment",
+        "description": "Editable fields for an assignment object.",
+        "code": "fragment EditAssignmentButton_AssignmentFragment on Assignment {\n  id\n  startDate\n  endDate\n  person {\n    id\n  }\n  validAssignmentRoles {\n    id\n  }\n  importId\n  isExecutive\n  comment\n  weight\n}",
+        "fragmentId": "EditAssignmentButton_AssignmentFragment"
+      },
+      {
+        "id": "emptyAssignmentButton",
+        "title": "EmptyAssignmentButton_AssignmentFragment",
+        "description": "Displays available roles for unassigned assignments.",
+        "code": "fragment EmptyAssignmentButton_AssignmentFragment on Assignment {\n  id\n  validAssignmentRoles {\n    name\n  }\n}",
+        "fragmentId": "EmptyAssignmentButton_AssignmentFragment"
+      },
+      {
+        "id": "deleteAssignmentButton",
+        "title": "DeleteAssignmentButton_AssignmentFragment",
+        "description": "Displays roles while deleting assignments.",
+        "code": "fragment DeleteAssignmentButton_AssignmentFragment on Assignment {\n  id\n  validAssignmentRoles {\n    name\n  }\n}",
+        "fragmentId": "DeleteAssignmentButton_AssignmentFragment"
+      },
+      {
+        "id": "projectDetailsButton",
+        "title": "projectDetailsButton_ProjectInScenario",
+        "description": "Basic ID and name information about the project in scenario.",
+        "code": "fragment projectDetailsButton_ProjectInScenario on ProjectInScenario {\n  project {\n    id\n    name\n  }\n}",
+        "fragmentId": "projectDetailsButton_ProjectInScenario"
+      },
+      {
+        "id": "FilesTable",
+        "title": "FilesTable_FilesListFragment",
+        "description": "Fragment used to fetch a paginated list of files with filters such as name, file type, date ranges, and tags.",
+        "code": "fragment FilesTable_FilesListFragment on Query\n@refetchable(queryName: \"FilesTable_Refetch\")\n@argumentDefinitions(\n    first: { type: \"Int\", defaultValue: 20 },\n    after: { type: \"String\" },\n    filterByName: { type: \"String\" },\n    filterByFileTypes: { type: \"[String!]\" },\n    filterByFromDateTimeInclusive: { type: \"ZonedDateTIme\" },\n    filterByToDateTimeInclusive: { type: \"ZonedDateTIme\" },\n    tagsIncluded: { type: \"[String!]\" }\n) {\n  Admin {\n    Files {\n      Files(\n        first: $first,\n        after: $after,\n        name: $filterByName,\n        fileType: $filterByFileTypes,\n        fromDateTimeInclusive: $filterByFromDateTimeInclusive,\n        toDateTimeInclusive: $filterByToDateTimeInclusive,\n        tagsIncluded: $tagsIncluded\n      ) @connection(key: \"FilesTable_Files\") {\n        __id\n        pageInfo {\n          endCursor\n          hasPreviousPage\n          hasNextPage\n          startCursor\n        }\n        edges {\n          node {\n            id\n            name\n            fileType\n            accessType\n            uploadDateTime\n            thumbnail\n            url\n          }\n        }\n      }\n    }\n  }\n}",
+        "fragmentId": "FilesTable_FilesListFragment"
+      }
+      
+    ]
+  }
+  

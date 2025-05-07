@@ -1,0 +1,85 @@
+{
+    "queries": [
+      {
+        "id": "BaseSettingsScreen",
+        "title": "BaseSettingsScreen_Query",
+        "description": "Query for the base settings screen, using the baseScreen_QueryFragment which includes account extensions and logo.",
+        "code": "query BaseSettingsScreen_Query {\n    ...baseScreen_QueryFragment\n}",
+        "usedFragments": ["baseScreen_QueryFragment"]
+      },
+      {
+        "id": "accountSettingsScreen",
+        "title": "accountSettingsScreen_Query",
+        "description": "Fetches account settings-related data including logo, password, 2FA, Azure AD configuration, and numerical dimension explanations.",
+        "code": "query accountSettingsScreen_Query {\n  ...ChangeLogoForm_CurrentUser\n  ...editNumericalDimensionExplanationsForm_QueryFragment\n  ...editAccountSettingsForm_QueryFragment\n  ...editAssessmentPasswordForm_QueryFragment\n  ...editAzureAdSsoConfigurationForm_QueryFragment\n}",
+        "usedFragments": [
+          "ChangeLogoForm_CurrentUser",
+          "editNumericalDimensionExplanationsForm_QueryFragment",
+          "editAccountSettingsForm_QueryFragment",
+          "editAssessmentPasswordForm_QueryFragment",
+          "editAzureAdSsoConfigurationForm_QueryFragment"
+        ]
+      }
+    ],
+    "mutations": [
+      {
+        "id": "editAccountSettingsForm",
+        "title": "editAccountSettingsForm_SetAccountSettingsMutation",
+        "description": "Mutation to update account settings related to enforcing two-factor authentication for accounts with the TwoFAAccountExtension.",
+        "code": "mutation editAccountSettingsForm_SetAccountSettingsMutation($input: SetForce2FAInput!) {\n    Admin {\n        Auth {\n            setForce2FA(input: $input) {\n                account {\n                    extensions {\n                        ... on TwoFAAccountExtension {\n                            force2FA\n                        }\n                    }\n                }\n                clientMutationId\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      }
+    ],
+    "fragments": [
+      {
+        "id": "baseScreen",
+        "title": "baseScreen_QueryFragment",
+        "description": "Fragment for base screen query showing current account extensions and base logo.",
+        "code": "fragment baseScreen_QueryFragment on Query {\n    Viewer {\n        Auth {\n            currentAccount {\n                extensions {\n                    kind\n                    ... on AccountSettingsAccountExtension {\n                        kind\n                        logo {\n                            ...BaseHeader_LogoFragment\n                        }\n                    }\n                }\n            }\n        }\n    }\n}",
+        "fragmentId": "baseScreen_QueryFragment"
+      },
+      {
+        "id": "BaseHeader",
+        "title": "BaseHeader_LogoFragment",
+        "description": "Fragment for displaying file-based logo inside the base header.",
+        "code": "fragment BaseHeader_LogoFragment on File {\n    url\n}",
+        "fragmentId": "BaseHeader_LogoFragment"
+      },{
+        "id": "changeLogoForm",
+        "title": "ChangeLogoForm_CurrentUser",
+        "description": "Fragment to fetch current account's logo ID for logo management.",
+        "code": "fragment ChangeLogoForm_CurrentUser on Query {\n  Viewer {\n    Auth {\n      currentAccount {\n        extensions {\n          kind\n          ... on AccountSettingsAccountExtension {\n            kind\n            logo {\n              id\n            }\n          }\n        }\n      }\n    }\n  }\n}",
+        "fragmentId": "ChangeLogoForm_CurrentUser"
+      },
+      {
+        "id": "editNumericalDimensionExplanationsForm",
+        "title": "editNumericalDimensionExplanationsForm_QueryFragment",
+        "description": "Retrieves numerical dimension explanations from the account's extensions.",
+        "code": "fragment editNumericalDimensionExplanationsForm_QueryFragment on Query {\n  Viewer {\n    Auth {\n      currentAccount {\n        extensions {\n          kind\n          ... on AccountSettingsAccountExtension {\n            kind\n            numericalDimensionExplanations\n          }\n        }\n      }\n    }\n  }\n}",
+        "fragmentId": "editNumericalDimensionExplanationsForm_QueryFragment"
+      },
+      {
+        "id": "editAccountSettingsForm",
+        "title": "editAccountSettingsForm_QueryFragment",
+        "description": "Retrieves force2FA setting from TwoFAAccountExtension of the current account.",
+        "code": "fragment editAccountSettingsForm_QueryFragment on Query {\n  Viewer {\n    Auth {\n      currentAccount {\n        extensions {\n          kind\n          ... on TwoFAAccountExtension {\n            kind\n            force2FA\n          }\n        }\n      }\n    }\n  }\n}",
+        "fragmentId": "editAccountSettingsForm_QueryFragment"
+      },
+      {
+        "id": "editAssessmentPasswordForm",
+        "title": "editAssessmentPasswordForm_QueryFragment",
+        "description": "Fetches assessment password setting from the current account's assessment extension.",
+        "code": "fragment editAssessmentPasswordForm_QueryFragment on Query {\n  Viewer {\n    Auth {\n      currentAccount {\n        extensions {\n          kind\n          ... on AssessmentAccountExtension {\n            kind\n            password\n          }\n        }\n      }\n    }\n  }\n}",
+        "fragmentId": "editAssessmentPasswordForm_QueryFragment"
+      },
+      {
+        "id": "editAzureAdSsoConfigurationForm",
+        "title": "editAzureAdSsoConfigurationForm_QueryFragment",
+        "description": "Retrieves 2FA and Azure AD configuration details from account extensions.",
+        "code": "fragment editAzureAdSsoConfigurationForm_QueryFragment on Query {\n  Viewer {\n    Auth {\n      currentAccount {\n        extensions {\n          kind\n          ... on TwoFAAccountExtension {\n            force2FA\n            kind\n          }\n          ... on AuthProviderAccountExtension {\n            kind\n            authProviders {\n              ... on AzureAdAuthProvider {\n                isActivated\n                applicationId\n                authorityUrl\n                domain\n                tenantId\n                secret\n                kind\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}",
+        "fragmentId": "editAzureAdSsoConfigurationForm_QueryFragment"
+      }
+
+    ]
+  }
+  

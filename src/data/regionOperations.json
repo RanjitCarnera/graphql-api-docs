@@ -1,0 +1,109 @@
+{
+  "queries": [
+    {
+      "id": "RegionSelect_Query",
+      "title": "RegionSelect_Query",
+      "description": "Query to fetch a list of regions filtered by name, excluded IDs, or specific IDs to always include.",
+      "code": "query RegionSelect_Query($filterByName: String, $excludeIds: [ID!], $alwaysIncludeIds: [ID!]) {\n    Region {\n        Regions(first: 20, excludeIds: $excludeIds, filterByName: $filterByName, alwaysIncludeIds: $alwaysIncludeIds) {\n            edges {\n                node {\n                    ...RegionSelect_RegionFragment\n                }\n            }\n        }\n    }\n}",
+      "usedFragments": [
+        "RegionSelect_RegionFragment"
+      ]
+    },
+    {
+      "id": "RegionsSelect_Query",
+      "title": "RegionsSelect_Query",
+      "description": "Query to fetch regions filtered by name, excluded IDs, or specific IDs to always include, using a different fragment.",
+      "code": "query RegionsSelect_Query($filterByName: String, $excludeIds: [ID!], $alwaysIncludeIds: [ID!]) {\n    Region {\n        Regions(first: 20, excludeIds: $excludeIds, filterByName: $filterByName, alwaysIncludeIds: $alwaysIncludeIds) {\n            edges {\n                node {\n                    ...RegionsSelect_RegionFragment\n                }\n            }\n        }\n    }\n}",
+      "usedFragments": [
+        "RegionsSelect_RegionFragment"
+      ]
+    },
+    {
+      "id": "RegionsTable_Query",
+      "title": "RegionsTable_Query",
+      "description": "Query to fetch regions for a table view with pagination and filtering options.",
+      "code": "query RegionsTable_Query($first: Int, $filterByName: String) {\n    ...RegionsTable_RegionListFragment @arguments(first: $first, filterByName: $filterByName)\n}",
+      "usedFragments": [
+        "RegionsTable_RegionListFragment"
+      ]
+    }
+  ],
+  "mutations": [
+    {
+      "id": "EditRegionModal_EditMutation",
+      "title": "EditRegionModal_EditMutation",
+      "description": "Mutation to edit an existing region and update its details.",
+      "code": "mutation EditRegionModal_EditMutation($input: EditRegionInput!) {\n    Region {\n        editRegion(input: $input) {\n            edge {\n                node {\n                    id\n                    ...EditRegionButton_RegionFragment\n                }\n            }\n        }\n    }\n}",
+      "usedFragments": [
+        "EditRegionButton_RegionFragment"
+      ]
+    },
+    {
+      "id": "DeleteRegionsButton_DeleteMutation",
+      "title": "DeleteRegionsButton_DeleteMutation",
+      "description": "Mutation to delete regions and remove them from associated connections.",
+      "code": "mutation DeleteRegionsButton_DeleteMutation($input: DeleteRegionInput!, $connections: [ID!]!) {\n    Region {\n        deleteRegion(input: $input) {\n            deletedIds @deleteEdge(connections: $connections)\n        }\n    }\n}",
+      "usedFragments": []
+    },
+    {
+      "id": "EditRegionModal_CreateMutation",
+      "title": "EditRegionModal_CreateMutation",
+      "description": "Mutation to create a new region and append it to a connection.",
+      "code": "mutation EditRegionModal_CreateMutation($input: CreateRegionInput!, $connections: [ID!]!) {\n    Region {\n        createRegion(input: $input) {\n            edge @appendEdge(connections: $connections) {\n                node {\n                    id\n                    ...EditRegionButton_RegionFragment\n                }\n            }\n        }\n    }\n}",
+      "usedFragments": [
+        "EditRegionButton_RegionFragment"
+      ]
+    },
+    {
+      "id": "ExportRegionsButton_ExportMutation",
+      "title": "ExportRegionsButton_ExportMutation",
+      "description": "Mutation to export regions and retrieve the file URL.",
+      "code": "mutation ExportRegionsButton_ExportMutation {\n    Region {\n        exportRegions(input: {}) {\n            file {\n                url\n            }\n        }\n    }\n}",
+      "usedFragments": []
+    },
+    {
+      "id": "ImportRegionsButton_ImportMutation",
+      "title": "ImportRegionsButton_ImportMutation",
+      "description": "Mutation to import regions from a file and retrieve the result details.",
+      "code": "mutation ImportRegionsButton_ImportMutation($input: ImportRegionsInput!) {\n    Region {\n        importRegions(input: $input) {\n            result {\n                editedEntities\n                newEntities\n                issues {\n                    row\n                    issue\n                }\n            }\n        }\n    }\n}",
+      "usedFragments": []
+    }
+  ],
+  "fragments": [
+    {
+      "id": "RegionSelect_RegionFragment",
+      "title": "RegionSelect_RegionFragment",
+      "description": "Fragment to fetch basic details of a region, including ID and name.",
+      "code": "fragment RegionSelect_RegionFragment on Region @inline{\n    id\n    name\n}",
+      "fragmentId": "RegionSelect_RegionFragment"
+    },
+    {
+      "id": "RegionsSelect_RegionFragment",
+      "title": "RegionsSelect_RegionFragment",
+      "description": "Fragment to fetch basic details of regions, including ID and name.",
+      "code": "fragment RegionsSelect_RegionFragment on Region @inline{\n    id\n    name\n}",
+      "fragmentId": "RegionsSelect_RegionFragment"
+    },
+    {
+      "id": "RegionsTable_RegionListFragment",
+      "title": "RegionsTable_RegionListFragment",
+      "description": "Fragment to fetch regions for a table view, including pagination and sorting details.",
+      "code": "fragment RegionsTable_RegionListFragment on Query\n@refetchable(queryName: \"RegionsTable_Refetch\")\n@argumentDefinitions(\n    first: { type: \"Int\", defaultValue: 20 }\n    after: { type: \"String\" }\n    filterByName: { type: \"String\" }\n) {\n    Region {\n        Regions(first: $first, after: $after, filterByName: $filterByName)\n            @connection(key: \"RegionsTable_Regions\") {\n            __id\n            pageInfo {\n                endCursor\n                hasPreviousPage\n                hasNextPage\n                startCursor\n            }\n            edges {\n                node {\n                    id\n                    name\n                    ...EditRegionButton_RegionFragment\n                }\n            }\n        }\n    }\n}",
+      "fragmentId": "RegionsTable_RegionListFragment"
+    },
+    {
+      "id": "EditRegionButton_RegionFragment",
+      "title": "EditRegionButton_RegionFragment",
+      "description": "Fragment to fetch details of a region for editing purposes.",
+      "code": "fragment EditRegionButton_RegionFragment on Region {\n    ...EditRegionModal_RegionFragment\n}",
+      "fragmentId": "EditRegionButton_RegionFragment"
+    },
+    {
+      "id": "EditRegionModal_RegionFragment",
+      "title": "EditRegionModal_RegionFragment",
+      "description": "Fragment to fetch basic details of a region for display in an edit modal.",
+      "code": "fragment EditRegionModal_RegionFragment on Region {\n    id\n    name\n}",
+      "fragmentId": "EditRegionModal_RegionFragment"
+    }
+  ]
+}

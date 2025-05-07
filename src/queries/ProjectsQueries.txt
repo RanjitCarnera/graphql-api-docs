@@ -1,0 +1,1516 @@
+
+    query projectFromRandSelect_Query {
+        Rand {
+            NotYetImportedProjectsFromRand {
+                id
+                name
+                projectIdentifier
+            }
+        }
+    }
+
+    query projectsSelect_Query($filterByName: String, $alwaysIncludeIds: [ID!]) {
+        Project {
+            Projects(first: 100, filterByName: $filterByName, alwaysIncludeIds: $alwaysIncludeIds) {
+                edges {
+                    node {
+                        ...projectsSelect_ProjectInlineFragment
+                    }
+                }
+            }
+        }
+    }
+
+    fragment projectsSelect_ProjectInlineFragment on Project @inline {
+        id
+        name
+    }
+
+    query ProjectDetailsModalContent_Query($projectId: ID!, $scenarioId: ID!) {
+        Scenario {
+            ProjectInScenario(projectId: $projectId, scenarioId: $scenarioId) {
+                ...projectDetailsControl_ProjectInScenarioFragment
+            }
+        }
+    }
+
+    fragment projectDetailsControl_ProjectInScenarioFragment on ProjectInScenario {
+        id
+        project {
+            id
+            name
+            startDate
+            endDate
+            skills {
+                name
+            }
+            address {
+                lineOne
+                postalCode
+                city
+                country
+                state
+                latitude
+                longitude
+            }
+            avatar {
+                url
+            }
+            skillMatrixByCategories {
+                ...projectDetailsControl_CategoryWithMatrixTypeInlineFragment
+            }
+            ...ProjectDateTimeDisplay_ProjectFragment
+        }
+    }
+
+    fragment projectDetailsControl_CategoryWithMatrixTypeInlineFragment on CategoryWithMatrixType
+    @inline {
+        matrix {
+            columns {
+                key
+            }
+            headerRow {
+                key
+                entries {
+                    id
+                    name
+                    skillCategory {
+                        id
+                        name
+                    }
+                }
+            }
+            bodyRows {
+                key
+                entries {
+                    value {
+                        id
+                        data {
+                            value {
+                                kind
+                                ... on BinaryAssessmentValue {
+                                    hasSkill
+                                    kind
+                                }
+                                ... on NumericalAssessmentValue {
+                                    kind
+                                    number
+                                }
+                            }
+                            skill {
+                                id
+                                name
+                                dimension {
+                                    kind
+                                    ... on NumericalDimension {
+                                        dimensionCount
+                                        kind
+                                    }
+                                    ... on BinaryDimension {
+                                        kind
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        category {
+            id
+            name
+        }
+    }
+
+    fragment ProjectDateTimeDisplay_ProjectFragment on Project {
+        startDate
+        endDate
+        durationInMonths
+    }
+
+    query ProjectFromDynamicsSelect_Query {
+        Dynamics {
+            NotYetImportedProjectsFromDynamics {
+                id
+                name
+                projectIdentifier
+            }
+        }
+    }
+
+    query ProjectStageSelect_Query($filterByName: String, $excludeIds: [ID!], $alwaysIncludeIds: [ID!]) {
+        Project {
+            ProjectStages(first: 20, excludeIds: $excludeIds, filterByName: $filterByName, alwaysIncludeIds: $alwaysIncludeIds) {
+                edges {
+                    node {
+                        ...ProjectStageSelect_ProjectStageFragment
+                    }
+                }
+            }
+        }
+    }
+
+    fragment ProjectStageSelect_ProjectStageFragment on ProjectStage @inline{
+        id
+        name
+    }
+
+
+    query ProjectStagesSelect_Query($filterByName: String, $excludeIds: [ID!], $alwaysIncludeIds: [ID!]) {
+        Project {
+            ProjectStages(first: 20, excludeIds: $excludeIds, filterByName: $filterByName, alwaysIncludeIds: $alwaysIncludeIds) {
+                edges {
+                    node {
+                        ...ProjectStagesSelect_ProjectStageFragment
+                    }
+                }
+            }
+        }
+    }
+
+    fragment ProjectStagesSelect_ProjectStageFragment on ProjectStage @inline{
+        id
+        name
+    }
+    query ProjectStagesTable_Query($first: Int, $filterByName: String) {
+        ...ProjectStagesTable_ProjectStageListFragment
+            @arguments(first: $first, filterByName: $filterByName)
+    }
+
+    fragment ProjectStagesTable_ProjectStageListFragment on Query
+    @refetchable(queryName: "ProjectStagesTable_Refetch")
+    @argumentDefinitions(
+        first: { type: "Int", defaultValue: 20 }
+        after: { type: "String" }
+        filterByName: { type: "String" }
+    ) {
+        Project {
+            ProjectStages(first: $first, after: $after, filterByName: $filterByName)
+                @connection(key: "ProjectStagesTable_ProjectStages") {
+                __id
+                pageInfo {
+                    endCursor
+                    hasPreviousPage
+                    hasNextPage
+                    startCursor
+                }
+                edges {
+                    node {
+                        ...ProjectStagesTable_ProjectStageFragment
+                    }
+                }
+            }
+        }
+    }
+
+    fragment ProjectStagesTable_ProjectStageFragment on ProjectStage @inline {
+        id
+        name
+        sortOrder
+        reverseProjectOrderInReports
+        color
+        ...ProjectStageSortOrderButtons_ProjectStageFragment
+        ...editProjectStageButton_ProjectStageFragment
+    }
+
+    fragment ProjectStageSortOrderButtons_ProjectStageFragment on ProjectStage {
+        id
+        sortOrder
+    }
+
+    fragment editProjectStageButton_ProjectStageFragment on ProjectStage {
+        ...editProjectStageModal_ProjectStageFragment
+    }
+
+    fragment editProjectStageModal_ProjectStageFragment on ProjectStage {
+        id
+        name
+        reverseProjectOrderInReports
+        sortOrder
+        color
+    }
+
+
+
+    query ProjectsSelectField_Query($filterByName: String, $excludeIds: [ID!], $alwaysIncludeIds: [ID!]) {
+        Project {
+            Projects(first: 250, excludeIds: $excludeIds, filterByName: $filterByName, alwaysIncludeIds: $alwaysIncludeIds) {
+                edges {
+                    node {
+                        ...ProjectsSelectField_ProjectFragment
+                    }
+                }
+            }
+        }
+    }
+
+    fragment ProjectsSelectField_ProjectFragment on Project @inline{
+        id
+        name
+    }
+
+    query ProjectsTable_Query(
+        $first: Int
+        $filterByName: String
+        $filterByRegions: [ID!]
+        $filterByDivisions: [ID!]
+        $filterByStages: [ID!]
+    ) {
+        ...ProjectsTable_ProjectsListFragment
+            @arguments(
+                first: $first
+                filterByName: $filterByName
+                filterByRegions: $filterByRegions
+                filterByDivisions: $filterByDivisions
+                filterByStages: $filterByStages
+            )
+    }
+
+    fragment ProjectsTable_ProjectsListFragment on Query
+    @refetchable(queryName: "ProjectsTable_Refetch")
+    @argumentDefinitions(
+        first: { type: "Int", defaultValue: 200 }
+        after: { type: "String" }
+        filterByName: { type: "String" }
+        filterByRegions: { type: "[ID!]" }
+        filterByDivisions: { type: "[ID!]" }
+        filterByStages: { type: "[ID!]" }
+    ) {
+        Project {
+            Projects(
+                first: $first
+                after: $after
+                filterByName: $filterByName
+                filterByRegions: $filterByRegions
+                filterByDivisions: $filterByDivisions
+                filterByStages: $filterByStages
+                showDeactivated: true
+            ) @connection(key: "ProjectsTable_Projects") {
+                __id
+                pageInfo {
+                    endCursor
+                    hasPreviousPage
+                    hasNextPage
+                    startCursor
+                }
+                edges {
+                    node {
+                        id
+                        ...ProjectsTable_ProjectFragment
+                    }
+                }
+            }
+        }
+    }
+
+
+    fragment ProjectsTable_ProjectFragment on Project @inline {
+        id
+        name
+        isDeactivated
+        source
+
+        division {
+            id
+            name
+        }
+        region {
+            id
+            name
+        }
+        startDate
+        endDate
+
+        stage {
+            id
+            name
+        }
+
+        address {
+            latitude
+            longitude
+            ...GoogleMapsClickout_AddressFragment
+        }
+
+        avatar {
+            id
+            url
+        }
+
+        ...editProjectButton_ProjectFragment
+        ...ChangeProjectActivationButton_ProjectFragment
+        ...syncProjectFromDynamicsButton_ProjectFragment
+        ...syncProjectFromRandButton_ProjectFragment
+    }
+
+    fragment GoogleMapsClickout_AddressFragment on Address {
+        latitude
+        longitude
+    }
+
+    fragment editProjectButton_ProjectFragment on Project {
+        id
+        name
+        startDate
+        endDate
+        address {
+            lineOne
+            city
+            postalCode
+            state
+            country
+            latitude
+            longitude
+        }
+        source
+        architectName
+        clientName
+        stage {
+            id
+            name
+        }
+        skills {
+            id
+        }
+        volume
+        generalConditionsPercentage
+        budgetedLaborCosts
+        division {
+            id
+        }
+        region {
+            id
+        }
+        projectIdentifier
+        durationInMonths
+        avatar {
+            id
+            url
+        }
+        milestones {
+            name
+            date
+        }
+        comments
+        source
+    }
+
+    fragment ChangeProjectActivationButton_ProjectFragment on Project {
+        id
+        isDeactivated
+    }
+
+    fragment syncProjectFromDynamicsButton_ProjectFragment on Project {
+        id
+        name
+        address {
+            lineOne
+            city
+            postalCode
+            state
+            country
+            latitude
+            longitude
+        }
+        projectIdentifier
+        architectName
+        avatar {
+            id
+            url
+        }
+        skills {
+            id
+        }
+        clientName
+        startDate
+        endDate
+        division {
+            id
+        }
+        region {
+            id
+        }
+        stage {
+            id
+        }
+        volume
+        generalConditionsPercentage
+        budgetedLaborCosts
+        milestones {
+            name
+            date
+        }
+        comments
+    }
+
+    fragment syncProjectFromRandButton_ProjectFragment on Project {
+        id
+        name
+        address {
+            lineOne
+            city
+            postalCode
+            state
+            country
+            latitude
+            longitude
+        }
+        projectIdentifier
+        architectName
+        avatar {
+            id
+            url
+        }
+        skills {
+            id
+        }
+        clientName
+        startDate
+        endDate
+        division {
+            id
+        }
+        region {
+            id
+        }
+        stage {
+            id
+        }
+        volume
+        generalConditionsPercentage
+        budgetedLaborCosts
+        milestones {
+            name
+            date
+        }
+        comments
+        source
+    }
+
+
+    query LoadDriveTimesButton_ProjectQuery($projectId: ID!) {
+        node(id: $projectId) {
+            ... on Project {
+                id
+                address {
+                    latitude
+                    longitude
+                }
+            }
+        }
+    }
+
+--- Mutations ---
+
+    mutation addSelectedProjectsToScenarioButton_AddExistingProjectsToScenarioMutation(
+        $input: AddExistingProjectsToScenarioInput!
+    ) {
+        Scenario {
+            addExistingProjectsToScenario(input: $input) {
+                edge {
+                    node {
+                        id
+                        ...ProjectsGridPart_ScenarioFragment
+                    }
+                }
+            }
+        }
+    }
+
+    fragment ProjectsGridPart_ScenarioFragment on Scenario
+    @argumentDefinitions(
+        projectFilters: { type: "ProjectWithAssignmentsFiltersInput" }
+        personOnAssignmentFilters: { type: "PersonOnAssignmentFiltersInput" }
+    ) {
+        id
+        ...projectsGridPartContent_ScenarioFragment
+            @arguments(
+                projectFilters: $projectFilters
+                personOnAssignmentFilters: $personOnAssignmentFilters
+            )
+        ...updateAssignmentsFromDynamicsButton_ScenarioFragment
+        ...projectViewFiltersPart_ScenarioFragment
+        ...syncWithRandPreconDwhButton_ScenarioFragment
+        ...loadPursuitProjectsFromRandDwhButton_ScenarioFragment
+    }
+
+    fragment projectsGridPartContent_ScenarioFragment on Scenario
+    @argumentDefinitions(
+        projectFilters: { type: "ProjectWithAssignmentsFiltersInput" }
+        personOnAssignmentFilters: { type: "PersonOnAssignmentFiltersInput" }
+    ) {
+        id
+        ...projectsGridPartContent_ScenarioRefetchableFragment
+            @arguments(
+                projectFilters: $projectFilters
+                personOnAssignmentFilters: $personOnAssignmentFilters
+            )
+        ...addProjectToScenarioCard_ScenarioFragment
+            @arguments(
+                projectFilters: $projectFilters
+                personOnAssignmentFilters: $personOnAssignmentFilters
+            )
+        ...projectCard_ScenarioFragment
+    }
+
+    fragment updateAssignmentsFromDynamicsButton_ScenarioFragment on Scenario {
+        id
+    }
+
+    fragment projectViewFiltersPart_ScenarioFragment on Scenario {
+        id
+    }
+
+    fragment syncWithRandPreconDwhButton_ScenarioFragment on Scenario {
+        id
+        isMasterPlan
+    }
+
+    fragment loadPursuitProjectsFromRandDwhButton_ScenarioFragment on Scenario {
+        id
+        isMasterPlan
+    }
+
+    fragment projectsGridPartContent_ScenarioRefetchableFragment on Scenario
+    @refetchable(queryName: "projectsGridPartContent_Refetch")
+    @argumentDefinitions(
+        projectFilters: { type: "ProjectWithAssignmentsFiltersInput" }
+        personOnAssignmentFilters: { type: "PersonOnAssignmentFiltersInput" }
+    ) {
+        projects(
+            projectWithAssignmentsFilters: $projectFilters
+            peopleOnAssignmentFilters: $personOnAssignmentFilters
+        ) {
+            edges {
+                node {
+                    id
+                    ...projectsGridPartContent_ProjectInScenarioInlineFragment
+                }
+            }
+        }
+    }
+
+    fragment addProjectToScenarioCard_ScenarioFragment on Scenario
+    @argumentDefinitions(
+        projectFilters: { type: "ProjectWithAssignmentsFiltersInput" }
+        personOnAssignmentFilters: { type: "PersonOnAssignmentFiltersInput" }
+    ) {
+        ...addProjectToScenarioModal_ScenarioFragment
+            @arguments(
+                projectFilters: $projectFilters
+                personOnAssignmentFilters: $personOnAssignmentFilters
+            )
+        isMasterPlan
+    }
+
+    fragment projectCard_ScenarioFragment on Scenario {
+        id
+        ...AssignmentsInProjectList_ScenarioFragment
+
+        budget {
+            projectBudgets {
+                projectRef
+                maximumBudget
+                budgetedCost
+                utilizedCost
+            }
+        }
+    }
+
+    fragment projectsGridPartContent_ProjectInScenarioInlineFragment on ProjectInScenario @inline {
+        id
+        project {
+            name
+            startDate
+            endDate
+            stage {
+                id
+                name
+            }
+
+            division {
+                id
+            }
+            region {
+                id
+            }
+        }
+        assignments {
+            edges {
+                node {
+                    isExecutive
+                    validAssignmentRoles {
+                        name
+                    }
+                    project {
+                        id
+                    }
+                    person {
+                        id
+                        assignmentRole {
+                            name
+                            id
+                        }
+                    }
+                }
+            }
+        }
+        ...projectCard_ProjectFragment
+    }
+
+    fragment addProjectToScenarioModal_ScenarioFragment on Scenario
+    @argumentDefinitions(
+        projectFilters: { type: "ProjectWithAssignmentsFiltersInput" }
+        personOnAssignmentFilters: { type: "PersonOnAssignmentFiltersInput" }
+    ) {
+        id
+        projects(
+            projectWithAssignmentsFilters: $projectFilters
+            peopleOnAssignmentFilters: $personOnAssignmentFilters
+        ) {
+            edges {
+                node {
+                    id
+                    project {
+                        name
+                        source
+                    }
+                }
+            }
+        }
+    }
+
+    fragment AssignmentsInProjectList_ScenarioFragment on Scenario {
+        id
+        ...AssignmentCard_ScenarioFragment
+        ...CheckScenarioPermissions_ScenarioFragment
+    }
+
+    fragment projectCard_ProjectFragment on ProjectInScenario {
+        id
+        project {
+            id
+            name
+            startDate
+            endDate
+            address {
+                lineOne
+                city
+                country
+                postalCode
+                state
+                latitude
+                longitude
+            }
+            stage {
+                color
+            }
+            ...editProjectButton_ProjectFragment
+            ...ProjectDateTimeDisplay_ProjectFragment
+        }
+        assignments {
+            edges {
+                node {
+                    person {
+                        id
+                    }
+                }
+            }
+        }
+        ...AssignmentsInProjectList_ProjectFragment
+        ...projectDetailsButton_ProjectInScenario
+    }
+
+    fragment AssignmentCard_ScenarioFragment on Scenario {
+        ...CheckScenarioPermissions_ScenarioFragment
+        ...personDetailsButton_ScenarioFragment
+        budget {
+            projectBudgets {
+                projectRef
+                assignmentBudgets {
+                    assignmentRef
+                    budgetedCost
+                    utilizedCost
+                    months
+                }
+            }
+        }
+        utilization {
+            ...personDetailsButton_ScenarioUtilizationFragment
+        }
+    }
+
+    fragment CheckScenarioPermissions_ScenarioFragment on Scenario {
+        isMasterPlan
+    }
+
+    fragment AssignmentsInProjectList_ProjectFragment on ProjectInScenario {
+        id
+
+        project {
+            ...CreateAssignmentButton_ProjectFragment
+            ...CreateAssignmentsFromTemplateButton_ProjectFragment
+        }
+        assignments {
+            __id
+            edges {
+                node {
+                    id
+                    endDate
+                    ...AssignmentCard_AssignmentFragment
+                    validAssignmentRoles {
+                        sortOrder
+                    }
+                }
+            }
+        }
+    }
+
+    fragment projectDetailsButton_ProjectInScenario on ProjectInScenario {
+        project {
+            id
+            name
+        }
+    }
+
+    fragment personDetailsButton_ScenarioFragment on Scenario {
+        id
+        gapDays {
+            personGapDays {
+                personRef
+                gapDays
+            }
+        }
+    }
+
+    fragment personDetailsButton_ScenarioUtilizationFragment on ScenarioUtilization {
+        personUtilizations {
+            personRef
+            utilizationPercentage
+        }
+    }
+
+    fragment CreateAssignmentButton_ProjectFragment on Project {
+        id
+        ...EditAssignmentForm_ProjectFragment
+    }
+
+    fragment CreateAssignmentsFromTemplateButton_ProjectFragment on Project {
+        id
+        ...EditAssignmentForm_ProjectFragment
+    }
+
+    fragment EditAssignmentForm_ProjectFragment on Project {
+        startDate
+        endDate
+    }
+
+    fragment AssignmentCard_AssignmentFragment on Assignment {
+        id
+        comment
+        person {
+            name
+            assignmentRole {
+                id
+            }
+            ...personDetailsButton_PersonFragment
+        }
+        project {
+            id
+            ...EditAssignmentButton_ProjectFragment
+        }
+        startDate
+        endDate
+        validAssignmentRoles {
+            id
+            name
+        }
+        isExecutive
+        ...EditAssignmentButton_AssignmentFragment
+        ...EmptyAssignmentButton_AssignmentFragment
+        ...DeleteAssignmentButton_AssignmentFragment
+    }
+
+    fragment personDetailsButton_PersonFragment on Person {
+        id
+        name
+        comment
+        assignmentRole {
+            name
+        }
+    }
+
+    fragment EditAssignmentButton_ProjectFragment on Project {
+        id
+        ...EditAssignmentForm_ProjectFragment
+    }
+
+    fragment EditAssignmentForm_ProjectFragment on Project {
+        startDate
+        endDate
+    }
+
+    fragment EditAssignmentButton_AssignmentFragment on Assignment {
+        id
+        startDate
+        endDate
+        person {
+            id
+        }
+        validAssignmentRoles {
+            id
+        }
+        importId
+        isExecutive
+        comment
+        weight
+    }
+
+    fragment EmptyAssignmentButton_AssignmentFragment on Assignment {
+        id
+        validAssignmentRoles {
+            name
+        }
+    }
+
+    fragment DeleteAssignmentButton_AssignmentFragment on Assignment {
+        id
+        validAssignmentRoles {
+            name
+        }
+    }
+
+
+
+
+    mutation importFromRandButton_ImportFromRandMutation(
+        $input: ImportProjectFromRandInput!
+        $connectionIds: [ID!]!
+    ) {
+        Rand {
+            importProjectFromRand(input: $input) {
+                edge @appendEdge(connections: $connectionIds) {
+                    node {
+                        ...ProjectsTable_ProjectFragment
+                    }
+                }
+            }
+        }
+    }
+
+
+    mutation loadPursuitProjectsFromRandDwhButton_loadPursuitProjectsFromDWHMutation(
+        $input: LoadPursuitProjectsFromDWHInput!
+    ) {
+        Rand {
+            loadPursuitProjectsFromDWH(input: $input) {
+                syncResult {
+                    editedEntities
+                    issues {
+                        id
+                        issue
+                    }
+                }
+                clientMutationId
+            }
+        }
+    }
+
+    mutation ChangeProjectActivationButton_Mutation($input: SetProjectActivationInput!) {
+        Project {
+            setProjectActivation(input: $input) {
+                edge {
+                    node {
+                        id
+                        isDeactivated
+                    }
+                }
+            }
+        }
+    }
+
+    mutation DeleteProjectStagesButton_DeleteMutation($input: DeleteProjectStageInput!, $connections: [ID!]!) {
+        Project {
+            deleteProjectStage(input: $input) {
+                deletedIds @deleteEdge(connections: $connections)
+            }
+        }
+
+    }
+
+    mutation DeleteProjectsButton_DeleteMutation($input: DeleteProjectInput!, $connections: [ID!]!) {
+        Project {
+            deleteProject(input: $input) {
+                deletedIds @deleteEdge(connections: $connections)
+            }
+        }
+
+    }
+
+    mutation ExportProjectStagesButton_ExportMutation {
+        Project {
+            exportProjectStages(input: {}) {
+                file {
+                    url
+                }
+            }
+        }
+    }
+
+    mutation ExportProjectsButton_ExportMutation {
+        Project {
+            exportProjects(input: {}) {
+                file {
+                    url
+                }
+            }
+        }
+    }
+
+    mutation GenerateReportButton_GenerateReportMutation(
+        $input: GenerateProjectManagerReportInput!
+    ) {
+        Pdf {
+            generateProjectManagerReport(input: $input) {
+                file {
+                    name
+                    url
+                }
+            }
+        }
+    }
+
+    mutation ImportFromDynamicsButton_ImportFromDynamicsMutation(
+        $input: ImportProjectFromDynamicsInput!
+        $connectionIds: [ID!]!
+    ) {
+        Dynamics {
+            importProjectFromDynamics(input: $input) {
+                edge @appendEdge(connections: $connectionIds) {
+                    node {
+                        ...ProjectsTable_ProjectFragment
+                    }
+                }
+            }
+        }
+    }
+
+    mutation ImportProjectStagesButton_ImportMutation($input: ImportProjectStagesInput!) {
+        Project {
+            importProjectStages(input: $input) {
+                result {
+                    editedEntities
+                    newEntities
+                    issues {
+                        row
+                        issue
+                    }
+                }
+            }
+        }
+    }
+
+    mutation ImportProjectsButton_ImportMutation($input: ImportProjectsInput!) {
+        Project {
+            importProjects(input: $input) {
+                result {
+                    editedEntities
+                    newEntities
+                    issues {
+                        row
+                        issue
+                    }
+                }
+            }
+        }
+    }
+
+    mutation ProjectStageSortOrderButtons_IncreaseMutation($input: IncreaseProjectStageSortOrderInput!) {
+        Project {
+            increaseProjectStageSortOrder(input: $input) {
+                edge {
+                    node {
+                        id
+                        sortOrder
+                    }
+                }
+            }
+        }
+    }
+
+    mutation ProjectStageSortOrderButtons_DecreaseMutation($input: DecreaseProjectStageSortOrderInput!) {
+        Project {
+            decreaseProjectStageSortOrder(input: $input) {
+                edge {
+                    node {
+                        id
+                        sortOrder
+                    }
+                }
+            }
+        }
+    }
+
+    mutation ResolveProjectsGpsCoordinatesButton_FetchMutation($input: ResolveProjectsGpsCoordinatesInput!) {
+        Project {
+            resolveProjectsGpsCoordinates(input: $input) {
+                updatedProjects {
+                    id
+                    address {
+                        latitude
+                        longitude
+                    }
+                }
+            }
+        }
+    }
+
+    mutation createProjectButton_CreateProjectMutation(
+        $input: CreateProjectInput!
+        $connectionId: ID!
+    ) {
+        Project {
+            createProject(input: $input) {
+                edge @appendEdge(connections: [$connectionId]) {
+                    node {
+                        id
+                        ...editProjectButton_ProjectFragment
+                    }
+                }
+            }
+        }
+    }
+
+    mutation editProjectButton_EditMutation($input: EditProjectInput!) {
+        Project {
+            editProject(input: $input) {
+                edge {
+                    node {
+                        id
+                        ...editProjectButton_ProjectFragment
+                    }
+                }
+                changedAssignments {
+                    ...AssignmentProjectCard_AssignmentFragment
+                }
+            }
+        }
+    }
+
+    fragment AssignmentProjectCard_AssignmentFragment on Assignment {
+        id
+
+        project {
+            name
+            id
+            isDeactivated
+        }
+        person {
+            name
+        }
+        startDate
+        endDate
+        validAssignmentRoles {
+            id
+            name
+        }
+    }
+
+    mutation editProjectStageModal_CreateMutation(
+        $input: CreateProjectStageInput!
+        $connections: [ID!]!
+    ) {
+        Project {
+            createProjectStage(input: $input) {
+                edge @appendEdge(connections: $connections) {
+                    node {
+                        id
+                        ...editProjectStageButton_ProjectStageFragment
+                    }
+                }
+            }
+        }
+    }
+
+    mutation editProjectStageModal_EditMutation($input: EditProjectStageInput!) {
+        Project {
+            editProjectStage(input: $input) {
+                edge {
+                    node {
+                        id
+                        ...editProjectStageButton_ProjectStageFragment
+                    }
+                }
+            }
+        }
+    }
+
+    mutation removeProjectFromScenarioButton_RemoveProjectFromScenarioMutation(
+        $input: RemoveProjectFromScenarioInput!
+    ) {
+        Scenario {
+            removeProjectFromScenario(input: $input) {
+                edge {
+                    node {
+                        id
+                        ...ProjectsGridPart_ScenarioFragment
+                    }
+                }
+            }
+        }
+    }
+
+    mutation syncDynamicsProjectsButton_SyncProjectsFromDynamicsMutation(
+        $input: SynchronizeProjectsFromDynamicsInput!
+    ) {
+        Dynamics {
+            synchronizeProjectsFromDynamics(input: $input) {
+                edges {
+                    node {
+                        id
+                        ...ProjectsTable_ProjectFragment
+                        ...syncProjectFromDynamicsButton_SyncProjectFragment
+                    }
+                }
+            }
+        }
+    }
+
+    fragment syncProjectFromDynamicsButton_SyncProjectFragment on Project @inline {
+        id
+        name
+        address {
+            lineOne
+            city
+            postalCode
+            state
+            country
+            latitude
+            longitude
+        }
+        projectIdentifier
+        architectName
+        avatar {
+            id
+            url
+        }
+        skills {
+            id
+        }
+        clientName
+        startDate
+        endDate
+        division {
+            id
+        }
+        region {
+            id
+        }
+        stage {
+            id
+        }
+        volume
+        generalConditionsPercentage
+        budgetedLaborCosts
+        milestones {
+            name
+            date
+        }
+        comments
+    }
+
+    mutation syncProjectFromDynamicsButton_SyncFromDynamicsMutation(
+        $input: LoadProjectDataFromDynamicsInput!
+    ) {
+        Dynamics {
+            loadProjectDataFromDynamics(input: $input) {
+                edge {
+                    node {
+                        ...ProjectsTable_ProjectFragment
+                        ...syncProjectFromDynamicsButton_SyncProjectFragment
+                    }
+                }
+            }
+        }
+    }
+
+    mutation syncProjectFromDynamicsButton_EditMutation($input: EditProjectInput!) {
+        Project {
+            editProject(input: $input) {
+                edge {
+                    node {
+                        ...ProjectsTable_ProjectFragment
+                        ...syncProjectFromDynamicsButton_SyncProjectFragment
+                    }
+                }
+            }
+        }
+    }
+
+    mutation syncProjectFromRandButton_SyncFromRandMutation($input: LoadProjectDataFromRandInput!) {
+        Rand {
+            loadProjectDataFromRand(input: $input) {
+                edge {
+                    node {
+                        ...ProjectsTable_ProjectFragment
+                        ...syncProjectFromRandButton_SyncProjectFragment
+                    }
+                }
+            }
+        }
+    }
+
+    fragment syncProjectFromDynamicsButton_SyncProjectFragment on Project @inline {
+        id
+        name
+        address {
+            lineOne
+            city
+            postalCode
+            state
+            country
+            latitude
+            longitude
+        }
+        projectIdentifier
+        architectName
+        avatar {
+            id
+            url
+        }
+        skills {
+            id
+        }
+        clientName
+        startDate
+        endDate
+        division {
+            id
+        }
+        region {
+            id
+        }
+        stage {
+            id
+        }
+        volume
+        generalConditionsPercentage
+        budgetedLaborCosts
+        milestones {
+            name
+            date
+        }
+        comments
+    }
+
+    mutation syncProjectFromDynamicsButton_SyncFromDynamicsMutation(
+        $input: LoadProjectDataFromDynamicsInput!
+    ) {
+        Dynamics {
+            loadProjectDataFromDynamics(input: $input) {
+                edge {
+                    node {
+                        ...ProjectsTable_ProjectFragment
+                        ...syncProjectFromDynamicsButton_SyncProjectFragment
+                    }
+                }
+            }
+        }
+    }
+
+    mutation syncProjectFromDynamicsButton_EditMutation($input: EditProjectInput!) {
+        Project {
+            editProject(input: $input) {
+                edge {
+                    node {
+                        ...ProjectsTable_ProjectFragment
+                        ...syncProjectFromDynamicsButton_SyncProjectFragment
+                    }
+                }
+            }
+        }
+    }
+
+    mutation syncProjectFromRandButton_SyncFromRandMutation($input: LoadProjectDataFromRandInput!) {
+        Rand {
+            loadProjectDataFromRand(input: $input) {
+                edge {
+                    node {
+                        ...ProjectsTable_ProjectFragment
+                        ...syncProjectFromRandButton_SyncProjectFragment
+                    }
+                }
+            }
+        }
+    }
+
+    mutation syncProjectFromRandButton_EditMutation($input: EditProjectInput!) {
+        Project {
+            editProject(input: $input) {
+                edge {
+                    node {
+                        ...ProjectsTable_ProjectFragment
+                        ...syncProjectFromRandButton_SyncProjectFragment
+                    }
+                }
+            }
+        }
+    }
+
+    mutation syncRandProjectsButton_SyncProjectsFromRandMutation(
+        $input: SynchronizeProjectsFromRandInput!
+    ) {
+        Rand {
+            synchronizeProjectsFromRand(input: $input) {
+                syncResult {
+                    editedEntities
+                    issues {
+                        id
+                        issue
+                    }
+                }
+                edges {
+                    node {
+                        id
+                        ...ProjectsTable_ProjectFragment
+                        ...syncProjectFromRandButton_SyncProjectFragment
+                    }
+                }
+            }
+        }
+    }
+
+    fragment syncProjectFromRandButton_SyncProjectFragment on Project @inline {
+        id
+        name
+        address {
+            lineOne
+            city
+            postalCode
+            state
+            country
+            latitude
+            longitude
+        }
+        projectIdentifier
+        architectName
+        avatar {
+            id
+            url
+        }
+        skills {
+            id
+        }
+        clientName
+        startDate
+        endDate
+        division {
+            id
+        }
+        region {
+            id
+        }
+        stage {
+            id
+        }
+        volume
+        generalConditionsPercentage
+        budgetedLaborCosts
+        milestones {
+            name
+            date
+        }
+        comments
+        source
+    }
+
+    mutation syncWithRandPreconDwhButton_SyncWithRandPreconDwhMutation(
+        $input: SyncRandPreconAccountWithRandDwhInput!
+    ) {
+        Rand {
+            syncRandPreconAccountWithRandDwh(input: $input) {
+                projectStageEdges {
+                    node {
+                        id
+                        #                       project view only
+                        ...projectStagesTab_ProjectStageFragment
+                    }
+                }
+                regionEdges {
+                    node {
+                        id
+                        #                       project view only
+                        ...rosterListActiveFilters_RegionFragment
+                    }
+                }
+                projectEdges {
+                    node {
+                        id
+                        #                       project view only
+                        ...editProjectButton_ProjectFragment
+                    }
+                }
+                personEdges {
+                    node {
+                        id
+                        #                       project only?
+                        ...personDetailsButton_PersonFragment
+                    }
+                }
+                assignmentEdges {
+                    node {
+                        id
+                        #                       project view only
+                        ...AssignmentCard_AssignmentFragment
+                    }
+                }
+            }
+        }
+    }
+
+    fragment projectStagesTab_ProjectStageFragment on ProjectStage {
+        id
+        name
+        sortOrder
+    }
+
+    fragment rosterListActiveFilters_RegionFragment on Region {
+        id
+        name
+    }
+
+    mutation GenerateAvailabilityForecastForm_GenerateAvailabilityForecastMutation(
+        $input: GenerateAvailabilityForecastInput!
+    ) {
+        Availabilityforecast {
+            generateAvailabilityForecast(input: $input) {
+                availabilityForecast {
+                    rows {
+                        columns {
+                            available
+                            difference
+                            needed
+                            availablePeople {
+                                id
+                                name
+                            }
+                            yearMonth
+                            projects
+                        }
+                        roles {
+                            name
+                        }
+                    }
+                    summary {
+                        yearMonth
+                        needed
+                        difference
+                        available
+                        projects
+                    }
+                    yearAndMonths
+                    countPossibleUtilizationNotPeople
+                }
+            }
+        }
+    }

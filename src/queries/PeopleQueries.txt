@@ -1,0 +1,870 @@
+
+    query staffViewPart_Query(
+        $id: ID!
+        $intervalType: IntervalType!
+        $personFiltersOpt: PersonOnAssignmentFiltersInput
+        $projectFiltersOpt: ProjectWithAssignmentsFiltersInput
+        $showAll: Boolean
+        $sort: StaffViewSort
+        $utilizationWindow: UtilizationWindowInput
+    ) {
+        node(id: $id) {
+            ... on Scenario {
+                ...staffViewPart_ScenarioFragment
+                    @arguments(
+                        scenarioId: $id
+                        intervalType: $intervalType
+                        personFiltersOpt: $personFiltersOpt
+                        projectFiltersOpt: $projectFiltersOpt
+                        showAll: $showAll
+                        sort: $sort
+                        utilizationWindow: $utilizationWindow
+                    )
+            }
+        }
+    }
+
+    fragment staffViewPart_ScenarioFragment on Scenario
+    @argumentDefinitions(
+        scenarioId: { type: "ID!" }
+        intervalType: { type: "IntervalType!" }
+        showAll: { type: "Boolean" }
+        personFiltersOpt: { type: "PersonOnAssignmentFiltersInput" }
+        projectFiltersOpt: { type: "ProjectWithAssignmentsFiltersInput" }
+        sort: { type: "StaffViewSort" }
+        utilizationWindow: { type: "UtilizationWindowInput" }
+    )
+    @refetchable(queryName: "staffViewPart_RefetchQuery") {
+        staffView(
+            intervalType: $intervalType
+            showAll: $showAll
+            sort: $sort
+            projectWithAssignmentsFilters: $projectFiltersOpt
+            peopleOnAssignmentFilters: $personFiltersOpt
+            utilizationWindow: $utilizationWindow
+        ) {
+            intervalType
+            intervals {
+                index
+                ...IntervalHeaderComponent_IntervalFragment
+                ...allocationBarProvider_IntervalFragment
+            }
+            allocationGroups {
+                groupType
+                allocations {
+                    person {
+                        id
+                        assignmentRole {
+                            id
+                            name
+                        }
+                        name
+                        sumOfProjectVolume(scenarioRef: $scenarioId)
+                        ...personCard_PersonFragment @arguments(scenarioId: $scenarioId)
+                    }
+                    lanes {
+                        allocations {
+                            id
+                            assignment {
+                                person {
+                                    id
+                                    name
+                                }
+                                id
+                            }
+                            startDate
+                            endDate
+
+                            ...allocationBarProvider_AllocationFragment
+                        }
+                    }
+                    gapDays
+                }
+                ... on ProjectGroup {
+                    project {
+                        name
+                    }
+                }
+                ... on AssignmentRoleGroup {
+                    assignmentRole {
+                        name
+                    }
+                }
+            }
+        }
+        utilizationWithStandAndEndDate(utilizationWindow: $utilizationWindow) {
+            ...personCard_ScenarioUtilizationFragment
+        }
+        ...personCard_ScenarioFragment
+        ...allocationBarProvider_ScenarioFragment
+    }
+
+
+    fragment IntervalHeaderComponent_IntervalFragment on IntervalDescription {
+        startDate
+        endDate
+        fallsIntoCustomUtilizationWindow
+    }
+
+    fragment allocationBarProvider_IntervalFragment on IntervalDescription @inline {
+        index
+        startDate
+        endDate
+        fallsIntoCustomUtilizationWindow
+    }
+
+
+    fragment personCard_PersonFragment on Person @argumentDefinitions(scenarioId: { type: "ID!" }) {
+        id
+        name
+        assignmentRole {
+            id
+            name
+        }
+        sumOfProjectVolume(scenarioRef: $scenarioId)
+        comment
+        ...personDetailsButton_PersonFragment
+    }
+    fragment personDetailsButton_PersonFragment on Person {
+            id
+            name
+            comment
+            assignmentRole {
+                name
+            }
+        }
+
+    fragment allocationBarProvider_AllocationFragment on LaneAllocation @inline {
+        id
+        fromInterval
+        fromIntervalPercentage
+        toInterval
+        toIntervalPercentage
+        startDate
+        endDate
+        assignment {
+            id
+            startDate
+            endDate
+            isExecutive
+            validAssignmentRoles {
+                id
+            }
+            comment
+            importId
+            weight
+            person {
+                id
+            }
+
+            project {
+                id
+                name
+                volume
+                stage {
+                    id
+                    name
+                    color
+                }
+                milestones {
+                    name
+                    date
+                }
+            }
+            validAssignmentRoles {
+                name
+            }
+            person {
+                name
+                assignmentRole {
+                    id
+                    name
+                }
+            }
+        }
+        isGap
+        lengthInDays
+    }
+
+    fragment personCard_ScenarioUtilizationFragment on ScenarioUtilization {
+        personUtilizations {
+            personRef
+            utilizationPercentage
+            status
+        }
+        ...personDetailsButton_ScenarioUtilizationFragment
+    }
+
+
+    fragment personCard_ScenarioFragment on Scenario {
+        id
+        ...personDetailsButton_ScenarioFragment
+    }
+
+    fragment allocationBarProvider_ScenarioFragment on Scenario {
+        id
+        isMasterPlan
+    }
+
+    fragment personDetailsButton_ScenarioUtilizationFragment on ScenarioUtilization {
+        personUtilizations {
+            personRef
+            utilizationPercentage
+        }
+    }
+
+    fragment personDetailsButton_ScenarioFragment on Scenario {
+        id
+        gapDays {
+            personGapDays {
+                personRef
+                gapDays
+            }
+        }
+    }
+
+
+    query executivesSelect_Query($filterByName: String, $alwaysIncludeIds: [ID!], $scenarioId: ID) {
+        Staff {
+            Executives(
+                first: 20
+                filterByName: $filterByName
+                alwaysIncludeIds: $alwaysIncludeIds
+                scenarioId: $scenarioId
+            ) {
+                edges {
+                    node {
+                        ...executivesSelect_PersonFragment
+                    }
+                }
+            }
+        }
+    }
+
+    fragment executivesSelect_PersonFragment on Person @inline {
+        id
+        name
+    }
+
+
+    query personDetailsModalContent_Query($personId: ID!, $scenarioId: ID!) {
+        node(id: $personId) {
+            ... on Person {
+                ...personDetailsControl_PersonFragment @arguments(scenarioId: $scenarioId)
+            }
+        }
+        ...personDetailsControl_AssignmentListFragment
+            @arguments(filterByPerson: $personId, filterByScenario: $scenarioId)
+    }
+
+    fragment personDetailsControl_PersonFragment on Person
+    @argumentDefinitions(scenarioId: { type: "ID!" }) {
+        id
+        name
+        assignmentRole {
+            name
+        }
+        phone
+        email
+        address {
+            lineOne
+            postalCode
+            city
+            country
+            state
+            latitude
+            longitude
+        }
+        comment
+        avatar {
+            url
+        }
+        associatedWithRegions {
+            id
+            name
+        }
+        associatedWithDivisions {
+            id
+            name
+        }
+
+        ...skillsDisplay_PersonFragment
+        ...UtilizationOverTimeGraph_PersonFragment @arguments(scenarioId: $scenarioId)
+    }
+
+    fragment personDetailsControl_AssignmentListFragment on Query
+    @refetchable(queryName: "PersonDetailsControl_Refetch")
+    @argumentDefinitions(
+        first: { type: "Int", defaultValue: 50 }
+        after: { type: "String" }
+        filterByPerson: { type: "ID" }
+        filterByScenario: { type: "ID" }
+    ) {
+        Assignments {
+            Assignments(
+                first: $first
+                after: $after
+                filterByPerson: $filterByPerson
+                filterByScenario: $filterByScenario
+            ) @connection(key: "PersonDetailsControl_Assignments") {
+                pageInfo {
+                    endCursor
+                    hasPreviousPage
+                    hasNextPage
+                    startCursor
+                }
+                edges {
+                    node {
+                        id
+                        time
+                        ...AssignmentProjectCard_AssignmentFragment
+                    }
+                }
+            }
+        }
+    }
+
+    fragment skillsDisplay_PersonFragment on Person {
+        id
+        skills(first: 100) {
+            edges {
+                node {
+                    ...skillsDisplay_SkillAssociationInlineFragment
+                }
+            }
+        }
+    }
+
+    fragment UtilizationOverTimeGraph_PersonFragment on Person @argumentDefinitions(scenarioId: {type: "ID!"}) {
+        name
+        utilizationOverTime(scenarioRef: $scenarioId) {
+            date
+            utilizationPercentage
+        }
+    }
+
+    fragment AssignmentProjectCard_AssignmentFragment on Assignment {
+        id
+
+        project {
+            name
+            id
+            isDeactivated
+        }
+        person {
+            name
+        }
+        startDate
+        endDate
+        validAssignmentRoles {
+            id
+            name
+        }
+    }
+
+    fragment skillsDisplay_SkillAssociationInlineFragment on SkillAssociation @inline {
+        id
+        data {
+            value {
+                ... on NumericalAssessmentValue {
+                    kind
+                    number
+                }
+                ... on BinaryAssessmentValue {
+                    hasSkill
+                    kind
+                }
+            }
+
+            skill {
+                id
+                name
+                dimension {
+                    kind
+                    ... on NumericalDimension {
+                        kind
+                        dimensionCount
+                    }
+                }
+                skillCategory {
+                    id
+                    name
+                }
+            }
+        }
+    }
+
+    query PeopleTable_Query($first: Int, $filterByName: String) {
+        ...PeopleTable_PeopleListFragment @arguments(first: $first, filterByName: $filterByName)
+    }
+
+    fragment PeopleTable_PeopleListFragment on Query
+    @refetchable(queryName: "PeopleTable_Refetch")
+    @argumentDefinitions(
+        first: { type: "Int", defaultValue: 250 }
+        after: { type: "String" }
+        filterByName: { type: "String" }
+    ) {
+        Staff {
+            People(
+                first: $first
+                after: $after
+                filterByName: $filterByName
+                showDeactivated: true
+            ) @connection(key: "PeopleTable_People") {
+                __id
+                pageInfo {
+                    endCursor
+                    hasPreviousPage
+                    hasNextPage
+                    startCursor
+                }
+                edges {
+                    node {
+                        id
+                        ...PeopleTable_PersonFragment
+                    }
+                }
+            }
+        }
+    }
+
+    fragment PeopleTable_PersonFragment on Person @inline {
+        id
+        isDeactivated
+        name
+        address {
+            longitude
+            latitude
+            ...GoogleMapsClickout_AddressFragment
+        }
+        startDate
+        assignmentRole {
+            name
+        }
+        associatedWithDivisions {
+            id
+            name
+        }
+        associatedWithRegions {
+            id
+            name
+        }
+        skills(first: 100) {
+            edges {
+                node {
+                    id
+                    data {
+                        value {
+                            ... on NumericalAssessmentValue {
+                                kind
+                                number
+                            }
+                            ... on BinaryAssessmentValue {
+                                hasSkill
+                                kind
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        avatar {
+            url
+        }
+        comment
+        ...EditPersonButton_PersonFragment
+        ...editPersonSkillAssociationsButton_PersonFragment
+        ...ChangePersonActivationButton_PersonFragment
+    }
+
+    fragment GoogleMapsClickout_AddressFragment on Address {
+        latitude
+        longitude
+    }
+
+    fragment EditPersonButton_PersonFragment on Person {
+        ...EditPersonModal_PersonFragment
+    }
+
+    fragment EditPersonModal_PersonFragment on Person {
+        id
+        name
+        email
+        phone
+        salary
+        laborBurdenMultiplier
+        startDate
+        assignmentRole {
+            id
+            name
+        }
+        associatedWithDivisions {
+            id
+            name
+        }
+        associatedWithRegions {
+            id
+            name
+        }
+        address {
+            lineOne
+            postalCode
+            city
+            state
+            country
+            longitude
+            latitude
+        }
+        comment
+        avatar {
+            id
+            url
+        }
+    }
+
+    fragment editPersonSkillAssociationsButton_PersonFragment on Person {
+        name
+        ...editPersonSkillAssociationsModalContent_PersonFragment
+    }
+
+    fragment editPersonSkillAssociationsModalContent_PersonFragment on Person {
+        id
+        name
+        skills(first: 100) @connection(key: "Person_skills") {
+            __id
+            edges {
+                node {
+                    id
+                    data {
+                        value {
+                            ... on NumericalAssessmentValue {
+                                kind
+                                number
+                            }
+                            ... on BinaryAssessmentValue {
+                                hasSkill
+                                kind
+                            }
+                        }
+                        skill {
+                            id
+                            name
+                            dimension {
+                                ... on NumericalDimension {
+                                    kind
+                                    dimensionCount
+                                    dimensionExplanations
+                                }
+                                ... on BinaryDimension {
+                                    kind
+                                }
+                            }
+                        }
+                    }
+                    ...editSkillAssociationModal_SkillAssociationFragment
+                }
+            }
+        }
+        ...editSkillAssociationModal_PersonFragment
+    }
+
+    fragment ChangePersonActivationButton_PersonFragment on Person {
+        id
+        isDeactivated
+    }
+
+    fragment editSkillAssociationModal_SkillAssociationFragment on SkillAssociation {
+        id
+        data {
+            value {
+                ... on NumericalAssessmentValue {
+                    kind
+                    number
+                }
+                ... on BinaryAssessmentValue {
+                    kind
+                    hasSkill
+                }
+            }
+            skill {
+                name
+                skillCategory {
+                    name
+                }
+                dimension {
+                    ... on BinaryDimension {
+                        kind
+                    }
+                    ... on NumericalDimension {
+                        dimensionCount
+                        kind
+                    }
+                }
+            }
+        }
+
+        ...editNumericalSkillAssociationModal_SkillAssociationFragment
+        ...editBinarySkillAssociationModal_SkillAssociationFragment
+    }
+
+    fragment editSkillAssociationModal_PersonFragment on Person {
+        name
+        id
+        ...editNumericalSkillAssociationModal_PersonFragment
+        ...editBinarySkillAssociationModal_PersonFragment
+    }
+
+    fragment editNumericalSkillAssociationModal_SkillAssociationFragment on SkillAssociation {
+        id
+        data {
+            skill {
+                id
+                name
+                skillCategory {
+                    name
+                }
+                dimension {
+                    ... on BinaryDimension {
+                        kind
+                    }
+                    ... on NumericalDimension {
+                        dimensionCount
+                        kind
+                    }
+                }
+            }
+            value {
+                ... on BinaryAssessmentValue {
+                    hasSkill
+                    kind
+                }
+                ... on NumericalAssessmentValue {
+                    number
+                    kind
+                }
+            }
+        }
+    }
+
+    fragment editBinarySkillAssociationModal_SkillAssociationFragment on SkillAssociation {
+        id
+        data {
+            value {
+                ... on BinaryAssessmentValue {
+                    kind
+                    hasSkill
+                }
+                ... on NumericalAssessmentValue {
+                    kind
+                    number
+                }
+            }
+            skill {
+                id
+                name
+                skillCategory {
+                    name
+                }
+                dimension {
+                    ... on BinaryDimension {
+                        kind
+                    }
+                    ... on NumericalDimension {
+                        dimensionCount
+                        kind
+                    }
+                }
+            }
+        }
+    }
+
+    fragment editNumericalSkillAssociationModal_PersonFragment on Person {
+        id
+        name
+    }
+
+    fragment editBinarySkillAssociationModal_PersonFragment on Person {
+        id
+        name
+    }
+
+    query PersonSelect_Query($filterByName: String, $excludeIds: [ID!], $alwaysIncludeIds: [ID!]) {
+        Staff {
+            People(
+                first: 20
+                excludeIds: $excludeIds
+                filterByName: $filterByName
+                alwaysIncludeIds: $alwaysIncludeIds
+            ) {
+                edges {
+                    node {
+                        ...PersonSelect_PersonFragment
+                    }
+                }
+            }
+        }
+    }
+
+    fragment PersonSelect_PersonFragment on Person @inline {
+        id
+        name
+    }
+
+    query peopleSelect_Query($filterByName: String, $excludeIds: [ID!], $alwaysIncludeIds: [ID!]) {
+        Staff {
+            People(
+                first: 20
+                excludeIds: $excludeIds
+                filterByName: $filterByName
+                alwaysIncludeIds: $alwaysIncludeIds
+            ) {
+                edges {
+                    node {
+                        ...peopleSelect_PersonFragment
+                    }
+                }
+            }
+        }
+    }
+
+    fragment peopleSelect_PersonFragment on Person @inline {
+        id
+        name
+    }
+
+    query selectUserInAccountField_PeopleQuery(
+        $accountId: ID!
+        $filterByName: String
+        $alwaysIncludeIds: [ID!]
+        $excludeIds: [ID!]
+        $first: Int
+    ) {
+        Assessment {
+            PeopleInAccount(
+                accountId: $accountId
+                first: $first
+                filterByName: $filterByName
+                alwaysIncludeIds: $alwaysIncludeIds
+                excludeIds: $excludeIds
+            ) {
+                edges {
+                    node {
+                        ...selectUserInAccountField_PersonFragment
+                    }
+                }
+            }
+        }
+    }
+
+    fragment selectUserInAccountField_PersonFragment on Person @inline {
+        id
+        name
+    }
+
+    mutation ChangePersonActivationButton_Mutation($input: SetPersonActivationInput!) {
+        Staff {
+            setPersonActivation(input: $input) {
+                edge {
+                    node {
+                        id
+                        isDeactivated
+                    }
+                }
+            }
+        }
+    }
+
+    mutation DeletePeopleButton_DeleteMutation($input: DeletePersonInput!, $connections: [ID!]!) {
+        Staff {
+            deletePerson(input: $input) {
+                deletedIds @deleteEdge(connections: $connections)
+            }
+        }
+
+    }
+
+    mutation EditPersonModal_CreateMutation($input: CreatePersonInput!, $connections: [ID!]!) {
+        Staff {
+            createPerson(input: $input) {
+                edge @appendEdge(connections: $connections) {
+                    node {
+                        id
+                        ...EditPersonButton_PersonFragment
+                    }
+                }
+            }
+        }
+    }
+
+    mutation EditPersonModal_EditMutation($input: EditPersonInput!) {
+        Staff {
+            editPerson(input: $input) {
+                edge {
+                    node {
+                        id
+                        ...EditPersonButton_PersonFragment
+                    }
+                }
+            }
+        }
+    }
+
+    mutation ExportPeopleButton_ExportMutation {
+        Staff {
+            exportPeople(input: {}) {
+                file {
+                    url
+                }
+            }
+        }
+    }
+
+    mutation ImportPeopleButton_ImportMutation($input: ImportPeopleInput!) {
+        Staff {
+            importPeople(input: $input) {
+                result {
+                    editedEntities
+                    newEntities
+                    issues {
+                        row
+                        issue
+                    }
+                }
+            }
+        }
+    }
+
+    mutation importPeoplesoftButton_DownloadPeopleDataFromS3Mutation(
+        $input: DownloadPeopleDataFromS3Input!
+    ) {
+        Peoplesoft {
+            downloadPeopleDataFromS3(input: $input) {
+                edited
+                imported
+                clientMutationId
+            }
+        }
+    }
+
+    mutation allocationBarProvider_ApproximateAssignmentResizeMutation(
+        $input: ApproximateAssignmentResizeInput!
+    ) {
+        Staffview {
+            approximateAssignmentResize(input: $input) {
+                startDate
+                endDate
+            }
+        }
+    }
+
+    mutation allocationBarProvider_ApproximateMoveAssignmentMutation(
+        $input: ApproximateMoveAssignmentInput!
+    ) {
+        Staffview {
+            approximateMoveAssignment(input: $input) {
+                startDate
+                endDate
+            }
+        }
+    }

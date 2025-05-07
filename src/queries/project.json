@@ -1,0 +1,739 @@
+{
+    "queries": [
+      {
+        "id": "projectFromRandSelect_Query",
+        "title": "projectFromRandSelect_Query",
+        "description": "",
+        "code": "query projectFromRandSelect_Query {\n    Rand {\n        NotYetImportedProjectsFromRand {\n            id\n            name\n            projectIdentifier\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "projectsSelect_Query",
+        "title": "projectsSelect_Query",
+        "description": "",
+        "code": "query projectsSelect_Query($filterByName: String, $alwaysIncludeIds: [ID!]) {\n    Project {\n        Projects(first: 100, filterByName: $filterByName, alwaysIncludeIds: $alwaysIncludeIds) {\n            edges {\n                node {\n                    ...projectsSelect_ProjectInlineFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "projectsSelect_ProjectInlineFragment"
+        ]
+      },
+      {
+        "id": "ProjectDetailsModalContent_Query",
+        "title": "ProjectDetailsModalContent_Query",
+        "description": "",
+        "code": "query ProjectDetailsModalContent_Query($projectId: ID!, $scenarioId: ID!) {\n    Scenario {\n        ProjectInScenario(projectId: $projectId, scenarioId: $scenarioId) {\n            ...projectDetailsControl_ProjectInScenarioFragment\n        }\n    }\n}",
+        "usedFragments": [
+          "projectDetailsControl_ProjectInScenarioFragment"
+        ]
+      },
+      {
+        "id": "ProjectFromDynamicsSelect_Query",
+        "title": "ProjectFromDynamicsSelect_Query",
+        "description": "",
+        "code": "query ProjectFromDynamicsSelect_Query {\n    Dynamics {\n        NotYetImportedProjectsFromDynamics {\n            id\n            name\n            projectIdentifier\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "ProjectStageSelect_Query",
+        "title": "ProjectStageSelect_Query",
+        "description": "",
+        "code": "query ProjectStageSelect_Query($filterByName: String, $excludeIds: [ID!], $alwaysIncludeIds: [ID!]) {\n    Project {\n        ProjectStages(first: 20, excludeIds: $excludeIds, filterByName: $filterByName, alwaysIncludeIds: $alwaysIncludeIds) {\n            edges {\n                node {\n                    ...ProjectStageSelect_ProjectStageFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "ProjectStageSelect_ProjectStageFragment"
+        ]
+      },
+      {
+        "id": "ProjectStagesSelect_Query",
+        "title": "ProjectStagesSelect_Query",
+        "description": "",
+        "code": "query ProjectStagesSelect_Query($filterByName: String, $excludeIds: [ID!], $alwaysIncludeIds: [ID!]) {\n    Project {\n        ProjectStages(first: 20, excludeIds: $excludeIds, filterByName: $filterByName, alwaysIncludeIds: $alwaysIncludeIds) {\n            edges {\n                node {\n                    ...ProjectStagesSelect_ProjectStageFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "ProjectStagesSelect_ProjectStageFragment"
+        ]
+      },
+      {
+        "id": "ProjectStagesTable_Query",
+        "title": "ProjectStagesTable_Query",
+        "description": "",
+        "code": "query ProjectStagesTable_Query($first: Int, $filterByName: String) {\n    ...ProjectStagesTable_ProjectStageListFragment\n        @arguments(first: $first, filterByName: $filterByName)\n}",
+        "usedFragments": [
+          "ProjectStagesTable_ProjectStageListFragment"
+        ]
+      },
+      {
+        "id": "ProjectsSelectField_Query",
+        "title": "ProjectsSelectField_Query",
+        "description": "",
+        "code": "query ProjectsSelectField_Query($filterByName: String, $excludeIds: [ID!], $alwaysIncludeIds: [ID!]) {\n    Project {\n        Projects(first: 250, excludeIds: $excludeIds, filterByName: $filterByName, alwaysIncludeIds: $alwaysIncludeIds) {\n            edges {\n                node {\n                    ...ProjectsSelectField_ProjectFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "ProjectsSelectField_ProjectFragment"
+        ]
+      },
+      {
+        "id": "ProjectsTable_Query",
+        "title": "ProjectsTable_Query",
+        "description": "",
+        "code": "query ProjectsTable_Query(\n    $first: Int\n    $filterByName: String\n    $filterByRegions: [ID!]\n    $filterByDivisions: [ID!]\n    $filterByStages: [ID!]\n) {\n    ...ProjectsTable_ProjectsListFragment\n        @arguments(\n            first: $first\n            filterByName: $filterByName\n            filterByRegions: $filterByRegions\n            filterByDivisions: $filterByDivisions\n            filterByStages: $filterByStages\n        )\n}",
+        "usedFragments": [
+          "ProjectsTable_ProjectsListFragment"
+        ]
+      },
+      {
+        "id": "LoadDriveTimesButton_ProjectQuery",
+        "title": "LoadDriveTimesButton_ProjectQuery",
+        "description": "",
+        "code": "query LoadDriveTimesButton_ProjectQuery($projectId: ID!) {\n    node(id: $projectId) {\n        ... on Project {\n            id\n            address {\n                latitude\n                longitude\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      }
+    ],
+    "mutations": [
+      {
+        "id": "addSelectedProjectsToScenarioButton_AddExistingProjectsToScenarioMutation",
+        "title": "addSelectedProjectsToScenarioButton_AddExistingProjectsToScenarioMutation",
+        "description": "",
+        "code": "mutation addSelectedProjectsToScenarioButton_AddExistingProjectsToScenarioMutation(\n    $input: AddExistingProjectsToScenarioInput!\n) {\n    Scenario {\n        addExistingProjectsToScenario(input: $input) {\n            edge {\n                node {\n                    id\n                    ...ProjectsGridPart_ScenarioFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "ProjectsGridPart_ScenarioFragment"
+        ]
+      },
+      {
+        "id": "importFromRandButton_ImportFromRandMutation",
+        "title": "importFromRandButton_ImportFromRandMutation",
+        "description": "",
+        "code": "mutation importFromRandButton_ImportFromRandMutation(\n    $input: ImportProjectFromRandInput!\n    $connectionIds: [ID!]!\n) {\n    Rand {\n        importProjectFromRand(input: $input) {\n            edge @appendEdge(connections: $connectionIds) {\n                node {\n                    ...ProjectsTable_ProjectFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "ProjectsTable_ProjectFragment"
+        ]
+      },
+      {
+        "id": "loadPursuitProjectsFromRandDwhButton_loadPursuitProjectsFromDWHMutation",
+        "title": "loadPursuitProjectsFromRandDwhButton_loadPursuitProjectsFromDWHMutation",
+        "description": "",
+        "code": "mutation loadPursuitProjectsFromRandDwhButton_loadPursuitProjectsFromDWHMutation(\n    $input: LoadPursuitProjectsFromDWHInput!\n) {\n    Rand {\n        loadPursuitProjectsFromDWH(input: $input) {\n            syncResult {\n                editedEntities\n                issues {\n                    id\n                    issue\n                }\n            }\n            clientMutationId\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "ChangeProjectActivationButton_Mutation",
+        "title": "ChangeProjectActivationButton_Mutation",
+        "description": "",
+        "code": "mutation ChangeProjectActivationButton_Mutation($input: SetProjectActivationInput!) {\n    Project {\n        setProjectActivation(input: $input) {\n            edge {\n                node {\n                    id\n                    isDeactivated\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "DeleteProjectStagesButton_DeleteMutation",
+        "title": "DeleteProjectStagesButton_DeleteMutation",
+        "description": "",
+        "code": "mutation DeleteProjectStagesButton_DeleteMutation($input: DeleteProjectStageInput!, $connections: [ID!]!) {\n    Project {\n        deleteProjectStage(input: $input) {\n            deletedIds @deleteEdge(connections: $connections)\n        }\n    }\n\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "DeleteProjectsButton_DeleteMutation",
+        "title": "DeleteProjectsButton_DeleteMutation",
+        "description": "",
+        "code": "mutation DeleteProjectsButton_DeleteMutation($input: DeleteProjectInput!, $connections: [ID!]!) {\n    Project {\n        deleteProject(input: $input) {\n            deletedIds @deleteEdge(connections: $connections)\n        }\n    }\n\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "ExportProjectStagesButton_ExportMutation",
+        "title": "ExportProjectStagesButton_ExportMutation",
+        "description": "",
+        "code": "mutation ExportProjectStagesButton_ExportMutation {\n    Project {\n        exportProjectStages(input: {}) {\n            file {\n                url\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "ExportProjectsButton_ExportMutation",
+        "title": "ExportProjectsButton_ExportMutation",
+        "description": "",
+        "code": "mutation ExportProjectsButton_ExportMutation {\n    Project {\n        exportProjects(input: {}) {\n            file {\n                url\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "GenerateReportButton_GenerateReportMutation",
+        "title": "GenerateReportButton_GenerateReportMutation",
+        "description": "",
+        "code": "mutation GenerateReportButton_GenerateReportMutation(\n    $input: GenerateProjectManagerReportInput!\n) {\n    Pdf {\n        generateProjectManagerReport(input: $input) {\n            file {\n                name\n                url\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "ImportFromDynamicsButton_ImportFromDynamicsMutation",
+        "title": "ImportFromDynamicsButton_ImportFromDynamicsMutation",
+        "description": "",
+        "code": "mutation ImportFromDynamicsButton_ImportFromDynamicsMutation(\n    $input: ImportProjectFromDynamicsInput!\n    $connectionIds: [ID!]!\n) {\n    Dynamics {\n        importProjectFromDynamics(input: $input) {\n            edge @appendEdge(connections: $connectionIds) {\n                node {\n                    ...ProjectsTable_ProjectFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "ProjectsTable_ProjectFragment"
+        ]
+      },
+      {
+        "id": "ImportProjectStagesButton_ImportMutation",
+        "title": "ImportProjectStagesButton_ImportMutation",
+        "description": "",
+        "code": "mutation ImportProjectStagesButton_ImportMutation($input: ImportProjectStagesInput!) {\n    Project {\n        importProjectStages(input: $input) {\n            result {\n                editedEntities\n                newEntities\n                issues {\n                    row\n                    issue\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "ImportProjectsButton_ImportMutation",
+        "title": "ImportProjectsButton_ImportMutation",
+        "description": "",
+        "code": "mutation ImportProjectsButton_ImportMutation($input: ImportProjectsInput!) {\n    Project {\n        importProjects(input: $input) {\n            result {\n                editedEntities\n                newEntities\n                issues {\n                    row\n                    issue\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "ProjectStageSortOrderButtons_IncreaseMutation",
+        "title": "ProjectStageSortOrderButtons_IncreaseMutation",
+        "description": "",
+        "code": "mutation ProjectStageSortOrderButtons_IncreaseMutation($input: IncreaseProjectStageSortOrderInput!) {\n    Project {\n        increaseProjectStageSortOrder(input: $input) {\n            edge {\n                node {\n                    id\n                    sortOrder\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "ProjectStageSortOrderButtons_DecreaseMutation",
+        "title": "ProjectStageSortOrderButtons_DecreaseMutation",
+        "description": "",
+        "code": "mutation ProjectStageSortOrderButtons_DecreaseMutation($input: DecreaseProjectStageSortOrderInput!) {\n    Project {\n        decreaseProjectStageSortOrder(input: $input) {\n            edge {\n                node {\n                    id\n                    sortOrder\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "ResolveProjectsGpsCoordinatesButton_FetchMutation",
+        "title": "ResolveProjectsGpsCoordinatesButton_FetchMutation",
+        "description": "",
+        "code": "mutation ResolveProjectsGpsCoordinatesButton_FetchMutation($input: ResolveProjectsGpsCoordinatesInput!) {\n    Project {\n        resolveProjectsGpsCoordinates(input: $input) {\n            updatedProjects {\n                id\n                address {\n                    latitude\n                    longitude\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "createProjectButton_CreateProjectMutation",
+        "title": "createProjectButton_CreateProjectMutation",
+        "description": "",
+        "code": "mutation createProjectButton_CreateProjectMutation(\n    $input: CreateProjectInput!\n    $connectionId: ID!\n) {\n    Project {\n        createProject(input: $input) {\n            edge @appendEdge(connections: [$connectionId]) {\n                node {\n                    id\n                    ...editProjectButton_ProjectFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "editProjectButton_ProjectFragment"
+        ]
+      },
+      {
+        "id": "editProjectButton_EditMutation",
+        "title": "editProjectButton_EditMutation",
+        "description": "",
+        "code": "mutation editProjectButton_EditMutation($input: EditProjectInput!) {\n    Project {\n        editProject(input: $input) {\n            edge {\n                node {\n                    id\n                    ...editProjectButton_ProjectFragment\n                }\n            }\n            changedAssignments {\n                ...AssignmentProjectCard_AssignmentFragment\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "editProjectButton_ProjectFragment",
+          "AssignmentProjectCard_AssignmentFragment"
+        ]
+      },
+      {
+        "id": "editProjectStageModal_CreateMutation",
+        "title": "editProjectStageModal_CreateMutation",
+        "description": "",
+        "code": "mutation editProjectStageModal_CreateMutation(\n    $input: CreateProjectStageInput!\n    $connections: [ID!]!\n) {\n    Project {\n        createProjectStage(input: $input) {\n            edge @appendEdge(connections: $connections) {\n                node {\n                    id\n                    ...editProjectStageButton_ProjectStageFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "editProjectStageButton_ProjectStageFragment"
+        ]
+      },
+      {
+        "id": "editProjectStageModal_EditMutation",
+        "title": "editProjectStageModal_EditMutation",
+        "description": "",
+        "code": "mutation editProjectStageModal_EditMutation($input: EditProjectStageInput!) {\n    Project {\n        editProjectStage(input: $input) {\n            edge {\n                node {\n                    id\n                    ...editProjectStageButton_ProjectStageFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "editProjectStageButton_ProjectStageFragment"
+        ]
+      },
+      {
+        "id": "removeProjectFromScenarioButton_RemoveProjectFromScenarioMutation",
+        "title": "removeProjectFromScenarioButton_RemoveProjectFromScenarioMutation",
+        "description": "",
+        "code": "mutation removeProjectFromScenarioButton_RemoveProjectFromScenarioMutation(\n    $input: RemoveProjectFromScenarioInput!\n) {\n    Scenario {\n        removeProjectFromScenario(input: $input) {\n            edge {\n                node {\n                    id\n                    ...ProjectsGridPart_ScenarioFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "ProjectsGridPart_ScenarioFragment"
+        ]
+      },
+      {
+        "id": "syncDynamicsProjectsButton_SyncProjectsFromDynamicsMutation",
+        "title": "syncDynamicsProjectsButton_SyncProjectsFromDynamicsMutation",
+        "description": "",
+        "code": "mutation syncDynamicsProjectsButton_SyncProjectsFromDynamicsMutation(\n    $input: SynchronizeProjectsFromDynamicsInput!\n) {\n    Dynamics {\n        synchronizeProjectsFromDynamics(input: $input) {\n            edges {\n                node {\n                    id\n                    ...ProjectsTable_ProjectFragment\n                    ...syncProjectFromDynamicsButton_SyncProjectFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "ProjectsTable_ProjectFragment",
+          "syncProjectFromDynamicsButton_SyncProjectFragment"
+        ]
+      },
+      {
+        "id": "syncProjectFromDynamicsButton_SyncFromDynamicsMutation",
+        "title": "syncProjectFromDynamicsButton_SyncFromDynamicsMutation",
+        "description": "",
+        "code": "mutation syncProjectFromDynamicsButton_SyncFromDynamicsMutation(\n    $input: LoadProjectDataFromDynamicsInput!\n) {\n    Dynamics {\n        loadProjectDataFromDynamics(input: $input) {\n            edge {\n                node {\n                    ...ProjectsTable_ProjectFragment\n                    ...syncProjectFromDynamicsButton_SyncProjectFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "ProjectsTable_ProjectFragment",
+          "syncProjectFromDynamicsButton_SyncProjectFragment"
+        ]
+      },
+      {
+        "id": "syncProjectFromDynamicsButton_EditMutation",
+        "title": "syncProjectFromDynamicsButton_EditMutation",
+        "description": "",
+        "code": "mutation syncProjectFromDynamicsButton_EditMutation($input: EditProjectInput!) {\n    Project {\n        editProject(input: $input) {\n            edge {\n                node {\n                    ...ProjectsTable_ProjectFragment\n                    ...syncProjectFromDynamicsButton_SyncProjectFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "ProjectsTable_ProjectFragment",
+          "syncProjectFromDynamicsButton_SyncProjectFragment"
+        ]
+      },
+      {
+        "id": "syncProjectFromRandButton_SyncFromRandMutation",
+        "title": "syncProjectFromRandButton_SyncFromRandMutation",
+        "description": "",
+        "code": "mutation syncProjectFromRandButton_SyncFromRandMutation($input: LoadProjectDataFromRandInput!) {\n    Rand {\n        loadProjectDataFromRand(input: $input) {\n            edge {\n                node {\n                    ...ProjectsTable_ProjectFragment\n                    ...syncProjectFromRandButton_SyncProjectFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "ProjectsTable_ProjectFragment",
+          "syncProjectFromRandButton_SyncProjectFragment"
+        ]
+      },
+      {
+        "id": "syncProjectFromDynamicsButton_SyncFromDynamicsMutation",
+        "title": "syncProjectFromDynamicsButton_SyncFromDynamicsMutation",
+        "description": "",
+        "code": "mutation syncProjectFromDynamicsButton_SyncFromDynamicsMutation(\n    $input: LoadProjectDataFromDynamicsInput!\n) {\n    Dynamics {\n        loadProjectDataFromDynamics(input: $input) {\n            edge {\n                node {\n                    ...ProjectsTable_ProjectFragment\n                    ...syncProjectFromDynamicsButton_SyncProjectFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "ProjectsTable_ProjectFragment",
+          "syncProjectFromDynamicsButton_SyncProjectFragment"
+        ]
+      },
+      {
+        "id": "syncProjectFromDynamicsButton_EditMutation",
+        "title": "syncProjectFromDynamicsButton_EditMutation",
+        "description": "",
+        "code": "mutation syncProjectFromDynamicsButton_EditMutation($input: EditProjectInput!) {\n    Project {\n        editProject(input: $input) {\n            edge {\n                node {\n                    ...ProjectsTable_ProjectFragment\n                    ...syncProjectFromDynamicsButton_SyncProjectFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "ProjectsTable_ProjectFragment",
+          "syncProjectFromDynamicsButton_SyncProjectFragment"
+        ]
+      },
+      {
+        "id": "syncProjectFromRandButton_SyncFromRandMutation",
+        "title": "syncProjectFromRandButton_SyncFromRandMutation",
+        "description": "",
+        "code": "mutation syncProjectFromRandButton_SyncFromRandMutation($input: LoadProjectDataFromRandInput!) {\n    Rand {\n        loadProjectDataFromRand(input: $input) {\n            edge {\n                node {\n                    ...ProjectsTable_ProjectFragment\n                    ...syncProjectFromRandButton_SyncProjectFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "ProjectsTable_ProjectFragment",
+          "syncProjectFromRandButton_SyncProjectFragment"
+        ]
+      },
+      {
+        "id": "syncProjectFromRandButton_EditMutation",
+        "title": "syncProjectFromRandButton_EditMutation",
+        "description": "",
+        "code": "mutation syncProjectFromRandButton_EditMutation($input: EditProjectInput!) {\n    Project {\n        editProject(input: $input) {\n            edge {\n                node {\n                    ...ProjectsTable_ProjectFragment\n                    ...syncProjectFromRandButton_SyncProjectFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "ProjectsTable_ProjectFragment",
+          "syncProjectFromRandButton_SyncProjectFragment"
+        ]
+      },
+      {
+        "id": "syncRandProjectsButton_SyncProjectsFromRandMutation",
+        "title": "syncRandProjectsButton_SyncProjectsFromRandMutation",
+        "description": "",
+        "code": "mutation syncRandProjectsButton_SyncProjectsFromRandMutation(\n    $input: SynchronizeProjectsFromRandInput!\n) {\n    Rand {\n        synchronizeProjectsFromRand(input: $input) {\n            syncResult {\n                editedEntities\n                issues {\n                    id\n                    issue\n                }\n            }\n            edges {\n                node {\n                    id\n                    ...ProjectsTable_ProjectFragment\n                    ...syncProjectFromRandButton_SyncProjectFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "ProjectsTable_ProjectFragment",
+          "syncProjectFromRandButton_SyncProjectFragment"
+        ]
+      },
+      {
+        "id": "syncWithRandPreconDwhButton_SyncWithRandPreconDwhMutation",
+        "title": "syncWithRandPreconDwhButton_SyncWithRandPreconDwhMutation",
+        "description": "",
+        "code": "mutation syncWithRandPreconDwhButton_SyncWithRandPreconDwhMutation(\n    $input: SyncRandPreconAccountWithRandDwhInput!\n) {\n    Rand {\n        syncRandPreconAccountWithRandDwh(input: $input) {\n            projectStageEdges {\n                node {\n                    id\n                    #                       project view only\n                    ...projectStagesTab_ProjectStageFragment\n                }\n            }\n            regionEdges {\n                node {\n                    id\n                    #                       project view only\n                    ...rosterListActiveFilters_RegionFragment\n                }\n            }\n            projectEdges {\n                node {\n                    id\n                    #                       project view only\n                    ...editProjectButton_ProjectFragment\n                }\n            }\n            personEdges {\n                node {\n                    id\n                    #                       project only?\n                    ...personDetailsButton_PersonFragment\n                }\n            }\n            assignmentEdges {\n                node {\n                    id\n                    #                       project view only\n                    ...AssignmentCard_AssignmentFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "projectStagesTab_ProjectStageFragment",
+          "rosterListActiveFilters_RegionFragment",
+          "editProjectButton_ProjectFragment",
+          "personDetailsButton_PersonFragment",
+          "AssignmentCard_AssignmentFragment"
+        ]
+      },
+      {
+        "id": "GenerateAvailabilityForecastForm_GenerateAvailabilityForecastMutation",
+        "title": "GenerateAvailabilityForecastForm_GenerateAvailabilityForecastMutation",
+        "description": "",
+        "code": "mutation GenerateAvailabilityForecastForm_GenerateAvailabilityForecastMutation(\n    $input: GenerateAvailabilityForecastInput!\n) {\n    Availabilityforecast {\n        generateAvailabilityForecast(input: $input) {\n            availabilityForecast {\n                rows {\n                    columns {\n                        available\n                        difference\n                        needed\n                        availablePeople {\n                            id\n                            name\n                        }\n                        yearMonth\n                        projects\n                    }\n                    roles {\n                        name\n                    }\n                }\n                summary {\n                    yearMonth\n                    needed\n                    difference\n                    available\n                    projects\n                }\n                yearAndMonths\n                countPossibleUtilizationNotPeople\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      }
+    ],
+    "fragments": [
+      {
+        "id": "projectsSelect_ProjectInlineFragment",
+        "title": "projectsSelect_ProjectInlineFragment",
+        "description": "",
+        "code": "fragment projectsSelect_ProjectInlineFragment on Project @inline {\n    id\n    name\n}",
+        "fragmentId": "projectsSelect_ProjectInlineFragment"
+      },
+      {
+        "id": "projectDetailsControl_ProjectInScenarioFragment",
+        "title": "projectDetailsControl_ProjectInScenarioFragment",
+        "description": "",
+        "code": "fragment projectDetailsControl_ProjectInScenarioFragment on ProjectInScenario {\n    id\n    project {\n        id\n        name\n        startDate\n        endDate\n        skills {\n            name\n        }\n        address {\n            lineOne\n            postalCode\n            city\n            country\n            state\n            latitude\n            longitude\n        }\n        avatar {\n            url\n        }\n        skillMatrixByCategories {\n            ...projectDetailsControl_CategoryWithMatrixTypeInlineFragment\n        }\n        ...ProjectDateTimeDisplay_ProjectFragment\n    }\n}",
+        "fragmentId": "projectDetailsControl_ProjectInScenarioFragment"
+      },
+      {
+        "id": "projectDetailsControl_CategoryWithMatrixTypeInlineFragment",
+        "title": "projectDetailsControl_CategoryWithMatrixTypeInlineFragment",
+        "description": "",
+        "code": "fragment projectDetailsControl_CategoryWithMatrixTypeInlineFragment on CategoryWithMatrixType\n@inline {\n    matrix {\n        columns {\n            key\n        }\n        headerRow {\n            key\n            entries {\n                id\n                name\n                skillCategory {\n                    id\n                    name\n                }\n            }\n        }\n        bodyRows {\n            key\n            entries {\n                value {\n                    id\n                    data {\n                        value {\n                            kind\n                            ... on BinaryAssessmentValue {\n                                hasSkill\n                                kind\n                            }\n                            ... on NumericalAssessmentValue {\n                                kind\n                                number\n                            }\n                        }\n                        skill {\n                            id\n                            name\n                            dimension {\n                                kind\n                                ... on NumericalDimension {\n                                    dimensionCount\n                                    kind\n                                }\n                                ... on BinaryDimension {\n                                    kind\n                                }\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n    category {\n        id\n        name\n    }\n}",
+        "fragmentId": "projectDetailsControl_CategoryWithMatrixTypeInlineFragment"
+      },
+      {
+        "id": "ProjectDateTimeDisplay_ProjectFragment",
+        "title": "ProjectDateTimeDisplay_ProjectFragment",
+        "description": "",
+        "code": "fragment ProjectDateTimeDisplay_ProjectFragment on Project {\n    startDate\n    endDate\n    durationInMonths\n}",
+        "fragmentId": "ProjectDateTimeDisplay_ProjectFragment"
+      },
+      {
+        "id": "ProjectStageSelect_ProjectStageFragment",
+        "title": "ProjectStageSelect_ProjectStageFragment",
+        "description": "",
+        "code": "fragment ProjectStageSelect_ProjectStageFragment on ProjectStage @inline{\n    id\n    name\n}",
+        "fragmentId": "ProjectStageSelect_ProjectStageFragment"
+      },
+      {
+        "id": "ProjectStagesSelect_ProjectStageFragment",
+        "title": "ProjectStagesSelect_ProjectStageFragment",
+        "description": "",
+        "code": "fragment ProjectStagesSelect_ProjectStageFragment on ProjectStage @inline{\n    id\n    name\n}",
+        "fragmentId": "ProjectStagesSelect_ProjectStageFragment"
+      },
+      {
+        "id": "ProjectStagesTable_ProjectStageListFragment",
+        "title": "ProjectStagesTable_ProjectStageListFragment",
+        "description": "",
+        "code": "fragment ProjectStagesTable_ProjectStageListFragment on Query\n@refetchable(queryName: \"ProjectStagesTable_Refetch\")\n@argumentDefinitions(\n    first: { type: \"Int\", defaultValue: 20 }\n    after: { type: \"String\" }\n    filterByName: { type: \"String\" }\n) {\n    Project {\n        ProjectStages(first: $first, after: $after, filterByName: $filterByName)\n            @connection(key: \"ProjectStagesTable_ProjectStages\") {\n            __id\n            pageInfo {\n                endCursor\n                hasPreviousPage\n                hasNextPage\n                startCursor\n            }\n            edges {\n                node {\n                    ...ProjectStagesTable_ProjectStageFragment\n                }\n            }\n        }\n    }\n}",
+        "fragmentId": "ProjectStagesTable_ProjectStageListFragment"
+      },
+      {
+        "id": "ProjectStagesTable_ProjectStageFragment",
+        "title": "ProjectStagesTable_ProjectStageFragment",
+        "description": "",
+        "code": "fragment ProjectStagesTable_ProjectStageFragment on ProjectStage @inline {\n    id\n    name\n    sortOrder\n    reverseProjectOrderInReports\n    color\n    ...ProjectStageSortOrderButtons_ProjectStageFragment\n    ...editProjectStageButton_ProjectStageFragment\n}",
+        "fragmentId": "ProjectStagesTable_ProjectStageFragment"
+      },
+      {
+        "id": "ProjectStageSortOrderButtons_ProjectStageFragment",
+        "title": "ProjectStageSortOrderButtons_ProjectStageFragment",
+        "description": "",
+        "code": "fragment ProjectStageSortOrderButtons_ProjectStageFragment on ProjectStage {\n    id\n    sortOrder\n}",
+        "fragmentId": "ProjectStageSortOrderButtons_ProjectStageFragment"
+      },
+      {
+        "id": "editProjectStageButton_ProjectStageFragment",
+        "title": "editProjectStageButton_ProjectStageFragment",
+        "description": "",
+        "code": "fragment editProjectStageButton_ProjectStageFragment on ProjectStage {\n    ...editProjectStageModal_ProjectStageFragment\n}",
+        "fragmentId": "editProjectStageButton_ProjectStageFragment"
+      },
+      {
+        "id": "editProjectStageModal_ProjectStageFragment",
+        "title": "editProjectStageModal_ProjectStageFragment",
+        "description": "",
+        "code": "fragment editProjectStageModal_ProjectStageFragment on ProjectStage {\n    id\n    name\n    reverseProjectOrderInReports\n    sortOrder\n    color\n}",
+        "fragmentId": "editProjectStageModal_ProjectStageFragment"
+      },
+      {
+        "id": "ProjectsSelectField_ProjectFragment",
+        "title": "ProjectsSelectField_ProjectFragment",
+        "description": "",
+        "code": "fragment ProjectsSelectField_ProjectFragment on Project @inline{\n    id\n    name\n}",
+        "fragmentId": "ProjectsSelectField_ProjectFragment"
+      },
+      {
+        "id": "ProjectsTable_ProjectsListFragment",
+        "title": "ProjectsTable_ProjectsListFragment",
+        "description": "",
+        "code": "fragment ProjectsTable_ProjectsListFragment on Query\n@refetchable(queryName: \"ProjectsTable_Refetch\")\n@argumentDefinitions(\n    first: { type: \"Int\", defaultValue: 200 }\n    after: { type: \"String\" }\n    filterByName: { type: \"String\" }\n    filterByRegions: { type: \"[ID!]\" }\n    filterByDivisions: { type: \"[ID!]\" }\n    filterByStages: { type: \"[ID!]\" }\n) {\n    Project {\n        Projects(\n            first: $first\n            after: $after\n            filterByName: $filterByName\n            filterByRegions: $filterByRegions\n            filterByDivisions: $filterByDivisions\n            filterByStages: $filterByStages\n            showDeactivated: true\n        ) @connection(key: \"ProjectsTable_Projects\") {\n            __id\n            pageInfo {\n                endCursor\n                hasPreviousPage\n                hasNextPage\n                startCursor\n            }\n            edges {\n                node {\n                    id\n                    ...ProjectsTable_ProjectFragment\n                }\n            }\n        }\n    }\n}",
+        "fragmentId": "ProjectsTable_ProjectsListFragment"
+      },
+      {
+        "id": "ProjectsTable_ProjectFragment",
+        "title": "ProjectsTable_ProjectFragment",
+        "description": "",
+        "code": "fragment ProjectsTable_ProjectFragment on Project @inline {\n    id\n    name\n    isDeactivated\n    source\n\n    division {\n        id\n        name\n    }\n    region {\n        id\n        name\n    }\n    startDate\n    endDate\n\n    stage {\n        id\n        name\n    }\n\n    address {\n        latitude\n        longitude\n        ...GoogleMapsClickout_AddressFragment\n    }\n\n    avatar {\n        id\n        url\n    }\n\n    ...editProjectButton_ProjectFragment\n    ...ChangeProjectActivationButton_ProjectFragment\n    ...syncProjectFromDynamicsButton_ProjectFragment\n    ...syncProjectFromRandButton_ProjectFragment\n}",
+        "fragmentId": "ProjectsTable_ProjectFragment"
+      },
+      {
+        "id": "GoogleMapsClickout_AddressFragment",
+        "title": "GoogleMapsClickout_AddressFragment",
+        "description": "",
+        "code": "fragment GoogleMapsClickout_AddressFragment on Address {\n    latitude\n    longitude\n}",
+        "fragmentId": "GoogleMapsClickout_AddressFragment"
+      },
+      {
+        "id": "editProjectButton_ProjectFragment",
+        "title": "editProjectButton_ProjectFragment",
+        "description": "",
+        "code": "fragment editProjectButton_ProjectFragment on Project {\n    id\n    name\n    startDate\n    endDate\n    address {\n        lineOne\n        city\n        postalCode\n        state\n        country\n        latitude\n        longitude\n    }\n    source\n    architectName\n    clientName\n    stage {\n        id\n        name\n    }\n    skills {\n        id\n    }\n    volume\n    generalConditionsPercentage\n    budgetedLaborCosts\n    division {\n        id\n    }\n    region {\n        id\n    }\n    projectIdentifier\n    durationInMonths\n    avatar {\n        id\n        url\n    }\n    milestones {\n        name\n        date\n    }\n    comments\n    source\n}",
+        "fragmentId": "editProjectButton_ProjectFragment"
+      },
+      {
+        "id": "ChangeProjectActivationButton_ProjectFragment",
+        "title": "ChangeProjectActivationButton_ProjectFragment",
+        "description": "",
+        "code": "fragment ChangeProjectActivationButton_ProjectFragment on Project {\n    id\n    isDeactivated\n}",
+        "fragmentId": "ChangeProjectActivationButton_ProjectFragment"
+      },
+      {
+        "id": "syncProjectFromDynamicsButton_ProjectFragment",
+        "title": "syncProjectFromDynamicsButton_ProjectFragment",
+        "description": "",
+        "code": "fragment syncProjectFromDynamicsButton_ProjectFragment on Project {\n    id\n    name\n    address {\n        lineOne\n        city\n        postalCode\n        state\n        country\n        latitude\n        longitude\n    }\n    projectIdentifier\n    architectName\n    avatar {\n        id\n        url\n    }\n    skills {\n        id\n    }\n    clientName\n    startDate\n    endDate\n    division {\n        id\n    }\n    region {\n        id\n    }\n    stage {\n        id\n    }\n    volume\n    generalConditionsPercentage\n    budgetedLaborCosts\n    milestones {\n        name\n        date\n    }\n    comments\n}",
+        "fragmentId": "syncProjectFromDynamicsButton_ProjectFragment"
+      },
+      {
+        "id": "syncProjectFromRandButton_ProjectFragment",
+        "title": "syncProjectFromRandButton_ProjectFragment",
+        "description": "",
+        "code": "fragment syncProjectFromRandButton_ProjectFragment on Project {\n    id\n    name\n    address {\n        lineOne\n        city\n        postalCode\n        state\n        country\n        latitude\n        longitude\n    }\n    projectIdentifier\n    architectName\n    avatar {\n        id\n        url\n    }\n    skills {\n        id\n    }\n    clientName\n    startDate\n    endDate\n    division {\n        id\n    }\n    region {\n        id\n    }\n    stage {\n        id\n    }\n    volume\n    generalConditionsPercentage\n    budgetedLaborCosts\n    milestones {\n        name\n        date\n    }\n    comments\n    source\n}",
+        "fragmentId": "syncProjectFromRandButton_ProjectFragment"
+      },
+      {
+        "id": "ProjectsGridPart_ScenarioFragment",
+        "title": "ProjectsGridPart_ScenarioFragment",
+        "description": "",
+        "code": "fragment ProjectsGridPart_ScenarioFragment on Scenario\n@argumentDefinitions(\n    projectFilters: { type: \"ProjectWithAssignmentsFiltersInput\" }\n    personOnAssignmentFilters: { type: \"PersonOnAssignmentFiltersInput\" }\n) {\n    id\n    ...projectsGridPartContent_ScenarioFragment\n        @arguments(\n            projectFilters: $projectFilters\n            personOnAssignmentFilters: $personOnAssignmentFilters\n        )\n    ...updateAssignmentsFromDynamicsButton_ScenarioFragment\n    ...projectViewFiltersPart_ScenarioFragment\n    ...syncWithRandPreconDwhButton_ScenarioFragment\n    ...loadPursuitProjectsFromRandDwhButton_ScenarioFragment\n}",
+        "fragmentId": "ProjectsGridPart_ScenarioFragment"
+      },
+      {
+        "id": "projectsGridPartContent_ScenarioFragment",
+        "title": "projectsGridPartContent_ScenarioFragment",
+        "description": "",
+        "code": "fragment projectsGridPartContent_ScenarioFragment on Scenario\n@argumentDefinitions(\n    projectFilters: { type: \"ProjectWithAssignmentsFiltersInput\" }\n    personOnAssignmentFilters: { type: \"PersonOnAssignmentFiltersInput\" }\n) {\n    id\n    ...projectsGridPartContent_ScenarioRefetchableFragment\n        @arguments(\n            projectFilters: $projectFilters\n            personOnAssignmentFilters: $personOnAssignmentFilters\n        )\n    ...addProjectToScenarioCard_ScenarioFragment\n        @arguments(\n            projectFilters: $projectFilters\n            personOnAssignmentFilters: $personOnAssignmentFilters\n        )\n    ...projectCard_ScenarioFragment\n}",
+        "fragmentId": "projectsGridPartContent_ScenarioFragment"
+      },
+      {
+        "id": "updateAssignmentsFromDynamicsButton_ScenarioFragment",
+        "title": "updateAssignmentsFromDynamicsButton_ScenarioFragment",
+        "description": "",
+        "code": "fragment updateAssignmentsFromDynamicsButton_ScenarioFragment on Scenario {\n    id\n}",
+        "fragmentId": "updateAssignmentsFromDynamicsButton_ScenarioFragment"
+      },
+      {
+        "id": "projectViewFiltersPart_ScenarioFragment",
+        "title": "projectViewFiltersPart_ScenarioFragment",
+        "description": "",
+        "code": "fragment projectViewFiltersPart_ScenarioFragment on Scenario {\n    id\n}",
+        "fragmentId": "projectViewFiltersPart_ScenarioFragment"
+      },
+      {
+        "id": "syncWithRandPreconDwhButton_ScenarioFragment",
+        "title": "syncWithRandPreconDwhButton_ScenarioFragment",
+        "description": "",
+        "code": "fragment syncWithRandPreconDwhButton_ScenarioFragment on Scenario {\n    id\n    isMasterPlan\n}",
+        "fragmentId": "syncWithRandPreconDwhButton_ScenarioFragment"
+      },
+      {
+        "id": "loadPursuitProjectsFromRandDwhButton_ScenarioFragment",
+        "title": "loadPursuitProjectsFromRandDwhButton_ScenarioFragment",
+        "description": "",
+        "code": "fragment loadPursuitProjectsFromRandDwhButton_ScenarioFragment on Scenario {\n    id\n    isMasterPlan\n}",
+        "fragmentId": "loadPursuitProjectsFromRandDwhButton_ScenarioFragment"
+      },
+      {
+        "id": "projectsGridPartContent_ScenarioRefetchableFragment",
+        "title": "projectsGridPartContent_ScenarioRefetchableFragment",
+        "description": "",
+        "code": "fragment projectsGridPartContent_ScenarioRefetchableFragment on Scenario\n@refetchable(queryName: \"projectsGridPartContent_Refetch\")\n@argumentDefinitions(\n    projectFilters: { type: \"ProjectWithAssignmentsFiltersInput\" }\n    personOnAssignmentFilters: { type: \"PersonOnAssignmentFiltersInput\" }\n) {\n    projects(\n        projectWithAssignmentsFilters: $projectFilters\n        peopleOnAssignmentFilters: $personOnAssignmentFilters\n    ) {\n        edges {\n            node {\n                id\n                ...projectsGridPartContent_ProjectInScenarioInlineFragment\n            }\n        }\n    }\n}",
+        "fragmentId": "projectsGridPartContent_ScenarioRefetchableFragment"
+      },
+      {
+        "id": "addProjectToScenarioCard_ScenarioFragment",
+        "title": "addProjectToScenarioCard_ScenarioFragment",
+        "description": "",
+        "code": "fragment addProjectToScenarioCard_ScenarioFragment on Scenario\n@argumentDefinitions(\n    projectFilters: { type: \"ProjectWithAssignmentsFiltersInput\" }\n    personOnAssignmentFilters: { type: \"PersonOnAssignmentFiltersInput\" }\n) {\n    ...addProjectToScenarioModal_ScenarioFragment\n        @arguments(\n            projectFilters: $projectFilters\n            personOnAssignmentFilters: $personOnAssignmentFilters\n        )\n    isMasterPlan\n}",
+        "fragmentId": "addProjectToScenarioCard_ScenarioFragment"
+      },
+      {
+        "id": "projectCard_ScenarioFragment",
+        "title": "projectCard_ScenarioFragment",
+        "description": "",
+        "code": "fragment projectCard_ScenarioFragment on Scenario {\n    id\n    ...AssignmentsInProjectList_ScenarioFragment\n\n    budget {\n        projectBudgets {\n            projectRef\n            maximumBudget\n            budgetedCost\n            utilizedCost\n        }\n    }\n}",
+        "fragmentId": "projectCard_ScenarioFragment"
+      },
+      {
+        "id": "projectsGridPartContent_ProjectInScenarioInlineFragment",
+        "title": "projectsGridPartContent_ProjectInScenarioInlineFragment",
+        "description": "",
+        "code": "fragment projectsGridPartContent_ProjectInScenarioInlineFragment on ProjectInScenario @inline {\n    id\n    project {\n        name\n        startDate\n        endDate\n        stage {\n            id\n            name\n        }\n\n        division {\n            id\n        }\n        region {\n            id\n        }\n    }\n    assignments {\n        edges {\n            node {\n                isExecutive\n                validAssignmentRoles {\n                    name\n                }\n                project {\n                    id\n                }\n                person {\n                    id\n                    assignmentRole {\n                        name\n                        id\n                    }\n                }\n            }\n        }\n    }\n    ...projectCard_ProjectFragment\n}",
+        "fragmentId": "projectsGridPartContent_ProjectInScenarioInlineFragment"
+      },
+      {
+        "id": "addProjectToScenarioModal_ScenarioFragment",
+        "title": "addProjectToScenarioModal_ScenarioFragment",
+        "description": "",
+        "code": "fragment addProjectToScenarioModal_ScenarioFragment on Scenario\n@argumentDefinitions(\n    projectFilters: { type: \"ProjectWithAssignmentsFiltersInput\" }\n    personOnAssignmentFilters: { type: \"PersonOnAssignmentFiltersInput\" }\n) {\n    id\n    projects(\n        projectWithAssignmentsFilters: $projectFilters\n        peopleOnAssignmentFilters: $personOnAssignmentFilters\n    ) {\n        edges {\n            node {\n                id\n                project {\n                    name\n                    source\n                }\n            }\n        }\n    }\n}",
+        "fragmentId": "addProjectToScenarioModal_ScenarioFragment"
+      },
+      {
+        "id": "AssignmentsInProjectList_ScenarioFragment",
+        "title": "AssignmentsInProjectList_ScenarioFragment",
+        "description": "",
+        "code": "fragment AssignmentsInProjectList_ScenarioFragment on Scenario {\n    id\n    ...AssignmentCard_ScenarioFragment\n    ...CheckScenarioPermissions_ScenarioFragment\n}",
+        "fragmentId": "AssignmentsInProjectList_ScenarioFragment"
+      },
+      {
+        "id": "projectCard_ProjectFragment",
+        "title": "projectCard_ProjectFragment",
+        "description": "",
+        "code": "fragment projectCard_ProjectFragment on ProjectInScenario {\n    id\n    project {\n        id\n        name\n        startDate\n        endDate\n        address {\n            lineOne\n            city\n            country\n            postalCode\n            state\n            latitude\n            longitude\n        }\n        stage {\n            color\n        }\n        ...editProjectButton_ProjectFragment\n        ...ProjectDateTimeDisplay_ProjectFragment\n    }\n    assignments {\n        edges {\n            node {\n                person {\n                    id\n                }\n            }\n        }\n    }\n    ...AssignmentsInProjectList_ProjectFragment\n    ...projectDetailsButton_ProjectInScenario\n}",
+        "fragmentId": "projectCard_ProjectFragment"
+      },
+      {
+        "id": "AssignmentCard_ScenarioFragment",
+        "title": "AssignmentCard_ScenarioFragment",
+        "description": "",
+        "code": "fragment AssignmentCard_ScenarioFragment on Scenario {\n    ...CheckScenarioPermissions_ScenarioFragment\n    ...personDetailsButton_ScenarioFragment\n    budget {\n        projectBudgets {\n            projectRef\n            assignmentBudgets {\n                assignmentRef\n                budgetedCost\n                utilizedCost\n                months\n            }\n        }\n    }\n    utilization {\n        ...personDetailsButton_ScenarioUtilizationFragment\n    }\n}",
+        "fragmentId": "AssignmentCard_ScenarioFragment"
+      },
+      {
+        "id": "CheckScenarioPermissions_ScenarioFragment",
+        "title": "CheckScenarioPermissions_ScenarioFragment",
+        "description": "",
+        "code": "fragment CheckScenarioPermissions_ScenarioFragment on Scenario {\n    isMasterPlan\n}",
+        "fragmentId": "CheckScenarioPermissions_ScenarioFragment"
+      },
+      {
+        "id": "AssignmentsInProjectList_ProjectFragment",
+        "title": "AssignmentsInProjectList_ProjectFragment",
+        "description": "",
+        "code": "fragment AssignmentsInProjectList_ProjectFragment on ProjectInScenario {\n    id\n\n    project {\n        ...CreateAssignmentButton_ProjectFragment\n        ...CreateAssignmentsFromTemplateButton_ProjectFragment\n    }\n    assignments {\n        __id\n        edges {\n            node {\n                id\n                endDate\n                ...AssignmentCard_AssignmentFragment\n                validAssignmentRoles {\n                    sortOrder\n                }\n            }\n        }\n    }\n}",
+        "fragmentId": "AssignmentsInProjectList_ProjectFragment"
+      },
+      {
+        "id": "projectDetailsButton_ProjectInScenario",
+        "title": "projectDetailsButton_ProjectInScenario",
+        "description": "",
+        "code": "fragment projectDetailsButton_ProjectInScenario on ProjectInScenario {\n    project {\n        id\n        name\n    }\n}",
+        "fragmentId": "projectDetailsButton_ProjectInScenario"
+      },
+      {
+        "id": "personDetailsButton_ScenarioFragment",
+        "title": "personDetailsButton_ScenarioFragment",
+        "description": "",
+        "code": "fragment personDetailsButton_ScenarioFragment on Scenario {\n    id\n    gapDays {\n        personGapDays {\n            personRef\n            gapDays\n        }\n    }\n}",
+        "fragmentId": "personDetailsButton_ScenarioFragment"
+      },
+      {
+        "id": "personDetailsButton_ScenarioUtilizationFragment",
+        "title": "personDetailsButton_ScenarioUtilizationFragment",
+        "description": "",
+        "code": "fragment personDetailsButton_ScenarioUtilizationFragment on ScenarioUtilization {\n    personUtilizations {\n        personRef\n        utilizationPercentage\n    }\n}",
+        "fragmentId": "personDetailsButton_ScenarioUtilizationFragment"
+      },
+      {
+        "id": "CreateAssignmentButton_ProjectFragment",
+        "title": "CreateAssignmentButton_ProjectFragment",
+        "description": "",
+        "code": "fragment CreateAssignmentButton_ProjectFragment on Project {\n    id\n    ...EditAssignmentForm_ProjectFragment\n}",
+        "fragmentId": "CreateAssignmentButton_ProjectFragment"
+      },
+      {
+        "id": "CreateAssignmentsFromTemplateButton_ProjectFragment",
+        "title": "CreateAssignmentsFromTemplateButton_ProjectFragment",
+        "description": "",
+        "code": "fragment CreateAssignmentsFromTemplateButton_ProjectFragment on Project {\n    id\n    ...EditAssignmentForm_ProjectFragment\n}",
+        "fragmentId": "CreateAssignmentsFromTemplateButton_ProjectFragment"
+      },
+      {
+        "id": "EditAssignmentForm_ProjectFragment",
+        "title": "EditAssignmentForm_ProjectFragment",
+        "description": "",
+        "code": "fragment EditAssignmentForm_ProjectFragment on Project {\n    startDate\n    endDate\n}",
+        "fragmentId": "EditAssignmentForm_ProjectFragment"
+      },
+      {
+        "id": "AssignmentCard_AssignmentFragment",
+        "title": "AssignmentCard_AssignmentFragment",
+        "description": "",
+        "code": "fragment AssignmentCard_AssignmentFragment on Assignment {\n    id\n    comment\n    person {\n        name\n        assignmentRole {\n            id\n        }\n        ...personDetailsButton_PersonFragment\n    }\n    project {\n        id\n        ...EditAssignmentButton_ProjectFragment\n    }\n    startDate\n    endDate\n    validAssignmentRoles {\n        id\n        name\n    }\n    isExecutive\n    ...EditAssignmentButton_AssignmentFragment\n    ...EmptyAssignmentButton_AssignmentFragment\n    ...DeleteAssignmentButton_AssignmentFragment\n}",
+        "fragmentId": "AssignmentCard_AssignmentFragment"
+      },
+      {
+        "id": "personDetailsButton_PersonFragment",
+        "title": "personDetailsButton_PersonFragment",
+        "description": "",
+        "code": "fragment personDetailsButton_PersonFragment on Person {\n    id\n    name\n    comment\n    assignmentRole {\n        name\n    }\n}",
+        "fragmentId": "personDetailsButton_PersonFragment"
+      },
+      {
+        "id": "EditAssignmentButton_ProjectFragment",
+        "title": "EditAssignmentButton_ProjectFragment",
+        "description": "",
+        "code": "fragment EditAssignmentButton_ProjectFragment on Project {\n    id\n    ...EditAssignmentForm_ProjectFragment\n}",
+        "fragmentId": "EditAssignmentButton_ProjectFragment"
+      },
+      {
+        "id": "EditAssignmentForm_ProjectFragment",
+        "title": "EditAssignmentForm_ProjectFragment",
+        "description": "",
+        "code": "fragment EditAssignmentForm_ProjectFragment on Project {\n    startDate\n    endDate\n}",
+        "fragmentId": "EditAssignmentForm_ProjectFragment"
+      },
+      {
+        "id": "EditAssignmentButton_AssignmentFragment",
+        "title": "EditAssignmentButton_AssignmentFragment",
+        "description": "",
+        "code": "fragment EditAssignmentButton_AssignmentFragment on Assignment {\n    id\n    startDate\n    endDate\n    person {\n        id\n    }\n    validAssignmentRoles {\n        id\n    }\n    importId\n    isExecutive\n    comment\n    weight\n}",
+        "fragmentId": "EditAssignmentButton_AssignmentFragment"
+      },
+      {
+        "id": "EmptyAssignmentButton_AssignmentFragment",
+        "title": "EmptyAssignmentButton_AssignmentFragment",
+        "description": "",
+        "code": "fragment EmptyAssignmentButton_AssignmentFragment on Assignment {\n    id\n    validAssignmentRoles {\n        name\n    }\n}",
+        "fragmentId": "EmptyAssignmentButton_AssignmentFragment"
+      },
+      {
+        "id": "DeleteAssignmentButton_AssignmentFragment",
+        "title": "DeleteAssignmentButton_AssignmentFragment",
+        "description": "",
+        "code": "fragment DeleteAssignmentButton_AssignmentFragment on Assignment {\n    id\n    validAssignmentRoles {\n        name\n    }\n}",
+        "fragmentId": "DeleteAssignmentButton_AssignmentFragment"
+      },
+      {
+        "id": "AssignmentProjectCard_AssignmentFragment",
+        "title": "AssignmentProjectCard_AssignmentFragment",
+        "description": "",
+        "code": "fragment AssignmentProjectCard_AssignmentFragment on Assignment {\n    id\n\n    project {\n        name\n        id\n        isDeactivated\n    }\n    person {\n        name\n    }\n    startDate\n    endDate\n    validAssignmentRoles {\n        id\n        name\n    }\n}",
+        "fragmentId": "AssignmentProjectCard_AssignmentFragment"
+      },
+      {
+        "id": "syncProjectFromDynamicsButton_SyncProjectFragment",
+        "title": "syncProjectFromDynamicsButton_SyncProjectFragment",
+        "description": "",
+        "code": "fragment syncProjectFromDynamicsButton_SyncProjectFragment on Project @inline {\n    id\n    name\n    address {\n        lineOne\n        city\n        postalCode\n        state\n        country\n        latitude\n        longitude\n    }\n    projectIdentifier\n    architectName\n    avatar {\n        id\n        url\n    }\n    skills {\n        id\n    }\n    clientName\n    startDate\n    endDate\n    division {\n        id\n    }\n    region {\n        id\n    }\n    stage {\n        id\n    }\n    volume\n    generalConditionsPercentage\n    budgetedLaborCosts\n    milestones {\n        name\n        date\n    }\n    comments\n}",
+        "fragmentId": "syncProjectFromDynamicsButton_SyncProjectFragment"
+      },
+      {
+        "id": "syncProjectFromDynamicsButton_SyncProjectFragment",
+        "title": "syncProjectFromDynamicsButton_SyncProjectFragment",
+        "description": "",
+        "code": "fragment syncProjectFromDynamicsButton_SyncProjectFragment on Project @inline {\n    id\n    name\n    address {\n        lineOne\n        city\n        postalCode\n        state\n        country\n        latitude\n        longitude\n    }\n    projectIdentifier\n    architectName\n    avatar {\n        id\n        url\n    }\n    skills {\n        id\n    }\n    clientName\n    startDate\n    endDate\n    division {\n        id\n    }\n    region {\n        id\n    }\n    stage {\n        id\n    }\n    volume\n    generalConditionsPercentage\n    budgetedLaborCosts\n    milestones {\n        name\n        date\n    }\n    comments\n}",
+        "fragmentId": "syncProjectFromDynamicsButton_SyncProjectFragment"
+      },
+      {
+        "id": "syncProjectFromRandButton_SyncProjectFragment",
+        "title": "syncProjectFromRandButton_SyncProjectFragment",
+        "description": "",
+        "code": "fragment syncProjectFromRandButton_SyncProjectFragment on Project @inline {\n    id\n    name\n    address {\n        lineOne\n        city\n        postalCode\n        state\n        country\n        latitude\n        longitude\n    }\n    projectIdentifier\n    architectName\n    avatar {\n        id\n        url\n    }\n    skills {\n        id\n    }\n    clientName\n    startDate\n    endDate\n    division {\n        id\n    }\n    region {\n        id\n    }\n    stage {\n        id\n    }\n    volume\n    generalConditionsPercentage\n    budgetedLaborCosts\n    milestones {\n        name\n        date\n    }\n    comments\n    source\n}",
+        "fragmentId": "syncProjectFromRandButton_SyncProjectFragment"
+      },
+      {
+        "id": "projectStagesTab_ProjectStageFragment",
+        "title": "projectStagesTab_ProjectStageFragment",
+        "description": "",
+        "code": "fragment projectStagesTab_ProjectStageFragment on ProjectStage {\n    id\n    name\n    sortOrder\n}",
+        "fragmentId": "projectStagesTab_ProjectStageFragment"
+      },
+      {
+        "id": "rosterListActiveFilters_RegionFragment",
+        "title": "rosterListActiveFilters_RegionFragment",
+        "description": "",
+        "code": "fragment rosterListActiveFilters_RegionFragment on Region {\n    id\n    name\n}",
+        "fragmentId": "rosterListActiveFilters_RegionFragment"
+      }
+    ]
+  }
+  
+  === Code Execution Successful ===

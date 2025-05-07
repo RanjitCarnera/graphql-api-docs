@@ -1,0 +1,36 @@
+{
+    "queries": [
+      {
+        "id": "SelectGroupField",
+        "title": "SelectGroupField_Query",
+        "description": "Query to fetch the first 50 groups from the Management system.",
+        "code": "query SelectGroupField_Query {\n    Management {\n        Groups(first: 50) {\n            edges {\n                node {\n                    id\n                    name\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "selectAccountGroupsField",
+        "title": "selectAccountGroupsField_Query",
+        "description": "Query to fetch the first 50 account groups from Admin's Management system.",
+        "code": "query selectAccountGroupsField_Query {\n    Admin {\n        Management {\n            AccountGroups(first: 50) {\n                edges {\n                    node {\n                        id\n                        name\n                    }\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      }
+    ],
+    "mutations": [
+      {
+        "id": "ChangeAccountGroupsAdminModal",
+        "title": "ChangeAccountGroupsAdminModal_ChangeMutation",
+        "description": "Mutation to change group associations for an account.",
+        "code": "mutation ChangeAccountGroupsAdminModal_ChangeMutation($input: ChangeAccountGroupsInput!) {\n    Admin {\n        Management {\n            changeAccountGroups(input: $input) {\n                account {\n                    groupAssociations {\n                        group {\n                            id\n                            name\n                        }\n                    }\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "DeleteGroupButton",
+        "title": "DeleteGroupButton_DeleteMutation",
+        "description": "Mutation to delete a group and remove its edges from the connection.",
+        "code": "mutation DeleteGroupButton_DeleteMutation($input: DeleteGroupInput!, $connections: [ID!]!) {\n    Management {\n        deleteGroup(input: $input) {\n            deletedIds @deleteEdge(connections: $connections)\n        }\n    }\n}",
+        "usedFragments": []
+      }
+    ],
+    "fragments": []
+  }
+  

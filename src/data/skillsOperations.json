@@ -1,0 +1,283 @@
+{
+  "queries": [
+      {
+        "id": "SkillsSelect_Query",
+        "title": "SkillsSelect_Query",
+        "description": "Query to fetch a list of skills filtered by skill category reference.",
+        "code": "query SkillsSelect_Query($filterBySkillCategoryRef: ID) {\n    Skills {\n        Skills(first: 250, filterBySkillCategoryRef: $filterBySkillCategoryRef) {\n            edges {\n                node {\n                    id\n                    name\n                    dimension {\n                        kind\n                        ... on BinaryDimension {\n                            kind\n                        }\n                        ... on NumericalDimension {\n                            kind\n                            dimensionCount\n                        }\n                    }\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "SkillsTable_Query",
+        "title": "SkillsTable_Query",
+        "description": "Query to fetch a paginated list of skills for display in a table view, filtered by name or skill category reference.",
+        "code": "query SkillsTable_Query($first: Int, $filterByName: String, $filterBySkillCategoryRef: ID) {\n    ...SkillsTable_SkillsListFragment\n        @arguments(\n            first: $first\n            filterByName: $filterByName\n            filterBySkillCategoryRef: $filterBySkillCategoryRef\n        )\n}",
+        "usedFragments": [
+          "SkillsTable_SkillsListFragment"
+        ]
+      },
+      {
+        "id": "skillAssessmentExecution_Query",
+        "title": "skillAssessmentExecution_Query",
+        "description": "Query to fetch details of a skill assessment execution, including person, supervisor, template, and skill assessments.",
+        "code": "query skillAssessmentExecution_Query($accountId: ID!, $assessmentId: ID!, $password: String) {\n    Assessment {\n        MyAssessment(accountId: $accountId, assessmentId: $assessmentId, password: $password) {\n            person {\n                id\n                name\n            }\n            supervisor {\n                id\n                name\n            }\n            template {\n                id\n                name\n                assessedSkills {\n                    id\n                    name\n                    skillCategory {\n                        id\n                        name\n                        sortOrder\n                        ...categoryForm_SkillCategoryFragment\n                    }\n                    dimension {\n                        ... on NumericalDimension {\n                            kind\n                            dimensionCount\n                            dimensionExplanations\n                        }\n                        ... on BinaryDimension {\n                            kind\n                        }\n                    }\n                }\n                ...categoryForm_AssessmentTemplateFragment\n            }\n            skillAssessments {\n                skill {\n                    id\n                    name\n                    dimension {\n                        ... on NumericalDimension {\n                            kind\n                            dimensionCount\n                            dimensionExplanations\n                        }\n                        ... on BinaryDimension {\n                            kind\n                        }\n                    }\n                }\n                value {\n                    ... on NumericalAssessmentValue {\n                        kind\n                        number\n                    }\n                    ... on BinaryAssessmentValue {\n                        kind\n                        hasSkill\n                    }\n                }\n            }\n            status {\n                kind\n                ... on InProgress {\n                    kind\n                    lastUpdate\n                }\n                ... on Finished {\n                    kind\n                    finishedAt\n                }\n            }\n            ...categoryForm_AssessmentFragment\n            ...navigation_AssessmentFragment\n            ...skillAssessmentExecution_AssessmentFragment\n        }\n    }\n}",
+        "usedFragments": [
+          "categoryForm_SkillCategoryFragment",
+          "categoryForm_AssessmentTemplateFragment",
+          "categoryForm_AssessmentFragment",
+          "navigation_AssessmentFragment",
+          "skillAssessmentExecution_AssessmentFragment"
+        ]
+      },
+      {
+        "id": "skillMultiSelect_Query",
+        "title": "skillMultiSelect_Query",
+        "description": "Query to fetch a list of skills filtered by name or specific IDs to always include.",
+        "code": "query skillMultiSelect_Query($filterByName: String, $alwaysIncludeIds: [ID!]) {\n    Skills {\n        Skills(first: 250, filterByName: $filterByName, alwaysIncludeIds: $alwaysIncludeIds) {\n            edges {\n                node {\n                    ...skillMultiSelect_SkillFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "skillMultiSelect_SkillFragment"
+        ]
+      },
+      {
+        "id": "skillMultiSelectV2_Query",
+        "title": "skillMultiSelectV2_Query",
+        "description": "Query to fetch a list of skills filtered by name or specific IDs to always include, with additional skill category details.",
+        "code": "query skillMultiSelectV2_Query($filterByName: String, $alwaysIncludeIds: [ID!]) {\n    Skills {\n        Skills(first: 250, filterByName: $filterByName, alwaysIncludeIds: $alwaysIncludeIds) {\n            edges {\n                node {\n                    ...skillMultiSelectV2_SkillFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "skillMultiSelectV2_SkillFragment"
+        ]
+      },
+      {
+        "id": "editPersonSkillAssociationsModalContent_SkillsQuery",
+        "title": "editPersonSkillAssociationsModalContent_SkillsQuery",
+        "description": "Query to fetch a list of skills for editing person-skill associations.",
+        "code": "query editPersonSkillAssociationsModalContent_SkillsQuery {\n    Skills {\n        Skills(first: 200) {\n            edges {\n                node {\n                    ...editPersonSkillAssociationsModalContent_SkillInlineFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "editPersonSkillAssociationsModalContent_SkillInlineFragment"
+        ]
+      }
+    ],
+    "mutations": [
+      {
+        "id": "DeleteSkillsButton_DeleteMutation",
+        "title": "DeleteSkillsButton_DeleteMutation",
+        "description": "Mutation to delete skills and remove them from associated connections.",
+        "code": "mutation DeleteSkillsButton_DeleteMutation($input: DeleteSkillInput!, $connections: [ID!]!) {\n    Skills {\n        deleteSkill(input: $input) {\n            deletedIds @deleteEdge(connections: $connections)\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "ExportSkillsButton_ExportMutation",
+        "title": "ExportSkillsButton_ExportMutation",
+        "description": "Mutation to export skills and retrieve the file URL.",
+        "code": "mutation ExportSkillsButton_ExportMutation {\n    Skills {\n        exportSkills(input: {}) {\n            file {\n                url\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "ImportSkillsButton_ImportMutation",
+        "title": "ImportSkillsButton_ImportMutation",
+        "description": "Mutation to import skills from a file and retrieve the result details.",
+        "code": "mutation ImportSkillsButton_ImportMutation($input: ImportSkillsInput!) {\n    Skills {\n        importSkills(input: $input) {\n            result {\n                editedEntities\n                newEntities\n                issues {\n                    row\n                    issue\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "createSkillButton_CreateMutation",
+        "title": "createSkillButton_CreateMutation",
+        "description": "Mutation to create a new skill and append it to a connection.",
+        "code": "mutation createSkillButton_CreateMutation($input: CreateSkillInput!, $connections: [ID!]!) {\n    Skills {\n        createSkill(input: $input) {\n            edge @appendEdge(connections: $connections) {\n                node {\n                    id\n                    ...editSkillButton_SkillFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "editSkillButton_SkillFragment"
+        ]
+      },
+      {
+        "id": "editBinarySkillAssociationModal_AssociateSkillMutation",
+        "title": "editBinarySkillAssociationModal_AssociateSkillMutation",
+        "description": "Edit mutation to associate a skill with a person in the binary skill association modal.",
+        "code": "mutation editBinarySkillAssociationModal_AssociateSkillMutation($input: AssociateSkillInput!) {\n    Skills {\n        associateSkill(input: $input) {\n            edge {\n                node {\n                    skills(first: 100) {\n                        edges {\n                            node {\n                                data {\n                                    skill {\n                                        id\n                                        name\n                                        dimension {\n                                            kind\n                                            ... on BinaryDimension {\n                                                kind\n                                            }\n                                            ... on NumericalDimension {\n                                                kind\n                                            }\n                                        }\n                                    }\n                                    value {\n                                        ... on NumericalAssessmentValue {\n                                            kind\n                                            number\n                                        }\n                                        ... on BinaryAssessmentValue {\n                                            hasSkill\n                                            kind\n                                        }\n                                    }\n                                }\n                                ...editSkillAssociationModal_SkillAssociationFragment\n                            }\n                        }\n                    }\n                    ...EditPersonButton_PersonFragment\n                    ...editPersonSkillAssociationsButton_PersonFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "editSkillAssociationModal_SkillAssociationFragment",
+          "EditPersonButton_PersonFragment",
+          "editPersonSkillAssociationsButton_PersonFragment"
+        ]
+      },
+      {
+        "id": "editBinarySkillAssociationModal_DisassociateSkillMutation",
+        "title": "editBinarySkillAssociationModal_DisassociateSkillMutation",
+        "description": "Edit mutation to disassociate a skill from a person in the binary skill association modal.",
+        "code": "mutation editBinarySkillAssociationModal_DisassociateSkillMutation(\n    $input: DisassociateSkillInput!\n) {\n    Skills {\n        disassociateSkill(input: $input) {\n            edge {\n                node {\n                    skills(first: 100) {\n                        edges {\n                            node {\n                                data {\n                                    skill {\n                                        id\n                                        name\n                                        dimension {\n                                            kind\n                                            ... on BinaryDimension {\n                                                kind\n                                            }\n                                            ... on NumericalDimension {\n                                                kind\n                                            }\n                                        }\n                                    }\n                                    value {\n                                        ... on NumericalAssessmentValue {\n                                            kind\n                                            number\n                                        }\n                                        ... on BinaryAssessmentValue {\n                                            hasSkill\n                                            kind\n                                        }\n                                    }\n                                }\n                                ...editSkillAssociationModal_SkillAssociationFragment\n                            }\n                        }\n                    }\n                    ...EditPersonButton_PersonFragment\n                    ...editPersonSkillAssociationsButton_PersonFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "editSkillAssociationModal_SkillAssociationFragment",
+          "EditPersonButton_PersonFragment",
+          "editPersonSkillAssociationsButton_PersonFragment"
+        ]
+      },
+      {
+        "id": "editNumericalSkillAssociationModal_AssociateSkillMutation",
+        "title": "editNumericalSkillAssociationModal_AssociateSkillMutation",
+        "description": "Mutation to edit associate a skill with a person in the numerical skill association modal.",
+        "code": "mutation editNumericalSkillAssociationModal_AssociateSkillMutation(\n    $input: AssociateSkillInput!\n) {\n    Skills {\n        associateSkill(input: $input) {\n            edge {\n                node {\n                    skills(first: 100) {\n                        edges {\n                            node {\n                                data {\n                                    skill {\n                                        id\n                                        name\n                                        dimension {\n                                            kind\n                                            ... on BinaryDimension {\n                                                kind\n                                            }\n                                            ... on NumericalDimension {\n                                                kind\n                                            }\n                                        }\n                                    }\n                                    value {\n                                        ... on NumericalAssessmentValue {\n                                            number\n                                            kind\n                                        }\n                                        ... on BinaryAssessmentValue {\n                                            hasSkill\n                                            kind\n                                        }\n                                    }\n                                }\n                                ...editSkillAssociationModal_SkillAssociationFragment\n                            }\n                        }\n                    }\n                    ...EditPersonButton_PersonFragment\n                    ...editPersonSkillAssociationsButton_PersonFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "editSkillAssociationModal_SkillAssociationFragment",
+          "EditPersonButton_PersonFragment",
+          "editPersonSkillAssociationsButton_PersonFragment"
+        ]
+      },
+      {
+        "id": "editNumericalSkillAssociationModal_DisassociateSkillMutation",
+        "title": "editNumericalSkillAssociationModal_DisassociateSkillMutation",
+        "description": "Mutation to edit numerical skill association and disassociate a skill.",
+        "code": "mutation editNumericalSkillAssociationModal_DisassociateSkillMutation(\n    $input: DisassociateSkillInput!\n) {\n    Skills {\n        disassociateSkill(input: $input) {\n            edge {\n                node {\n                    skills(first: 100) {\n                        edges {\n                            node {\n                                data {\n                                    skill {\n                                        id\n                                        name\n                                        dimension {\n                                            kind\n                                            ... on BinaryDimension {\n                                                kind\n                                            }\n                                            ... on NumericalDimension {\n                                                kind\n                                            }\n                                        }\n                                    }\n                                    value {\n                                        ... on NumericalAssessmentValue {\n                                            number\n                                            kind\n                                        }\n                                        ... on BinaryAssessmentValue {\n                                            hasSkill\n                                            kind\n                                        }\n                                    }\n                                }\n                                ...editSkillAssociationModal_SkillAssociationFragment\n                            }\n                        }\n                    }\n                    ...EditPersonButton_PersonFragment\n                    ...editPersonSkillAssociationsButton_PersonFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "editSkillAssociationModal_SkillAssociationFragment",
+          "EditPersonButton_PersonFragment",
+          "editPersonSkillAssociationsButton_PersonFragment"
+        ]
+      },
+      {
+        "id": "editSkillButton_CreateMutation",
+        "title": "editSkillButton_CreateMutation",
+        "description": "Mutation to create a new skill and append it to a connection.",
+        "code": "mutation editSkillButton_CreateMutation($input: CreateSkillInput!, $connections: [ID!]!) {\n    Skills {\n        createSkill(input: $input) {\n            edge @appendEdge(connections: $connections) {\n                node {\n                    id\n                    ...editSkillButton_SkillFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "editSkillButton_SkillFragment"
+        ]
+      },
+      {
+        "id": "editSkillButton_EditMutation",
+        "title": "editSkillButton_EditMutation",
+        "description": "Mutation to edit an existing skill and update its details.",
+        "code": "mutation editSkillButton_EditMutation($input: EditSkillInput!) {\n    Skills {\n        editSkill(input: $input) {\n            edge {\n                node {\n                    id\n                    ...editSkillButton_SkillFragment\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "editSkillButton_SkillFragment"
+        ]
+      }
+    ],
+    "fragments": [
+      {
+          "id": "SkillsTable_SkillsListFragment",
+          "title": "SkillsTable_SkillsListFragment",
+          "description": "Fragment to fetch a paginated list of skills for a table view, including pagination, sorting, and skill category details.",
+          "code": "fragment SkillsTable_SkillsListFragment on Query\n@refetchable(queryName: \"SkillsTable_Refetch\")\n@argumentDefinitions(\n    first: { type: \"Int\", defaultValue: 20 }\n    after: { type: \"String\" }\n    filterByName: { type: \"String\" }\n    filterBySkillCategoryRef: { type: \"ID\" }\n) {\n    Skills {\n        Skills(\n            first: $first\n            after: $after\n            filterByName: $filterByName\n            filterBySkillCategoryRef: $filterBySkillCategoryRef\n        ) @connection(key: \"SkillsTable_Skills\") {\n            __id\n            pageInfo {\n                endCursor\n                hasPreviousPage\n                hasNextPage\n                startCursor\n            }\n            edges {\n                node {\n                    id\n                    name\n                    skillCategory {\n                        id\n                        name\n                        sortOrder\n                    }\n                    ...editSkillButton_SkillFragment\n                }\n            }\n        }\n    }\n}",
+          "fragmentId": "SkillsTable_SkillsListFragment"
+      },
+      {
+          "id": "editSkillButton_SkillFragment",
+          "title": "editSkillButton_SkillFragment",
+          "description": "Fragment to fetch details of a skill for editing purposes, including its category, description, and dimension.",
+          "code": "fragment editSkillButton_SkillFragment on Skill {\n    id\n    name\n    skillCategory {\n        id\n    }\n    description\n    dimension {\n        kind\n        ... on NumericalDimension {\n            kind\n            dimensionCount\n            dimensionExplanations\n        }\n        ... on BinaryDimension {\n            kind\n        }\n    }\n}",
+          "fragmentId": "editSkillButton_SkillFragment"
+      },
+      {
+          "id": "categoryForm_AssessmentFragment",
+          "title": "categoryForm_AssessmentFragment",
+          "description": "Fragment to fetch details of an assessment, including skill assessments, template, and assessed skills.",
+          "code": "fragment categoryForm_AssessmentFragment on Assessment {\n    skillAssessments {\n        value {\n            kind\n            ... on BinaryAssessmentValue {\n                hasSkill\n                kind\n            }\n            ... on NumericalAssessmentValue {\n                number\n                kind\n            }\n        }\n    }\n    template {\n        assessedSkills {\n            id\n            name\n            dimension {\n                ... on BinaryDimension {\n                    kind\n                }\n                ... on NumericalDimension {\n                    kind\n                    dimensionCount\n                    dimensionExplanations\n                }\n            }\n            description\n            skillCategory {\n                id\n                name\n                sortOrder\n            }\n            ...numericalSkillTooltipIcon_SkillFragment\n        }\n        name\n    }\n}",
+          "fragmentId": "categoryForm_AssessmentFragment"
+      },
+      {
+          "id": "navigation_AssessmentFragment",
+          "title": "navigation_AssessmentFragment",
+          "description": "Fragment to fetch navigation-related details of an assessment, including ID, supervisor, template, and status.",
+          "code": "fragment navigation_AssessmentFragment on Assessment {\n    id\n    supervisor {\n        name\n    }\n    template {\n        name\n    }\n    createdAt\n    person {\n        name\n    }\n    status {\n        kind\n        ... on Finished {\n            kind\n        }\n        ... on PdfGenerated {\n            kind\n            file {\n                url\n                name\n            }\n        }\n    }\n\n    skillAssessments {\n        value {\n            ... on NumericalAssessmentValue {\n                number\n                kind\n            }\n            ... on BinaryAssessmentValue {\n                hasSkill\n                kind\n            }\n        }\n        skill {\n            id\n            name\n            dimension {\n                ... on NumericalDimension {\n                    kind\n                    dimensionCount\n                }\n                ... on BinaryDimension {\n                    kind\n                }\n            }\n            skillCategory {\n                id\n                name\n            }\n        }\n    }\n}",
+          "fragmentId": "navigation_AssessmentFragment"
+      },
+      {
+          "id": "skillAssessmentExecution_AssessmentFragment",
+          "title": "skillAssessmentExecution_AssessmentFragment",
+          "description": "Fragment to fetch detailed information about an assessment during execution, including status, template, and skill assessments.",
+          "code": "fragment skillAssessmentExecution_AssessmentFragment on Assessment {\n    id\n    status {\n        kind\n        ... on InProgress {\n            kind\n        }\n        ... on PdfGenerated {\n            kind\n        }\n        ... on Finished {\n            kind\n        }\n    }\n    template {\n        assessedSkills {\n            id\n            dimension {\n                ... on BinaryDimension {\n                    kind\n                }\n                ... on NumericalDimension {\n                    dimensionCount\n                    kind\n                }\n            }\n        }\n    }\n    skillAssessments {\n        skill {\n            id\n        }\n        value {\n            kind\n            ... on BinaryAssessmentValue {\n                kind\n                hasSkill\n            }\n            ... on NumericalAssessmentValue {\n                kind\n                number\n            }\n        }\n    }\n    status {\n        kind\n        ... on InProgress {\n            kind\n        }\n        ... on PdfGenerated {\n            kind\n        }\n    }\n}",
+          "fragmentId": "skillAssessmentExecution_AssessmentFragment"
+      },
+      {
+          "id": "numericalSkillTooltipIcon_SkillFragment",
+          "title": "numericalSkillTooltipIcon_SkillFragment",
+          "description": "Fragment to fetch details of a skill's numerical dimension, including explanations and count.",
+          "code": "fragment numericalSkillTooltipIcon_SkillFragment on Skill {\n    dimension {\n        kind\n        ... on NumericalDimension {\n            dimensionExplanations\n            dimensionCount\n        }\n    }\n}",
+          "fragmentId": "numericalSkillTooltipIcon_SkillFragment"
+      },
+      {
+          "id": "skillMultiSelect_SkillFragment",
+          "title": "skillMultiSelect_SkillFragment",
+          "description": "Fragment to fetch basic details of a skill for multi-select functionality, including ID and name.",
+          "code": "fragment skillMultiSelect_SkillFragment on Skill @inline {\n    name\n    id\n}",
+          "fragmentId": "skillMultiSelect_SkillFragment"
+      },
+      {
+        "id": "skillMultiSelectV2_SkillFragment",
+        "title": "skillMultiSelectV2_SkillFragment",
+        "description": "Fragment to fetch basic details of a skill for multi-select functionality, including ID, name, and skill category.",
+        "code": "fragment skillMultiSelectV2_SkillFragment on Skill @inline {\n    name\n    id\n    skillCategory {\n        id\n        name\n    }\n}",
+        "fragmentId": "skillMultiSelectV2_SkillFragment"
+    },
+    {
+        "id": "editSkillAssociationModal_SkillAssociationFragment",
+        "title": "editSkillAssociationModal_SkillAssociationFragment",
+        "description": "Fragment to fetch details of a skill association, including skill information, category, dimension, and value.",
+        "code": "fragment editSkillAssociationModal_SkillAssociationFragment on SkillAssociation {\n    id\n    data {\n        value {\n            ... on NumericalAssessmentValue {\n                kind\n                number\n            }\n            ... on BinaryAssessmentValue {\n                kind\n                hasSkill\n            }\n        }\n        skill {\n            name\n            skillCategory {\n                name\n            }\n            dimension {\n                ... on BinaryDimension {\n                    kind\n                }\n                ... on NumericalDimension {\n                    dimensionCount\n                    kind\n                }\n            }\n        }\n    }\n\n    ...editNumericalSkillAssociationModal_SkillAssociationFragment\n    ...editBinarySkillAssociationModal_SkillAssociationFragment\n}",
+        "fragmentId": "editSkillAssociationModal_SkillAssociationFragment"
+    },
+    {
+        "id": "EditPersonButton_PersonFragment",
+        "title": "EditPersonButton_PersonFragment",
+        "description": "Fragment to fetch details of a person for editing purposes, including nested modal fragments.",
+        "code": "fragment EditPersonButton_PersonFragment on Person {\n    ...EditPersonModal_PersonFragment\n}",
+        "fragmentId": "EditPersonButton_PersonFragment"
+    },
+    {
+        "id": "EditPersonModal_PersonFragment",
+        "title": "EditPersonModal_PersonFragment",
+        "description": "Fragment to fetch detailed information about a person, including contact details, roles, and address.",
+        "code": "fragment EditPersonModal_PersonFragment on Person {\n    id\n    name\n    email\n    phone\n    salary\n    laborBurdenMultiplier\n    startDate\n    assignmentRole {\n        id\n        name\n    }\n    associatedWithDivisions {\n        id\n        name\n    }\n    associatedWithRegions {\n        id\n        name\n    }\n    address {\n        lineOne\n        postalCode\n        city\n        state\n        country\n        longitude\n        latitude\n    }\n    comment\n    avatar {\n        id\n        url\n    }\n}",
+        "fragmentId": "EditPersonModal_PersonFragment"
+    },
+    {
+        "id": "editPersonSkillAssociationsButton_PersonFragment",
+        "title": "editPersonSkillAssociationsButton_PersonFragment",
+        "description": "Fragment to fetch details of a person for editing skill associations, including nested modal fragments.",
+        "code": "fragment editPersonSkillAssociationsButton_PersonFragment on Person {\n    name\n    ...editPersonSkillAssociationsModalContent_PersonFragment\n}",
+        "fragmentId": "editPersonSkillAssociationsButton_PersonFragment"
+    },
+    {
+        "id": "editPersonSkillAssociationsModalContent_PersonFragment",
+        "title": "editPersonSkillAssociationsModalContent_PersonFragment",
+        "description": "Fragment to fetch details of a person and their skills for editing skill associations.",
+        "code": "fragment editPersonSkillAssociationsModalContent_PersonFragment on Person {\n    id\n    name\n    skills(first: 100) @connection(key: \"Person_skills\") {\n        __id\n        edges {\n            node {\n                id\n                data {\n                    value {\n                        ... on NumericalAssessmentValue {\n                            kind\n                            number\n                        }\n                        ... on BinaryAssessmentValue {\n                            hasSkill\n                            kind\n                        }\n                    }\n                    skill {\n                        id\n                        name\n                        dimension {\n                            ... on NumericalDimension {\n                                kind\n                                dimensionCount\n                                dimensionExplanations\n                            }\n                            ... on BinaryDimension {\n                                kind\n                            }\n                        }\n                    }\n                }\n                ...editSkillAssociationModal_SkillAssociationFragment\n            }\n        }\n    }\n    ...editSkillAssociationModal_PersonFragment\n}",
+        "fragmentId": "editPersonSkillAssociationsModalContent_PersonFragment"
+    },
+    {
+        "id": "editSkillAssociationModal_PersonFragment",
+        "title": "editSkillAssociationModal_PersonFragment",
+        "description": "Fragment to fetch details of a person for skill association editing, including nested fragments for numerical and binary associations.",
+        "code": "fragment editSkillAssociationModal_PersonFragment on Person {\n    name\n    id\n    ...editNumericalSkillAssociationModal_PersonFragment\n    ...editBinarySkillAssociationModal_PersonFragment\n}",
+        "fragmentId": "editSkillAssociationModal_PersonFragment"
+    },
+    {
+        "id": "editNumericalSkillAssociationModal_PersonFragment",
+        "title": "editNumericalSkillAssociationModal_PersonFragment",
+        "description": "Fragment to fetch basic details of a person for numerical skill association editing.",
+        "code": "fragment editNumericalSkillAssociationModal_PersonFragment on Person {\n    id\n    name\n}",
+        "fragmentId": "editNumericalSkillAssociationModal_PersonFragment"
+    },
+    {
+        "id": "editBinarySkillAssociationModal_PersonFragment",
+        "title": "editBinarySkillAssociationModal_PersonFragment",
+        "description": "Fragment to fetch basic details of a person for binary skill association editing.",
+        "code": "fragment editBinarySkillAssociationModal_PersonFragment on Person {\n    id\n    name\n}",
+        "fragmentId": "editBinarySkillAssociationModal_PersonFragment"
+    },
+    {
+        "id": "editNumericalSkillAssociationModal_SkillAssociationFragment",
+        "title": "editNumericalSkillAssociationModal_SkillAssociationFragment",
+        "description": "Fragment to fetch details of a numerical skill association, including skill information, category, and value.",
+        "code": "fragment editNumericalSkillAssociationModal_SkillAssociationFragment on SkillAssociation {\n    id\n    data {\n        skill {\n            id\n            name\n            skillCategory {\n                name\n            }\n            dimension {\n                ... on BinaryDimension {\n                    kind\n                }\n                ... on NumericalDimension {\n                    dimensionCount\n                    kind\n                }\n            }\n        }\n        value {\n            ... on BinaryAssessmentValue {\n                hasSkill\n                kind\n            }\n            ... on NumericalAssessmentValue {\n                number\n                kind\n            }\n        }\n    }\n}",
+        "fragmentId": "editNumericalSkillAssociationModal_SkillAssociationFragment"
+    },
+    {
+        "id": "editBinarySkillAssociationModal_SkillAssociationFragment",
+        "title": "editBinarySkillAssociationModal_SkillAssociationFragment",
+        "description": "Fragment to fetch details of a binary skill association, including skill information, category, and value.",
+        "code": "fragment editBinarySkillAssociationModal_SkillAssociationFragment on SkillAssociation {\n    id\n    data {\n        value {\n            ... on BinaryAssessmentValue {\n                kind\n                hasSkill\n            }\n            ... on NumericalAssessmentValue {\n                kind\n                number\n            }\n        }\n        skill {\n            id\n            name\n            skillCategory {\n                name\n            }\n            dimension {\n                ... on BinaryDimension {\n                    kind\n                }\n                ... on NumericalDimension {\n                    dimensionCount\n                    kind\n                }\n            }\n        }\n    }\n}",
+        "fragmentId": "editBinarySkillAssociationModal_SkillAssociationFragment"
+    }
+    ]
+  }
+  

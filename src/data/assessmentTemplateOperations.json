@@ -1,0 +1,59 @@
+
+{
+  "queries": [
+    {
+      "id": "selectSkillAssessmentTemplates",
+      "title": "selectSkillAssessmentTemplates_AssessmentTemplatesQuery",
+      "description": "Retrieves a list of assessment templates for a specific account with basic template information.",
+      "code": "query selectSkillAssessmentTemplates_AssessmentTemplatesQuery($accountId: ID!) {\n  Assessment {\n    AssessmentTemplates(accountId: $accountId, first: 20) {\n      edges {\n        node {\n          name\n          id\n        }\n      }\n    }\n  }\n}",
+      "usedFragments": []
+    },
+    {
+      "id": "skillAssessmentTemplatesTable",
+      "title": "skillAssessmentTemplatesTable_Query",
+      "description": "Fetches detailed assessment templates with pagination support and filtering capabilities.\nUses the skillAssessmentTemplatesTable_AssessmentTemplatesFragment.",
+      "code": "query skillAssessmentTemplatesTable_Query($first: Int, $filterByName: String) {\n  Viewer {\n    Auth {\n      currentAccount {\n        id\n      }\n    }\n  }\n  ...skillAssessmentTemplatesTable_AssessmentTemplatesFragment\n    @arguments(first: $first, filterByName: $filterByName)\n}",
+      "usedFragments": ["skillAssessmentTemplatesTable_AssessmentTemplatesFragment"]
+    }
+  ],
+  "mutations": [
+    {
+      "id": "createTemplateButton",
+      "title": "createTemplateButton_CreateAssessmentTemplateMutation",
+      "description": "Creates a new assessment template with associated roles, skills, and distribution list.\nUses the skillAssessmentTemplatesTable_AssessmentTemplateFragment.",
+      "code": "mutation createTemplateButton_CreateAssessmentTemplateMutation(\n  $input: CreateAssessmentTemplateInput!\n  $connections: [ID!]!\n) {\n  Assessment {\n    createAssessmentTemplate(input: $input) {\n      edge @appendEdge(connections: $connections) {\n        node {\n          name\n          associatedRoles { id }\n          assessedSkills { id }\n          ...skillAssessmentTemplatesTable_AssessmentTemplateFragment\n        }\n      }\n    }\n  }\n}",
+      "usedFragments": ["skillAssessmentTemplatesTable_AssessmentTemplateFragment"]
+    },
+    {
+      "id": "editTemplateButton",
+      "title": "editTemplateButton_EditAssessmentTemplateMutation",
+      "description": "Modifies an existing assessment template, updating its properties and associations.\nUses the skillAssessmentTemplatesTable_AssessmentTemplateFragment.",
+      "code": "mutation editTemplateButton_EditAssessmentTemplateMutation(\n  $input: EditAssessmentTemplateInput!\n  $connections: [ID!]!\n) {\n  Assessment {\n    editAssessmentTemplate(input: $input) {\n      edge @appendEdge(connections: $connections) {\n        node {\n          name\n          associatedRoles { id }\n          assessedSkills { id }\n          ...skillAssessmentTemplatesTable_AssessmentTemplateFragment\n        }\n      }\n    }\n  }\n}",
+      "usedFragments": ["skillAssessmentTemplatesTable_AssessmentTemplateFragment"]
+    },
+    {
+      "id": "deleteAssessmentTemplatesButton",
+      "title": "deleteAssessmentTemplatesButton_DeleteAssessmentTemplateMutation",
+      "description": "Deletes an assessment template and updates the connection edges.",
+      "code": "mutation deleteAssessmentTemplatesButton_DeleteAssessmentTemplateMutation(\n  $input: DeleteAssessmentTemplateInput!\n  $connections: [ID!]!\n) {\n  Assessment {\n    deleteAssessmentTemplate(input: $input) {\n      deletedIds @deleteEdge(connections: $connections)\n    }\n  }\n}",
+      "usedFragments": []
+    }
+  ],
+  "fragments": [
+    {
+      "id": "skillAssessmentTemplatesTable",
+      "title": "skillAssessmentTemplatesTable_AssessmentTemplateFragment",
+      "description": "Fragment containing detailed assessment template information including associated roles and skills.",
+      "code": "fragment skillAssessmentTemplatesTable_AssessmentTemplateFragment on AssessmentTemplate\n@inline {\n  id\n  name\n  associatedRoles {\n    name\n    id\n  }\n  assessedSkills {\n    name\n    id\n  }\n  distributionList {\n    emails\n    role\n  }\n  ...editTemplateButton_AssessmentTemplateFragment\n}",
+      "fragmentId": "skillAssessmentTemplatesTable_AssessmentTemplatesFragment"
+    },
+    {
+      "id": "editTemplateButton",
+      "title": "editTemplateButton_AssessmentTemplateFragment",
+      "description": "Fragment for assessment template editing, including detailed information about skills and roles.",
+      "code": "fragment editTemplateButton_AssessmentTemplateFragment on AssessmentTemplate {\n  name\n  id\n  assessedSkills {\n    id\n    name\n    skillCategory {\n      id\n      name\n    }\n  }\n  associatedRoles {\n    id\n    name\n  }\n  distributionList {\n    role\n    emails\n  }\n}",
+      "fragmentId": "editTemplateButton_AssessmentTemplateFragment"
+    }
+  ]
+}
+

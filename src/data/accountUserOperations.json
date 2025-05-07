@@ -1,0 +1,366 @@
+
+  {
+    "queries": [
+      {
+        "id": "SelectUserField_Query",
+        "title": "SelectUserField_Query",
+        "description": "Query to fetch users with filters such as name, include ids, and exclude ids.",
+        "code": "query SelectUserField_Query(\n  $filterByName: String\n  $alwaysIncludeIds: [ID!]\n  $excludeIds: [ID!]\n) {\n  Admin {\n    Management {\n      UsersAdmin(\n        first: 20\n        filterByName: $filterByName\n        alwaysIncludeIds: $alwaysIncludeIds\n        excludeIds: $excludeIds\n      ) {\n        edges {\n          node {\n            id\n            ...SelectUserField_UserFragment\n          }\n        }\n      }\n    }\n  }\n}",
+        "usedFragments": ["SelectUserField_UserFragment"]
+      },
+      {
+        "id": "UsersTable_Query",
+        "title": "UsersTable_Query",
+        "description": "Main users table query with pagination.",
+        "code": "query UsersTable_Query($first: Int) {\n  ...UsersTable_UsersListFragment @arguments(first: $first)\n}",
+        "usedFragments": ["UsersTable_UsersListFragment"]
+      },
+      {
+        "id": "selectUserInAccountGroupsOfAccountAdminField_Query",
+        "title": "selectUserInAccountGroupsOfAccountAdminField_Query",
+        "description": "Query to select users in account groups of account admin.",
+        "code": "query selectUserInAccountGroupsOfAccountAdminField_Query($accountId: ID!) {\n  Admin {\n    Management {\n      UserInAccountGroupsInAccountAdmin(first: 50, accountId: $accountId) {\n        edges {\n          node {\n            id\n            name\n          }\n        }\n      }\n    }\n  }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "userInAccountGroupsTable_Query",
+        "title": "userInAccountGroupsTable_Query",
+        "description": "Query to fetch groups in account.",
+        "code": "query userInAccountGroupsTable_Query($first: Int) {\n  ...userInAccountGroupsTable_GroupListFragment @arguments(first: $first)\n}",
+        "usedFragments": ["userInAccountGroupsTable_GroupListFragment"]
+      },
+      {
+        "id": "usersInAccountAdminTable_Query",
+        "title": "usersInAccountAdminTable_Query",
+        "description": "Query to fetch users in account admin view.",
+        "code": "query usersInAccountAdminTable_Query($first: Int, $accountId: ID!) {\n  ...usersInAccountAdminTable_UsersInAccountListFragment\n    @arguments(first: $first, accountId: $accountId)\n}",
+        "usedFragments": ["usersInAccountAdminTable_UsersInAccountListFragment"]
+      },
+      {
+        "id": "usersInAccountTable_Query",
+        "title": "usersInAccountTable_Query",
+        "description": "Query to fetch users in account.",
+        "code": "query usersInAccountTable_Query($first: Int) {\n  ...usersInAccountTable_UsersInAccountListFragment @arguments(first: $first)\n}",
+        "usedFragments": ["usersInAccountTable_UsersInAccountListFragment"]
+      },
+      {
+        "id": "PermissionBasedNavigation_Query",
+        "title": "PermissionBasedNavigation_Query",
+        "description": "Query for current user permissions.",
+        "code": "query PermissionBasedNavigation_Query {\n  Viewer {\n    Auth {\n      currentUser {\n        ...PermissionBasedNavigation_CurrentUser\n      }\n    }\n  }\n}",
+        "usedFragments": ["PermissionBasedNavigation_CurrentUser"]
+      },
+      {
+        "id": "AcceptInvitationScreen_Query",
+        "title": "AcceptInvitationScreen_Query",
+        "description": "Query to fetch invitation data using token.",
+        "code": "query AcceptInvitationScreen_Query($token: String!) {\n  Auth {\n    InvitationByToken(token: $token) {\n      invitingUserName\n      accountName\n    }\n  }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "personalDataScreen",
+        "title": "personalDataScreen_Query",
+        "description": "Query to fetch personal data settings for the current user including budget visibility, volume per person, preferred view type, and two-factor authentication details.",
+        "code": "query personalDataScreen_Query {\n  ...ChangeShowBudgetForm_CurrentUser\n  ...volumePerPersonForm_CurrentUser\n  ...preferredViewTypeForm_CurrentUser\n  ...twoFactorAuthForm_QueryFragment\n}",
+        "usedFragments": [
+          "ChangeShowBudgetForm_CurrentUser",
+          "volumePerPersonForm_CurrentUser",
+          "preferredViewTypeForm_CurrentUser",
+          "twoFactorAuthForm_QueryFragment"
+        ]
+      }
+      
+    ],
+    "mutations": [
+      {
+      "id": "anonymizeUserButton",
+      "title": "AnonymizeUserButton_DeleteMutation",
+      "description": "Deletes a user and removes edges from the connection.",
+      "code": "mutation AnonymizeUserButton_DeleteMutation($input: DeleteUserInput!, $connections: [ID!]!) {\n  Admin {\n    Auth {\n      deleteUser(input: $input) {\n        deletedIds @deleteEdge(connections: $connections)\n        clientMutationId\n      }\n    }\n  }\n}",
+      "usedFragments": []
+    },
+    {
+      "id": "changeUserGroupsAdminModal",
+      "title": "ChangeUserGroupsAdminModal_ChangeMutation",
+      "description": "Changes groups for a user in account admin.",
+      "code": "mutation ChangeUserGroupsAdminModal_ChangeMutation($input: ChangeUserGroupsAdminInput!) {\n  Admin {\n    Management {\n      changeUserGroupsAdmin(input: $input) {\n        edge {\n          node {\n            id\n            ...ChangeUserGroupsAdminModal_UserInAccountFragment\n          }\n        }\n      }\n    }\n  }\n}",
+      "usedFragments": ["ChangeUserGroupsAdminModal_UserInAccountFragment"]
+    },
+    {
+      "id": "editUserButton",
+      "title": "EditUserButton_EditMutation",
+      "description": "Edits a user's basic information.",
+      "code": "mutation EditUserButton_EditMutation($input: EditUserInput!) {\n  Admin {\n    Auth {\n      editUser(input: $input) {\n        user {\n          ...EditUserButton_UserFragment\n        }\n      }\n    }\n  }\n}",
+      "usedFragments": ["EditUserButton_UserFragment"]
+    },
+    {
+      "id": "inviteUserToAccountModal",
+      "title": "InviteUserToAccountModal_InviteMutation",
+      "description": "Invites a user to an account and appends the result to the connection.",
+      "code": "mutation InviteUserToAccountModal_InviteMutation(\n  $input: InviteUserToAccountInput!\n  $connections: [ID!]!\n) {\n  Management {\n    inviteUserToAccount(input: $input) {\n      edge @appendEdge(connections: $connections) {\n        cursor\n        node {\n          id\n          email\n          invitingUserName\n        }\n      }\n    }\n  }\n}",
+      "usedFragments": []
+    },
+    {
+      "id": "loginAsUsersControl",
+      "title": "LoginAsUsersControl_LoginAsUserMutation",
+      "description": "Logs in as a user using a JWT input.",
+      "code": "mutation LoginAsUsersControl_LoginAsUserMutation($input: LoginAsUserJwtInput!) {\n  Admin {\n    Auth {\n      loginAsUserJwt(input: $input) {\n        jwtTokens {\n          accessToken\n          refreshToken\n        }\n      }\n    }\n  }\n}",
+      "usedFragments": []
+    },
+    {
+      "id": "removeUserFromAccountAdminButton",
+      "title": "RemoveUserFromAccountAdminButton_RemoveMutation",
+      "description": "Removes a user from account admin and deletes from connection.",
+      "code": "mutation RemoveUserFromAccountAdminButton_RemoveMutation($input: RemoveUserFromAccountAdminInput!, $connections: [ID!]!) {\n  Admin {\n    Management {\n      removeUserFromAccountAdmin(input: $input) {\n        deletedIds @deleteEdge(connections: $connections)\n      }\n    }\n  }\n}",
+      "usedFragments": []
+    },
+    {
+      "id": "removeUserFromAccountButton",
+      "title": "RemoveUserFromAccountButton_RemoveMutation",
+      "description": "Removes a user from an account and deletes from connection.",
+      "code": "mutation RemoveUserFromAccountButton_RemoveMutation($input: RemoveUserFromAccountInput!, $connections: [ID!]!) {\n  Management {\n    removeUserFromAccount(input: $input) {\n      deletedIds @deleteEdge(connections: $connections)\n    }\n  }\n}",
+      "usedFragments": []
+    },
+    {
+      "id": "changeUserInAccountGroupsModal",
+      "title": "changeUserInAccountGroupsModal_ChangeMutation",
+      "description": "Changes groups for a user in an account context.",
+      "code": "mutation changeUserInAccountGroupsModal_ChangeMutation($input: ChangeUserInAccountGroupsInput!) {\n  Management {\n    changeUserInAccountGroups(input: $input) {\n      edge {\n        node {\n          id\n          ...changeUserInAccountGroupsModal_UserInAccountFragment\n        }\n      }\n    }\n  }\n}",
+      "usedFragments": ["changeUserInAccountGroupsModal_UserInAccountFragment"]
+    },
+    {
+      "id": "createUserInAccountModal",
+      "title": "createUserInAccountModal_CreateMutation",
+      "description": "Creates a new user in account admin and appends to the connection.",
+      "code": "mutation createUserInAccountModal_CreateMutation($input: CreateUserInAccountAdminInput!, $connections: [ID!]!) {\n  Admin {\n    Management {\n      createUserInAccountAdmin(input: $input) {\n        edge @appendEdge(connections: $connections) {\n          node {\n            id\n            user {\n              id\n              email\n              name\n            }\n            groups {\n              id\n              name\n            }\n            ...ChangeUserGroupsAdminButton_UserInAccountFragment\n          }\n        }\n      }\n    }\n  }\n}",
+      "usedFragments": ["ChangeUserGroupsAdminButton_UserInAccountFragment"]
+    },
+    {
+      "id": "createUserInAccountModalAdd",
+      "title": "createUserInAccountModal_AddMutation",
+      "description": "Adds an existing user to an account and appends to the connection.",
+      "code": "mutation createUserInAccountModal_AddMutation($input: AddUserToAccountAdminInput!, $connections: [ID!]!) {\n  Admin {\n    Management {\n      addUserToAccountAdmin(input: $input) {\n        edge @appendEdge(connections: $connections) {\n          node {\n            id\n            user {\n              id\n              email\n              name\n            }\n            groups {\n              id\n              name\n            }\n            ...ChangeUserGroupsAdminButton_UserInAccountFragment\n          }\n        }\n      }\n    }\n  }\n}",
+      "usedFragments": ["ChangeUserGroupsAdminButton_UserInAccountFragment"]
+    },
+    {
+      "id": "editUserInAccountGroupModal",
+      "title": "editUserInAccountGroupModal_CreateMutation",
+      "description": "Creates a new user-in-account group and appends to connection.",
+      "code": "mutation editUserInAccountGroupModal_CreateMutation($input: CreateGroupInput!, $connections: [ID!]!) {\n  Management {\n    createGroup(input: $input) {\n      edge @appendEdge(connections: $connections) {\n        node {\n          id\n          ...editUserInAccountGroupModal_GroupFragment\n        }\n      }\n    }\n  }\n}",
+      "usedFragments": ["editUserInAccountGroupModal_GroupFragment"]
+    },
+    {
+      "id": "acceptInvitationScreen",
+      "title": "AcceptInvitationScreen_AcceptInvitationWithNewUserMutation",
+      "description": "Accepts an invitation using new user input.",
+      "code": "mutation AcceptInvitationScreen_AcceptInvitationWithNewUserMutation($input: AcceptInviteWithNewUserInput!) {\n  Management {\n    acceptInvitationWithNewUser(input: $input) {\n      clientMutationId\n    }\n  }\n}",
+      "usedFragments": []
+    },
+    {
+      "id": "activateScreen",
+      "title": "ActivateScreen_ActivateMutation",
+      "description": "Activates a user using the provided input.",
+      "code": "mutation ActivateScreen_ActivateMutation($input: ActivateUserInput!) {\n  Auth {\n    activateUser(input: $input) {\n      clientMutationId\n    }\n  }\n}",
+      "usedFragments": []
+    },
+    {
+      "id": "loginFormJwt",
+      "title": "loginForm_LoginMutation",
+      "description": "Logs in a user via JWT and handles possible auth states including 2FA.",
+      "code": "mutation loginForm_LoginMutation($input: LoginJwtInput!) {\n  Auth {\n    loginJwt(input: $input) {\n      status {\n        kind\n        ... on TwoFactorAuthRequired {\n          qrCodeUri\n          userName\n          password\n          email\n        }\n        ... on twoFactorAuthCredentialsIncorrect {\n          email\n          password\n          userName\n        }\n        ... on authCredentialsCorrect {\n          jwtTokens {\n            refreshToken\n            accessToken\n          }\n        }\n      }\n    }\n  }\n}",
+      "usedFragments": []
+    },
+    {
+      "id": "loginFormAzureAd",
+      "title": "loginForm_LoginAzureAdUserMutation",
+      "description": "Logs in an Azure AD user with Harkins user extension input.",
+      "code": "mutation loginForm_LoginAzureAdUserMutation($input: LoginAzureAdUserWithHarkinsUserExtensionInput!) {\n  Sso {\n    loginAzureAdUserWithHarkinsUserExtension(input: $input) {\n      jwtTokens {\n        accessToken\n        refreshToken\n      }\n    }\n  }\n}",
+      "usedFragments": []
+    }
+  ],
+    
+    "fragments": [
+      {
+        "id": "SelectUserField_UserFragment",
+        "title": "SelectUserField_UserFragment",
+        "description": "Fragment to fetch user ID and name.",
+        "code": "fragment SelectUserField_UserFragment on User @inline {\n  id\n  name\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "UsersTable_UsersListFragment",
+        "title": "UsersTable_UsersListFragment",
+        "description": "Fragment for users table with pagination and user details.",
+        "code": "fragment UsersTable_UsersListFragment on Query @refetchable(queryName: \"UsersTable_Refetch\") @argumentDefinitions(\n  first: {type: \"Int\", defaultValue: 20},\n  after: {type: \"String\"},\n) {\n  Admin {\n    Management {\n      UsersAdmin(first: $first, after: $after)  @connection(key: \"UsersTable_UsersAdmin\") {\n        __id\n        edges {\n          node {\n            id\n            name\n            email\n            activated\n            groupAssociations {\n              account {\n                name\n              }\n              group {\n                id\n                name\n              }\n            }\n            ...EditUserButton_UserFragment\n            ...AnonymizeUserButton_UserFragment\n          }\n        }\n      }\n    }\n  }\n}",
+        "usedFragments": ["EditUserButton_UserFragment", "AnonymizeUserButton_UserFragment"]
+      },
+      {
+        "id": "EditUserButton_UserFragment",
+        "title": "EditUserButton_UserFragment",
+        "description": "Fragment for user editing including name, email, and activated status.",
+        "code": "fragment EditUserButton_UserFragment on User {\n  id\n  name\n  email\n  activated\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "AnonymizeUserButton_UserFragment",
+        "title": "AnonymizeUserButton_UserFragment",
+        "description": "Fragment for anonymizing a user, only requiring ID and name.",
+        "code": "fragment AnonymizeUserButton_UserFragment on User {\n  id\n  name\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "userInAccountGroupsTable_GroupListFragment",
+        "title": "userInAccountGroupsTable_GroupListFragment",
+        "description": "Fragment to list groups in account with pagination.",
+        "code": "fragment userInAccountGroupsTable_GroupListFragment on Query\n@refetchable(queryName: \"userInAccountGroupsTable_Refetch\")\n@argumentDefinitions(first: { type: \"Int\", defaultValue: 20 }, after: { type: \"String\" }) {\n  Management {\n    Groups(first: $first, after: $after)\n      @connection(key: \"userInAccountGroupsTable_Groups\") {\n      __id\n      edges {\n        node {\n          ...userInAccountGroupsTable_userInAccountGroupInlineFragment\n        }\n      }\n    }\n  }\n}",
+        "usedFragments": ["userInAccountGroupsTable_userInAccountGroupInlineFragment"]
+      },
+      {
+        "id": "usersInAccountAdminTable_UsersInAccountListFragment",
+        "title": "usersInAccountAdminTable_UsersInAccountListFragment",
+        "description": "Fragment for users in account admin list with pagination.",
+        "code": "fragment usersInAccountAdminTable_UsersInAccountListFragment on Query\n@refetchable(queryName: \"usersInAccountAdminTable_Refetch\")\n@argumentDefinitions(\n  accountId: { type: \"ID!\" }\n  first: { type: \"Int\", defaultValue: 20 }\n  after: { type: \"String\" }\n) {\n  Admin {\n    Management {\n      UsersInAccountAdmin(accountId: $accountId, first: $first, after: $after)\n        @connection(key: \"usersInAccountAdminTable_UsersInAccountAdmin\") {\n        __id\n        pageInfo {\n          endCursor\n          hasPreviousPage\n          hasNextPage\n          startCursor\n        }\n        edges {\n          node {\n            ...usersInAccountAdminTable_UserInlineFragment\n          }\n        }\n      }\n    }\n  }\n}",
+        "usedFragments": ["usersInAccountAdminTable_UserInlineFragment"]
+      },
+      {
+        "id": "usersInAccountAdminTable_UserInlineFragment",
+        "title": "usersInAccountAdminTable_UserInlineFragment",
+        "description": "Fragment containing user and their group details for account admin.",
+        "code": "fragment usersInAccountAdminTable_UserInlineFragment on UserInAccount @inline {\n  id\n  user {\n    id\n    email\n    name\n    activated\n  }\n  groups {\n    id\n    name\n  }\n  ...ChangeUserGroupsAdminButton_UserInAccountFragment\n}",
+        "usedFragments": ["ChangeUserGroupsAdminButton_UserInAccountFragment"]
+      },
+      {
+        "id": "ChangeUserGroupsAdminButton_UserInAccountFragment",
+        "title": "ChangeUserGroupsAdminButton_UserInAccountFragment",
+        "description": "Fragment for user group change button in account admin.",
+        "code": "fragment ChangeUserGroupsAdminButton_UserInAccountFragment on UserInAccount {\n  ...ChangeUserGroupsAdminModal_UserInAccountFragment\n}",
+        "usedFragments": ["ChangeUserGroupsAdminModal_UserInAccountFragment"]
+      },
+      {
+        "id": "usersInAccountTable_UsersInAccountListFragment",
+        "title": "usersInAccountTable_UsersInAccountListFragment",
+        "description": "Fragment for users in account list with pagination.",
+        "code": "fragment usersInAccountTable_UsersInAccountListFragment on Query\n@refetchable(queryName: \"usersInAccountTable_Refetch\")\n@argumentDefinitions(first: { type: \"Int\", defaultValue: 20 }, after: { type: \"String\" }) {\n  Management {\n    UsersInAccount(first: $first, after: $after)\n      @connection(key: \"usersInAccountTable_UsersInAccount\") {\n      __id\n      edges {\n        node {\n          id\n          user {\n            id\n            email\n            name\n          }\n          groups {\n            id\n            name\n          }\n          ...changeUserInAccountGroupsButton_UserInAccountFragment\n        }\n      }\n    }\n  }\n}",
+        "usedFragments": ["changeUserInAccountGroupsButton_UserInAccountFragment"]
+      },
+      {
+        "id": "changeUserInAccountGroupsButton_UserInAccountFragment",
+        "title": "changeUserInAccountGroupsButton_UserInAccountFragment",
+        "description": "Fragment for user group change button inside the account.",
+        "code": "fragment changeUserInAccountGroupsButton_UserInAccountFragment on UserInAccount {\n  ...changeUserInAccountGroupsModal_UserInAccountFragment\n}",
+        "usedFragments": ["changeUserInAccountGroupsModal_UserInAccountFragment"]
+      },
+      {
+        "id": "changeUserInAccountGroupsModal_UserInAccountFragment",
+        "title": "changeUserInAccountGroupsModal_UserInAccountFragment",
+        "description": "Fragment for modal to change user groups within the account.",
+        "code": "fragment changeUserInAccountGroupsModal_UserInAccountFragment on UserInAccount {\n  id\n  user {\n    id\n  }\n  groups {\n    id\n  }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "PermissionBasedNavigation_CurrentUser",
+        "title": "PermissionBasedNavigation_CurrentUser",
+        "description": "Fragment for current user permissions and their associated account information.",
+        "code": "fragment PermissionBasedNavigation_CurrentUser on CurrentUser @inline {\n  permissionsInAccount\n  user {\n    name\n    id\n    extension {\n      ... on HarkinsUserExtensionAndId {\n        showBudget\n        preferredViewType\n        showVolumePerPerson\n      }\n    }\n  }\n  accounts {\n    id\n    name\n  }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "ChangeShowBudgetForm",
+        "title": "ChangeShowBudgetForm_CurrentUser",
+        "description": "Fragment to retrieve the 'showBudget' setting from the current user's extension data.",
+        "code": "fragment ChangeShowBudgetForm_CurrentUser on Query {\n  Viewer {\n    Auth {\n      currentUser {\n        user {\n          extension {\n            ... on HarkinsUserExtensionAndId {\n              showBudget\n            }\n          }\n        }\n      }\n    }\n  }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "volumePerPersonForm",
+        "title": "volumePerPersonForm_CurrentUser",
+        "description": "Fragment to retrieve the 'showVolumePerPerson' setting from the current user's extension data.",
+        "code": "fragment volumePerPersonForm_CurrentUser on Query {\n  Viewer {\n    Auth {\n      currentUser {\n        user {\n          extension {\n            ... on HarkinsUserExtensionAndId {\n              showVolumePerPerson\n            }\n          }\n        }\n      }\n    }\n  }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "preferredViewTypeForm",
+        "title": "preferredViewTypeForm_CurrentUser",
+        "description": "Fragment to retrieve the 'preferredViewType' setting from the current user's extension data.",
+        "code": "fragment preferredViewTypeForm_CurrentUser on Query {\n  Viewer {\n    Auth {\n      currentUser {\n        user {\n          extension {\n            ... on HarkinsUserExtensionAndId {\n              preferredViewType\n            }\n          }\n        }\n      }\n    }\n  }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "twoFactorAuthForm",
+        "title": "twoFactorAuthForm_QueryFragment",
+        "description": "Fragment to retrieve two-factor authentication token data and includes nested fragments for authenticator app and recovery codes.",
+        "code": "fragment twoFactorAuthForm_QueryFragment on Query {\n  Viewer {\n    Auth {\n      twoFactorAuthToken {\n        id\n        createdAt\n        data {\n          isActivated\n        }\n      }\n    }\n  }\n  ...authenticatorAppSlot_QueryFragment\n  ...recoveryCodesSlot_QueryFragment\n}",
+        "usedFragments": [
+          "authenticatorAppSlot_QueryFragment",
+          "recoveryCodesSlot_QueryFragment"
+        ]
+      },
+      {
+        "id": "authenticatorAppSlot",
+        "title": "authenticatorAppSlot_QueryFragment",
+        "description": "Fragment to retrieve the two-factor authentication token and include details for authenticator app.",
+        "code": "fragment authenticatorAppSlot_QueryFragment on Query {\n  Viewer {\n    Auth {\n      twoFactorAuthToken {\n        ...authenticatorAppSlot_TwoFactorAuthTokenInlineFragment\n      }\n    }\n  }\n}",
+        "usedFragments": [
+          "authenticatorAppSlot_TwoFactorAuthTokenInlineFragment"
+        ]
+      },
+      {
+        "id": "authenticatorAppSlot_TwoFactorAuthTokenInlineFragment",
+        "title": "authenticatorAppSlot_TwoFactorAuthTokenInlineFragment",
+        "description": "Inline fragment for two-factor authentication token including activation status and timestamp.",
+        "code": "fragment authenticatorAppSlot_TwoFactorAuthTokenInlineFragment on TwoFactorAuthToken @inline {\n  id\n  data {\n    isActivated\n    activatedAt\n  }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "recoveryCodesSlot",
+        "title": "recoveryCodesSlot_QueryFragment",
+        "description": "Fragment to fetch user's recovery codes and token activation status.",
+        "code": "fragment recoveryCodesSlot_QueryFragment on Query {\n  Viewer {\n    Auth {\n      recoveryCodeCredentials {\n        ...recoveryCodesSlot_RecoveryCodeCredentialsInlineFragment\n      }\n      twoFactorAuthToken {\n        data {\n          isActivated\n        }\n      }\n    }\n  }\n}",
+        "usedFragments": ["recoveryCodesSlot_RecoveryCodeCredentialsInlineFragment"]
+      },
+      {
+        "id": "recoveryCodesSlot_RecoveryCodeCredentialsInlineFragment",
+        "title": "recoveryCodesSlot_RecoveryCodeCredentialsInlineFragment",
+        "description": "Inline fragment for recovery code credentials, including encrypted data.",
+        "code": "fragment recoveryCodesSlot_RecoveryCodeCredentialsInlineFragment on RecoveryCodeCredentials @inline {\n  id\n  data {\n    credentials\n  }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "changeLogoForm",
+        "title": "ChangeLogoForm_CurrentUser",
+        "description": "Fragment to fetch current account's logo ID for logo management.",
+        "code": "fragment ChangeLogoForm_CurrentUser on Query {\n  Viewer {\n    Auth {\n      currentAccount {\n        extensions {\n          kind\n          ... on AccountSettingsAccountExtension {\n            kind\n            logo {\n              id\n            }\n          }\n        }\n      }\n    }\n  }\n}",
+        "fragmentId": "ChangeLogoForm_CurrentUser"
+      },
+      {
+        "id": "editNumericalDimensionExplanationsForm",
+        "title": "editNumericalDimensionExplanationsForm_QueryFragment",
+        "description": "Retrieves numerical dimension explanations from the account's extensions.",
+        "code": "fragment editNumericalDimensionExplanationsForm_QueryFragment on Query {\n  Viewer {\n    Auth {\n      currentAccount {\n        extensions {\n          kind\n          ... on AccountSettingsAccountExtension {\n            kind\n            numericalDimensionExplanations\n          }\n        }\n      }\n    }\n  }\n}",
+        "fragmentId": "editNumericalDimensionExplanationsForm_QueryFragment"
+      },
+      {
+        "id": "editAccountSettingsForm",
+        "title": "editAccountSettingsForm_QueryFragment",
+        "description": "Retrieves force2FA setting from TwoFAAccountExtension of the current account.",
+        "code": "fragment editAccountSettingsForm_QueryFragment on Query {\n  Viewer {\n    Auth {\n      currentAccount {\n        extensions {\n          kind\n          ... on TwoFAAccountExtension {\n            kind\n            force2FA\n          }\n        }\n      }\n    }\n  }\n}",
+        "fragmentId": "editAccountSettingsForm_QueryFragment"
+      },
+      {
+        "id": "editAssessmentPasswordForm",
+        "title": "editAssessmentPasswordForm_QueryFragment",
+        "description": "Fetches assessment password setting from the current account's assessment extension.",
+        "code": "fragment editAssessmentPasswordForm_QueryFragment on Query {\n  Viewer {\n    Auth {\n      currentAccount {\n        extensions {\n          kind\n          ... on AssessmentAccountExtension {\n            kind\n            password\n          }\n        }\n      }\n    }\n  }\n}",
+        "fragmentId": "editAssessmentPasswordForm_QueryFragment"
+      },
+      {
+        "id": "editAzureAdSsoConfigurationForm",
+        "title": "editAzureAdSsoConfigurationForm_QueryFragment",
+        "description": "Retrieves 2FA and Azure AD configuration details from account extensions.",
+        "code": "fragment editAzureAdSsoConfigurationForm_QueryFragment on Query {\n  Viewer {\n    Auth {\n      currentAccount {\n        extensions {\n          kind\n          ... on TwoFAAccountExtension {\n            force2FA\n            kind\n          }\n          ... on AuthProviderAccountExtension {\n            kind\n            authProviders {\n              ... on AzureAdAuthProvider {\n                isActivated\n                applicationId\n                authorityUrl\n                domain\n                tenantId\n                secret\n                kind\n              }\n            }\n          }\n        }\n      }\n    }\n  }\n}",
+        "fragmentId": "editAzureAdSsoConfigurationForm_QueryFragment"
+      }
+
+    ]
+  }
+  

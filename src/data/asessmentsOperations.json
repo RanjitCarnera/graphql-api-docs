@@ -1,0 +1,226 @@
+{
+    "queries": [
+      {
+        "id": "skillAssessmentLogin_Query",
+        "title": "skillAssessmentLogin_Query",
+        "description": "Skill Assessment Login Query to fetch account logo.",
+        "code": "query skillAssessmentLogin_Query($accountId: ID!) {\n    Assessment {\n        AccountLogo(accountId: $accountId) {\n            url\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "selectSkillAssessmentTemplates_AssessmentTemplatesQuery",
+        "title": "selectSkillAssessmentTemplates_AssessmentTemplatesQuery",
+        "description": "Select skill assessment templates for a given account ID.",
+        "code": "query selectSkillAssessmentTemplates_AssessmentTemplatesQuery($accountId: ID!) {\n    Assessment {\n        AssessmentTemplates(accountId: $accountId, first: 20) {\n            edges {\n                node {\n                    name\n                    id\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "skillAssessment_Query",
+        "title": "skillAssessment_Query",
+        "description": "Query to retrieve the last updated date for skill assessment. And fetch account logo.",
+        "code": "query skillAssessment_Query(\n    $accountId: ID!\n    $password: String\n    $personId: ID\n    $templateId: ID\n) {\n    Assessment {\n        AccountLogo(accountId: $accountId) {\n            url\n        }\n    }\n    ...skillAssessment_GetLastUpdatedDateQuery\n        @arguments(\n            accountId: $accountId\n            password: $password\n            personId: $personId\n            templateId: $templateId\n        )\n}",
+        "usedFragments": [
+          "skillAssessment_GetLastUpdatedDateQuery"
+        ]
+      },
+      {
+        "id": "skillAssessmentSuccess_AssessmentNodeQuery",
+        "title": "skillAssessmentSuccess_AssessmentNodeQuery",
+        "description": "Skill assessment success query to fetch assessment details.",
+        "code": "query skillAssessmentSuccess_AssessmentNodeQuery($accountId: ID!, $id: ID!, $password: String) {\n    Assessment {\n        MyAssessment(accountId: $accountId, assessmentId: $id, password: $password) {\n            id\n            person {\n                name\n            }\n            template {\n                name\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "skillAssessmentsTable_Query",
+        "title": "skillAssessmentsTable_Query",
+        "description": "Query to get the list of skill assessments.",
+        "code": "query skillAssessmentsTable_Query($first: Int, $after: String) {\n    Viewer {\n        Auth {\n            currentAccount {\n                id\n            }\n        }\n    }\n    ...skillAssessmentsTable_AssessmentsFragment @arguments(first: $first, after: $after)\n}",
+        "usedFragments": [
+          "skillAssessmentsTable_AssessmentsFragment"
+        ]
+      },
+      {
+        "id": "skillAssessments_Query",
+        "title": "skillAssessments_Query",
+        "description": "Skill assessment query to retrieve the current account ID.",
+        "code": "query skillAssessments_Query {\n    Viewer {\n        Auth {\n            currentAccount {\n                id\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "skillAssessmentExecution_Query",
+        "title": "skillAssessmentExecution_Query",
+        "description": "Query to fetch detailed information about a specific skill assessment, including person, supervisor, template, skill assessments, and status",
+        "code": "query skillAssessmentExecution_Query($accountId: ID!, $assessmentId: ID!, $password: String) {\n    Assessment {\n        MyAssessment(accountId: $accountId, assessmentId: $assessmentId, password: $password) {\n            person {\n                id\n                name\n            }\n            supervisor {\n                id\n                name\n            }\n            template {\n                id\n                name\n                assessedSkills {\n                    id\n                    name\n                    skillCategory {\n                        id\n                        name\n                        sortOrder\n                        ...categoryForm_SkillCategoryFragment\n                    }\n                    dimension {\n                        ... on NumericalDimension {\n                            kind\n                            dimensionCount\n                            dimensionExplanations\n                        }\n                        ... on BinaryDimension {\n                            kind\n                        }\n                    }\n                }\n                ...categoryForm_AssessmentTemplateFragment\n            }\n            skillAssessments {\n                skill {\n                    id\n                    name\n                    dimension {\n                        ... on NumericalDimension {\n                            kind\n                            dimensionCount\n                            dimensionExplanations\n                        }\n                        ... on BinaryDimension {\n                            kind\n                        }\n                    }\n                }\n                value {\n                    ... on NumericalAssessmentValue {\n                        kind\n                        number\n                    }\n                    ... on BinaryAssessmentValue {\n                        kind\n                        hasSkill\n                    }\n                }\n            }\n            status {\n                kind\n                ... on InProgress {\n                    kind\n                    lastUpdate\n                }\n                ... on Finished {\n                    kind\n                    finishedAt\n                }\n            }\n            ...categoryForm_AssessmentFragment\n            ...navigation_AssessmentFragment\n            ...skillAssessmentExecution_AssessmentFragment\n        }\n    }\n}",
+        "usedFragments": [
+          "categoryForm_SkillCategoryFragment",
+          "categoryForm_AssessmentTemplateFragment",
+          "categoryForm_AssessmentFragment",
+          "navigation_AssessmentFragment",
+          "skillAssessmentExecution_AssessmentFragment"
+        ]
+      }
+    ],
+    "mutations": [
+      {
+        "id": "skillAssessmentLogin_LoginToAssessmentMutation",
+        "title": "skillAssessmentLogin_LoginToAssessmentMutation",
+        "description": "Mutation to log in to a skill assessment using the provided input credentials.",
+        "code": "mutation skillAssessmentLogin_LoginToAssessmentMutation($input: LoginToAssessmentInput!) {\n    Assessment {\n        loginToAssessment(input: $input) {\n            password\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "skillAssessment_StartAssessmentMutation",
+        "title": "skillAssessment_StartAssessmentMutation",
+        "description": "Mutation to start a skill assessment and retrieve the assessment ID.",
+        "code": "mutation skillAssessment_StartAssessmentMutation($input: StartAssessmentInput!) {\n    Assessment {\n        startAssessment(input: $input) {\n            assessment {\n                id\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "skillAssessmentExecution_AnswerAssessmentMutation",
+        "title": "skillAssessmentExecution_AnswerAssessmentMutation",
+        "description": "Mutation to submit answers for a skill assessment and retrieve the updated assessment details.",
+        "code": "mutation skillAssessmentExecution_AnswerAssessmentMutation($input: AnswerAssessmentInput!) {\n    Assessment {\n        answerAssessment(input: $input) {\n            assessment {\n                id\n                ...skillAssessmentExecution_AssessmentFragment\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "skillAssessmentExecution_AssessmentFragment"
+        ]
+      },
+      {
+        "id": "skillAssessmentExecution_SubmitAssessmentMutation",
+        "title": "skillAssessmentExecution_SubmitAssessmentMutation",
+        "description": "Mutation to submit a completed skill assessment and retrieve the updated assessment details.",
+        "code": "mutation skillAssessmentExecution_SubmitAssessmentMutation($input: SubmitAssessmentInput!) {\n    Assessment {\n        submitAssessment(input: $input) {\n            assessment {\n                id\n                ...skillAssessmentExecution_AssessmentFragment\n            }\n        }\n    }\n}",
+        "usedFragments": [
+          "skillAssessmentExecution_AssessmentFragment"
+        ]
+      },
+      {
+        "id": "skillAssessmentTemplatesTable_DeleteAssessmentTemplateMutation",
+        "title": "skillAssessmentTemplatesTable_DeleteAssessmentTemplateMutation",
+        "description": "Mutation to delete an assessment template and update the associated connections.",
+        "code": "mutation skillAssessmentTemplatesTable_DeleteAssessmentTemplateMutation(\n    $input: DeleteAssessmentTemplateInput!\n    $connections: [ID!]!\n) {\n    Assessment {\n        deleteAssessmentTemplate(input: $input) {\n            clientMutationId\n            deletedIds @deleteEdge(connections: $connections)\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "skillAssessmentsTable_TestAssessmentFinalizationMutation",
+        "title": "skillAssessmentsTable_TestAssessmentFinalizationMutation",
+        "description": "Mutation to test the finalization of a skill assessment and retrieve the generated PDF file details if applicable.",
+        "code": "mutation skillAssessmentsTable_TestAssessmentFinalizationMutation(\n    $input: TestAssessmentFinalizationInput!\n) {\n    Admin {\n        Assessment {\n            testAssessmentFinalization(input: $input) {\n                assessment {\n                    id\n                    status {\n                        ... on PdfGenerated {\n                            file {\n                                url\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "editAssessmentPasswordForm_SetAccountAssessmentPasswordMutation",
+        "title": "editAssessmentPasswordForm_SetAccountAssessmentPasswordMutation",
+        "description": "Mutation to set or update the password for an account's skill assessment.",
+        "code": "mutation editAssessmentPasswordForm_SetAccountAssessmentPasswordMutation(\n    $input: SetAccountAssessmentPasswordInput!\n) {\n    Admin {\n        Auth {\n            setAccountAssessmentPassword(input: $input) {\n                account {\n                    id\n                }\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "revertToAssessmentButton_RevertToAssessmentMutation",
+        "title": "revertToAssessmentButton_RevertToAssessmentMutation",
+        "description": "Mutation to revert a skill assessment to a previous state using the provided input.",
+        "code": "mutation revertToAssessmentButton_RevertToAssessmentMutation($input: RevertToAssessmentInput!) {\n    Admin {\n        Assessment {\n            revertToAssessment(input: $input) {\n                clientMutationId\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      },
+      {
+        "id": "deleteAssessmentsButton_DeleteAssessmentMutation",
+        "title": "deleteAssessmentsButton_DeleteAssessmentMutation",
+        "description": "Mutation to delete a skill assessment and update the associated connections.",
+        "code": "mutation deleteAssessmentsButton_DeleteAssessmentMutation(\n    $input: DeleteAssessmentInput!\n    $connections: [ID!]!\n) {\n    Admin {\n        Assessment {\n            deleteAssessment(input: $input) {\n                deletedIds @deleteEdge(connections: $connections)\n            }\n        }\n    }\n}",
+        "usedFragments": []
+      }
+    ],
+    "fragments": [
+      {
+        "id": "skillAssessmentTemplatesTable_AssessmentTemplateFragment",
+        "title": "skillAssessmentTemplatesTable_AssessmentTemplateFragment",
+        "description": "Fragment to fetch details of an assessment template, including associated roles, assessed skills, and distribution list.",
+        "code": "fragment skillAssessmentTemplatesTable_AssessmentTemplateFragment on AssessmentTemplate\n@inline {\n    id\n    name\n    associatedRoles {\n        name\n        id\n    }\n    assessedSkills {\n        name\n        id\n    }\n    distributionList {\n        emails\n        role\n    }\n    ...editTemplateButton_AssessmentTemplateFragment\n}",
+        "fragmentId": "skillAssessmentTemplatesTable_AssessmentTemplateFragment"
+      },
+      {
+        "id": "editTemplateButton_AssessmentTemplateFragment",
+        "title": "editTemplateButton_AssessmentTemplateFragment",
+        "description": "Fragment to fetch details of an assessment template for editing, including associated roles, assessed skills, and skill categories.",
+        "code": "fragment editTemplateButton_AssessmentTemplateFragment on AssessmentTemplate {\n    name\n    id\n    assessedSkills {\n        id\n        name\n        skillCategory {\n            id\n            name\n        }\n    }\n    associatedRoles {\n        id\n        name\n    }\n    distributionList {\n        role\n        emails\n    }\n}",
+        "fragmentId": "editTemplateButton_AssessmentTemplateFragment"
+      },
+      {
+        "id": "skillAssessment_GetLastUpdatedDateQuery",
+        "title": "skillAssessment_GetLastUpdatedDateQuery",
+        "description": "Fragment to fetch the last updated date for a skill assessment with support for refetching.",
+        "code": "fragment skillAssessment_GetLastUpdatedDateQuery on Query\n@refetchable(queryName: \"skillAssessment_Refetch\")\n@argumentDefinitions(\n    accountId: { type: \"ID!\" }\n    password: { type: \"String\" }\n    personId: { type: \"ID\" }\n    templateId: { type: \"ID\" }\n) {\n    Assessment {\n        GetContinueFromDate(\n            accountId: $accountId\n            password: $password\n            personId: $personId\n            templateId: $templateId\n        ) @connection(key: \"skillAssessment_GetContinueFrom\")\n    }\n}",
+        "fragmentId": "skillAssessment_GetLastUpdatedDateQuery"
+      },
+      {
+        "id": "skillAssessmentsTable_AssessmentsFragment",
+        "title": "skillAssessmentsTable_AssessmentsFragment",
+        "description": "Fragment to fetch a paginated list of skill assessments with filtering options.",
+        "code": "fragment skillAssessmentsTable_AssessmentsFragment on Query\n@refetchable(queryName: \"skillAssessmentsTable_Refetch\")\n@argumentDefinitions(\n    first: { type: \"Int\", defaultValue: 250 }\n    last: { type: \"Int\" }\n    after: { type: \"String\" }\n    before: { type: \"String\" }\n    filterByName: { type: \"String\" }\n) {\n    Admin {\n        Assessment {\n            Assessments(\n                last: $last\n                before: $before\n                after: $after\n                first: $first\n                filterByName: $filterByName\n            ) @connection(key: \"skillAssessmentsTable_Assessments\") {\n                __id\n                pageInfo {\n                    endCursor\n                    hasPreviousPage\n                    hasNextPage\n                    startCursor\n                }\n                edges {\n                    node {\n                        ...skillAssessmentsTable_AssessmentInlineFragment\n                    }\n                }\n            }\n        }\n    }\n}",
+        "fragmentId": "skillAssessmentsTable_AssessmentsFragment"
+      },
+      {
+        "id": "skillAssessmentsTable_AssessmentInlineFragment",
+        "title": "skillAssessmentsTable_AssessmentInlineFragment",
+        "description": "Inline fragment to fetch detailed information about a skill assessment, including person, supervisor, status, and template.",
+        "code": "fragment skillAssessmentsTable_AssessmentInlineFragment on Assessment @inline {\n    id\n    person {\n        name\n        id\n    }\n    supervisor {\n        name\n    }\n    status {\n        kind\n        ... on InProgress {\n            kind\n            lastUpdate\n        }\n        ... on Finished {\n            kind\n            finishedAt\n        }\n        ... on PdfGenerated {\n            kind\n            finishedAt\n            file {\n                id\n                name\n                url\n            }\n        }\n    }\n    skillAssessments {\n        skill {\n            id\n            dimension {\n                kind\n            }\n            name\n            skillCategory {\n                id\n                name\n            }\n        }\n        value {\n            kind\n            ... on BinaryAssessmentValue {\n                kind\n                hasSkill\n            }\n            ... on NumericalAssessmentValue {\n                kind\n                number\n            }\n        }\n    }\n    template {\n        id\n        name\n        assessedSkills {\n            id\n        }\n        associatedRoles {\n            id\n        }\n    }\n    createdAt\n    ...revertToAssessmentButton_AssessmentFragment\n}",
+        "fragmentId": "skillAssessmentsTable_AssessmentInlineFragment"
+      },
+      {
+        "id": "revertToAssessmentButton_AssessmentFragment",
+        "title": "revertToAssessmentButton_AssessmentFragment",
+        "description": "Fragment to fetch details of a skill assessment for reverting to a previous state.",
+        "code": "fragment revertToAssessmentButton_AssessmentFragment on Assessment {\n    id\n    person {\n        id\n    }\n    ...revertToAssessmentForm_AssessmentFragment\n}",
+        "fragmentId": "revertToAssessmentButton_AssessmentFragment"
+      },
+      {
+        "id": "revertToAssessmentForm_AssessmentFragment",
+        "title": "revertToAssessmentForm_AssessmentFragment",
+        "description": "Fragment to fetch details of a skill assessment for displaying in a revert form.",
+        "code": "fragment revertToAssessmentForm_AssessmentFragment on Assessment {\n    id\n    status {\n        ... on PdfGenerated {\n            finishedAt\n        }\n    }\n    template {\n        name\n    }\n    skillAssessments {\n        skill {\n            name\n        }\n        value {\n            kind\n            ... on NumericalAssessmentValue {\n                kind\n                number\n            }\n            ... on BinaryAssessmentValue {\n                kind\n                hasSkill\n            }\n        }\n    }\n    person {\n        id\n        name\n    }\n}",
+        "fragmentId": "revertToAssessmentForm_AssessmentFragment"
+      },
+      {
+        "id": "skillAssessmentExecution_AssessmentFragment",
+        "title": "skillAssessmentExecution_AssessmentFragment",
+        "description": "Fragment to fetch detailed information about a skill assessment, including status, template, and skill assessments.",
+        "code": "fragment skillAssessmentExecution_AssessmentFragment on Assessment {\n    id\n    status {\n        kind\n        ... on InProgress {\n            kind\n        }\n        ... on PdfGenerated {\n            kind\n        }\n        ... on Finished {\n            kind\n        }\n    }\n    template {\n        assessedSkills {\n            id\n            dimension {\n                ... on BinaryDimension {\n                    kind\n                }\n                ... on NumericalDimension {\n                    dimensionCount\n                    kind\n                }\n            }\n        }\n    }\n    skillAssessments {\n        skill {\n            id\n        }\n        value {\n            kind\n            ... on BinaryAssessmentValue {\n                kind\n                hasSkill\n            }\n            ... on NumericalAssessmentValue {\n                kind\n                number\n            }\n        }\n    }\n    status {\n        kind\n        ... on InProgress {\n            kind\n        }\n        ... on PdfGenerated {\n            kind\n        }\n    }\n}",
+        "fragmentId": "skillAssessmentExecution_AssessmentFragment"
+      },
+      {
+        "id": "categoryForm_SkillCategoryFragment",
+        "title": "categoryForm_SkillCategoryFragment",
+        "description": "Fragment to fetch details of a skill category, including name, ID, and sort order.",
+        "code": "fragment categoryForm_SkillCategoryFragment on SkillCategory {\n    name\n    id\n    sortOrder\n}",
+        "fragmentId": "categoryForm_SkillCategoryFragment"
+      },
+      {
+        "id": "categoryForm_AssessmentTemplateFragment",
+        "title": "categoryForm_AssessmentTemplateFragment",
+        "description": "Fragment to fetch details of an assessment template, including assessed skills and their categories.",
+        "code": "fragment categoryForm_AssessmentTemplateFragment on AssessmentTemplate {\n    assessedSkills {\n        skillCategory {\n            name\n            id\n            sortOrder\n        }\n    }\n}",
+        "fragmentId": "categoryForm_AssessmentTemplateFragment"
+      },
+      {
+        "id": "categoryForm_AssessmentFragment",
+        "title": "categoryForm_AssessmentFragment",
+        "description": "Fragment to fetch details of a skill assessment, including skill assessments, template, and assessed skills.",
+        "code": "fragment categoryForm_AssessmentFragment on Assessment {\n    skillAssessments {\n        value {\n            kind\n            ... on BinaryAssessmentValue {\n                hasSkill\n                kind\n            }\n            ... on NumericalAssessmentValue {\n                number\n                kind\n            }\n        }\n    }\n    template {\n        assessedSkills {\n            id\n            name\n            dimension {\n                ... on BinaryDimension {\n                    kind\n                }\n                ... on NumericalDimension {\n                    kind\n                    dimensionCount\n                    dimensionExplanations\n                }\n            }\n            description\n            skillCategory {\n                id\n                name\n                sortOrder\n            }\n            ...numericalSkillTooltipIcon_SkillFragment\n        }\n        name\n    }\n}",
+        "fragmentId": "categoryForm_AssessmentFragment"
+      },
+      {
+        "id": "numericalSkillTooltipIcon_SkillFragment",
+        "title": "numericalSkillTooltipIcon_SkillFragment",
+        "description": "Fragment to fetch details of a skill's numerical dimension, including explanations and count.",
+        "code": "fragment numericalSkillTooltipIcon_SkillFragment on Skill {\n    dimension {\n        kind\n        ... on NumericalDimension {\n            dimensionExplanations\n            dimensionCount\n        }\n    }\n}",
+        "fragmentId": "numericalSkillTooltipIcon_SkillFragment"
+      },
+      {
+        "id": "navigation_AssessmentFragment",
+        "title": "navigation_AssessmentFragment",
+        "description": "Fragment to fetch navigation-related details of a skill assessment, including ID, supervisor, template, and status.",
+        "code": "fragment navigation_AssessmentFragment on Assessment {\n    id\n    supervisor {\n        name\n    }\n    template {\n        name\n    }\n    createdAt\n    person {\n        name\n    }\n    status {\n        kind\n        ... on Finished {\n            kind\n        }\n        ... on PdfGenerated {\n            kind\n            file {\n                url\n                name\n            }\n        }\n    }\n\n    skillAssessments {\n        value {\n            ... on NumericalAssessmentValue {\n                number\n                kind\n            }\n            ... on BinaryAssessmentValue {\n                hasSkill\n                kind\n            }\n        }\n        skill {\n            id\n            name\n            dimension {\n                ... on NumericalDimension {\n                    kind\n                    dimensionCount\n                }\n                ... on BinaryDimension {\n                    kind\n                }\n            }\n            skillCategory {\n                id\n                name\n            }\n        }\n    }\n}",
+        "fragmentId": "navigation_AssessmentFragment"
+      }
+    ]
+  }
+  

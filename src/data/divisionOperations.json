@@ -1,0 +1,109 @@
+{
+  "queries": [
+    {
+      "id": "DivisionSelect_Query",
+      "title": "DivisionSelect_Query",
+      "description": "Query to fetch a list of divisions filtered by name, excluded IDs, or specific IDs to always include.",
+      "code": "query DivisionSelect_Query($filterByName: String, $excludeIds: [ID!], $alwaysIncludeIds: [ID!]) {\n    Division {\n        Divisions(first: 20, excludeIds: $excludeIds, filterByName: $filterByName, alwaysIncludeIds: $alwaysIncludeIds) {\n            edges {\n                node {\n                    ...DivisionSelect_DivisionFragment\n                }\n            }\n        }\n    }\n}",
+      "usedFragments": [
+        "DivisionSelect_DivisionFragment"
+      ]
+    },
+    {
+      "id": "DivisionsSelect_Query",
+      "title": "DivisionsSelect_Query",
+      "description": "Query to fetch divisions filtered by name, excluded IDs, or specific IDs to always include, using a different fragment.",
+      "code": "query DivisionsSelect_Query($filterByName: String, $excludeIds: [ID!], $alwaysIncludeIds: [ID!]) {\n    Division {\n        Divisions(first: 20, excludeIds: $excludeIds, filterByName: $filterByName, alwaysIncludeIds: $alwaysIncludeIds) {\n            edges {\n                node {\n                    ...DivisionsSelect_DivisionFragment\n                }\n            }\n        }\n    }\n}",
+      "usedFragments": [
+        "DivisionsSelect_DivisionFragment"
+      ]
+    },
+    {
+      "id": "DivisionsTable_Query",
+      "title": "DivisionsTable_Query",
+      "description": "Query to fetch divisions for a table view with pagination and filtering options.",
+      "code": "query DivisionsTable_Query($first: Int, $filterByName: String) {\n    ...DivisionsTable_DivisionListFragment\n        @arguments(first: $first, filterByName: $filterByName)\n}",
+      "usedFragments": [
+        "DivisionsTable_DivisionListFragment"
+      ]
+    }
+  ],
+  "mutations": [
+    {
+      "id": "EditDivisionModal_EditMutation",
+      "title": "EditDivisionModal_EditMutation",
+      "description": "Mutation to edit an existing division and update its details.",
+      "code": "mutation EditDivisionModal_EditMutation($input: EditDivisionInput!) {\n    Division {\n        editDivision(input: $input) {\n            edge {\n                node {\n                    id\n                    ...EditDivisionButton_DivisionFragment\n                }\n            }\n        }\n    }\n}",
+      "usedFragments": [
+        "EditDivisionButton_DivisionFragment"
+      ]
+    },
+    {
+      "id": "deleteDivisionButton_DeleteDivisionMutation",
+      "title": "deleteDivisionButton_DeleteDivisionMutation",
+      "description": "Mutation to delete a division and remove it from associated connections.",
+      "code": "mutation deleteDivisionButton_DeleteDivisionMutation(\n    $input: DeleteDivisionInput!\n    $connections: [ID!]!\n) {\n    Division {\n        deleteDivision(input: $input) {\n            deletedIds @deleteEdge(connections: $connections)\n        }\n    }\n}",
+      "usedFragments": []
+    },
+    {
+      "id": "exportDivisionsButton_ExportDivisionsMutation",
+      "title": "exportDivisionsButton_ExportDivisionsMutation",
+      "description": "Mutation to export divisions and retrieve the file URL.",
+      "code": "mutation exportDivisionsButton_ExportDivisionsMutation {\n    Division {\n        exportDivisions(input: {}) {\n            file {\n                url\n            }\n        }\n    }\n}",
+      "usedFragments": []
+    },
+    {
+      "id": "importDivisionsButton_ImportDivisionsMutation",
+      "title": "importDivisionsButton_ImportDivisionsMutation",
+      "description": "Mutation to import divisions from a file and retrieve the result details.",
+      "code": "mutation importDivisionsButton_ImportDivisionsMutation($input: ImportDivisionsInput!) {\n    Division {\n        importDivisions(input: $input) {\n            result {\n                editedEntities\n                newEntities\n                issues {\n                    row\n                    issue\n                }\n            }\n        }\n    }\n}",
+      "usedFragments": []
+    },
+    {
+      "id": "EditDivisionModal_CreateMutation",
+      "title": "EditDivisionModal_CreateMutation",
+      "description": "Mutation to create a new division and append it to a connection.",
+      "code": "mutation EditDivisionModal_CreateMutation($input: CreateDivisionInput!, $connections: [ID!]!) {\n    Division {\n        createDivision(input: $input) {\n            edge @appendEdge(connections: $connections) {\n                node {\n                    id\n                    ...EditDivisionButton_DivisionFragment\n                }\n            }\n        }\n    }\n}",
+      "usedFragments": [
+        "EditDivisionButton_DivisionFragment"
+      ]
+    }
+  ],
+  "fragments": [
+    {
+      "id": "DivisionSelect_DivisionFragment",
+      "title": "DivisionSelect_DivisionFragment",
+      "description": "Fragment to fetch basic details of a division, including ID and name.",
+      "code": "fragment DivisionSelect_DivisionFragment on Division @inline{\n    id\n    name\n}",
+      "fragmentId": "DivisionSelect_DivisionFragment"
+    },
+    {
+      "id": "DivisionsSelect_DivisionFragment",
+      "title": "DivisionsSelect_DivisionFragment",
+      "description": "Fragment to fetch basic details of divisions, including ID and name.",
+      "code": "fragment DivisionsSelect_DivisionFragment on Division @inline{\n    id\n    name\n}",
+      "fragmentId": "DivisionsSelect_DivisionFragment"
+    },
+    {
+      "id": "DivisionsTable_DivisionListFragment",
+      "title": "DivisionsTable_DivisionListFragment",
+      "description": "Fragment to fetch divisions for a table view, including pagination and sorting details.",
+      "code": "fragment DivisionsTable_DivisionListFragment on Query\n@refetchable(queryName: \"DivisionsTable_Refetch\")\n@argumentDefinitions(\n    first: { type: \"Int\", defaultValue: 20 }\n    after: { type: \"String\" }\n    filterByName: { type: \"String\" }\n) {\n    Division {\n        Divisions(first: $first, after: $after, filterByName: $filterByName)\n            @connection(key: \"DivisionsTable_Divisions\") {\n            __id\n            pageInfo {\n                endCursor\n                hasPreviousPage\n                hasNextPage\n                startCursor\n            }\n            edges {\n                node {\n                    id\n                    name\n                    ...EditDivisionButton_DivisionFragment\n                }\n            }\n        }\n    }\n}",
+      "fragmentId": "DivisionsTable_DivisionListFragment"
+    },
+    {
+      "id": "EditDivisionButton_DivisionFragment",
+      "title": "EditDivisionButton_DivisionFragment",
+      "description": "Fragment to fetch details of a division for editing purposes.",
+      "code": "fragment EditDivisionButton_DivisionFragment on Division {\n    ...EditDivisionModal_DivisionFragment\n}",
+      "fragmentId": "EditDivisionButton_DivisionFragment"
+    },
+    {
+      "id": "EditDivisionModal_DivisionFragment",
+      "title": "EditDivisionModal_DivisionFragment",
+      "description": "Fragment to fetch basic details of a division for display in an edit modal.",
+      "code": "fragment EditDivisionModal_DivisionFragment on Division {\n    id\n    name\n}",
+      "fragmentId": "EditDivisionModal_DivisionFragment"
+    }
+  ]
+}
