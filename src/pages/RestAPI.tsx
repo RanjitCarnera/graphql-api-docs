@@ -86,39 +86,6 @@ response = requests.get(url, headers=headers)
 print(response.json())`
   };
 
-  const createScenarioExamples = {
-    javascript: `// Create Scenario
-fetch('http://localhost:9000/api/scenarios', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer YOUR_AUTH_TOKEN'
-  },
-  body: JSON.stringify({
-    name: 'Test with RP June05',
-    projectsRef: [],
-    isMasterPlan: false
-  })
-})
-.then(res => res.json())
-.then(data => console.log(data));`,
-    python: `import requests
-
-url = 'http://localhost:9000/api/scenarios'
-headers = {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer YOUR_AUTH_TOKEN'
-}
-data = {
-    'name': 'Test with RP June05',
-    'projectsRef': [],
-    'isMasterPlan': False
-}
-
-response = requests.post(url, json=data, headers=headers)
-print(response.json())`
-  };
-
   return (
     <DocsLayout>
       <div className="max-w-4xl mx-auto">
@@ -290,70 +257,6 @@ print(response.json())`
               </CardContent>
             </Card>
           </div>
-        </section>
-
-        <section className="docs-section">
-          <h2 className="text-2xl font-bold mb-4">Scenarios</h2>
-          
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-xl">Create Scenario</CardTitle>
-                <Badge variant="default">POST</Badge>
-              </div>
-              <code className="text-sm bg-gray-100 p-2 rounded">
-                POST /api/scenarios
-              </code>
-            </CardHeader>
-            <CardContent>
-              <p className="mb-4">Creates a new scenario for project planning and management.</p>
-              
-              <Tabs defaultValue="request" className="mb-4">
-                <TabsList>
-                  <TabsTrigger value="request">Request</TabsTrigger>
-                  <TabsTrigger value="examples">Examples</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="request" className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold mb-2">Headers</h4>
-                    <ul className="list-disc list-inside space-y-1">
-                      <li><code>Content-Type: application/json</code></li>
-                      <li><code>Authorization: Bearer YOUR_AUTH_TOKEN</code></li>
-                    </ul>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-semibold mb-2">Request Body</h4>
-                    <pre className="bg-gray-100 p-3 rounded-md text-sm overflow-auto">
-{`{
-  "name": "string",
-  "projectsRef": ["string"],
-  "isMasterPlan": boolean
-}`}
-                    </pre>
-                    
-                    <div className="mt-4">
-                      <h5 className="font-medium mb-2">Field Descriptions:</h5>
-                      <ul className="list-disc list-inside space-y-1 text-sm">
-                        <li><strong>name:</strong> The name of the scenario</li>
-                        <li><strong>projectsRef:</strong> Array of project references (can be empty)</li>
-                        <li><strong>isMasterPlan:</strong> Boolean indicating if this is a master plan</li>
-                      </ul>
-                    </div>
-                  </div>
-                </TabsContent>
-                
-                <TabsContent value="examples">
-                  <CodeExample
-                    title="Create Scenario Examples"
-                    description="Create a new scenario with project references"
-                    codeExamples={createScenarioExamples}
-                  />
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
         </section>
 
         <section className="docs-section">

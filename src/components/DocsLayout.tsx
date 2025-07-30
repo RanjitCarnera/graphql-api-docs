@@ -74,7 +74,7 @@ function DocsSidebar() {
                 <SidebarMenuButton asChild>
                   <Link to="/rest-api">
                     <Globe size={18} />
-                    <span>REST API</span>
+                    <span>REST API Key</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
