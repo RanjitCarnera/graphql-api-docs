@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 const Playground = () => {
   return (
     <DocsLayout>
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto text-center">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-4">API Playground</h1>
           <p className="text-gray-600">

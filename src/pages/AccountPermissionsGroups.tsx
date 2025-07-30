@@ -50,7 +50,7 @@ const AccountPermissionsGroups = () => {
 
   return (
     <DocsLayout>
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto text-center">
         <h1 className="text-3xl font-bold mb-6">Account Permissions Groups API</h1>
         
         <section className="mb-8">

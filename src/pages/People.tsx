@@ -53,7 +53,7 @@ const People = () => {
 
   return (
     <DocsLayout>
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto text-center">
         <PeopleIntroduction />
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full mb-8">
