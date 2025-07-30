@@ -83,9 +83,9 @@ response = requests.${endpoint.method.toLowerCase()}(url${endpoint.headers ? ', 
 print(response.json())`;
 
   return (
-    <Card className="mb-6">
+    <Card className="mb-6 text-left">
       <CardHeader>
-        <div className="flex items-center gap-3 mb-2">
+        <div className="flex items-center gap-3 mb-2 ">
           <Badge className={`${getMethodColor(endpoint.method)} text-white`}>
             {endpoint.method}
           </Badge>
