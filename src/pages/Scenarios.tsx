@@ -18,7 +18,7 @@ const Scenarios = () => {
       title: "Create Scenario",
       description: "Create a new scenario with the specified configuration.",
       method: "POST" as const,
-      url: "http://localhost:9000/api/scenarios",
+      url: "https://api.constructionintelligence.com/api/scenarios",
       headers: {
         "content-type": "application/json",
         "Authorization": " "
@@ -34,7 +34,7 @@ const Scenarios = () => {
       title: "Get all Scenarios list",
       description: "Retrieve a list of scenarios with optional filtering.",
       method: "POST" as const,
-      url: "http://localhost:9000/api/scenarios/list",
+      url: "https://api.constructionintelligence.com/api/scenarios/list",
       headers: {
         "content-type": "application/json",
         "Authorization": " "
@@ -43,6 +43,38 @@ const Scenarios = () => {
         "first": 20,
         "filterByName": "Test with sumi12"
       }
+    },
+    {
+      id: "delete-scenario",
+      title: "Delete Scenario record",
+      description: "Delete a scenario record by its ID.",
+      method: "DELETE" as const,
+      url: "https://api.constructionintelligence.com/api/scenarios/id",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": " "
+      },
+       payload: {
+        "id": "UHJvamVjdDphYmMtZGVmLTQ1N2ctODllZi0xMjM0NTY3ODkwYWJ"
+      },
+      body: {
+          
+      }
+    },
+    {
+      id: "update-scenario",
+      title: "Update Scenario record",
+      description: "Update a scenario record by its ID.",
+      method: "PUT" as const,
+      url: "https://api.constructionintelligence.com/api/projects/id",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": " "
+      },
+      payload: {
+        "id": "UHJvamVjdDphYmMtZGVmLTQ1N2ctODllZi0xMjM0NTY3ODkwYWJ"
+      },
+      body: {"name":"New Scenario Name","isMasterPlan":true}
     }
   ];
 

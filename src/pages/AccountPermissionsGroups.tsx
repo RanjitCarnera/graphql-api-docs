@@ -15,7 +15,7 @@ const AccountPermissionsGroups = () => {
       title: "Create Scenario",
       description: "Create a new scenario with the specified configuration.",
       method: "POST" as const,
-      url: "http://localhost:9000/api/scenarios",
+      url: "https://api.constructionintelligence.com/api/scenarios",
       headers: {
         "content-type": "application/json",
         "Authorization": " "
@@ -31,7 +31,7 @@ const AccountPermissionsGroups = () => {
       title: "Get all Scenarios list",
       description: "Retrieve a list of scenarios with optional filtering.",
       method: "POST" as const,
-      url: "http://localhost:9000/api/scenarios/list",
+      url: "https://api.constructionintelligence.com/api/scenarios/list",
       headers: {
         "content-type": "application/json",
         "Authorization": " "

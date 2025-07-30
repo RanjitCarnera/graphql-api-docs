@@ -11,35 +11,91 @@ const AssessmentTemplates = () => {
   const [activeTab, setActiveTab] = React.useState("queries");
    const restApiEndpoints = [
     {
-      id: "create-scenario",
-      title: "Create Scenario",
-      description: "Create a new scenario with the specified configuration.",
+      id: "create-assessment-template",
+      title: "Create Assessment Template",
+      description: "Create a new assessment template with the specified configuration.",
       method: "POST" as const,
-      url: "http://localhost:9000/api/scenarios",
+      url: "https://api.constructionintelligence.com/api/assessment-templates",
       headers: {
         "content-type": "application/json",
         "Authorization": " "
       },
       body: {
-        "name": "Demo rest apis",
-        "projectsRef": [],
-        "isMasterPlan": false
+        "data": {
+          "name": "Senior Project Manager Assessment",
+          "associatedRoleIds": [
+            "QXNzaWdubWVudFJvbGU6QXNzaWdubWVudFJvbGU6ZmE4NTgyZGEtMzg3Ny00NTI4LTg1MjctOTBmMTkyYjA5Zjk0"
+          ],
+          "assessedSkillIds": [
+            "U2tpbGw6U2tpbGw6ZDUyM2VlOGItN2FlNy00NmE3LWJiZGItZjNiYWQ3MTlkNjA0"
+          ],
+          "distributionList": {
+            "role": ["AssessedPerson", "Supervisor"],
+            "emails": ["manager@company.com", "hr@company.com"]
+          }
+        }
       }
     },
     {
-      id: "list-scenarios",
-      title: "Get all Scenarios list",
-      description: "Retrieve a list of scenarios with optional filtering.",
+      id: "list-assessment-templates",
+      title: "Get all Assessment Template list",
+      description: "Retrieve a list of assessment template with optional filtering.",
       method: "POST" as const,
-      url: "http://localhost:9000/api/scenarios/list",
+      url: "https://api.constructionintelligence.com/api/assessment-templates/list",
       headers: {
         "content-type": "application/json",
         "Authorization": " "
       },
       body: {
-        "first": 20,
-        "filterByName": "Test with sumi12"
+          "filterByName": "",
+          "first": 10
+        }
+    },
+    {
+      id: "delete-assessment-template",
+      title: "Delete Assessment Template record",
+      description: "Delete a assessment template record by its ID.",
+      method: "DELETE" as const,
+      url: "https://api.constructionintelligence.com/api/assessment-templates/id",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": " "
+      },
+       payload: {
+        "id": "UHJvamVjdDphYmMtZGVmLTQ1N2ctODllZi0xMjM0NTY3ODkwYWJ"
+      },
+      body: {
+          
       }
+    },
+    {
+      id: "update-assessment-template",
+      title: "Update Assessment Template record",
+      description: "Update a assessment template record by its ID.",
+      method: "PUT" as const,
+      url: "https://api.constructionintelligence.com/api/assessment-templates/id",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": " "
+      },
+      payload: {
+        "id": "UHJvamVjdDphYmMtZGVmLTQ1N2ctODllZi0xMjM0NTY3ODkwYWJ"
+      },
+      body: {
+          "data": {
+            "name": "Updated Senior Project Manager Assessment",
+            "associatedRoleIds": [
+              "QXNzaWdubWVudFJvbGU6QXNzaWdubWVudFJvbGU6ZmE4NTgyZGEtMzg3Ny00NTI4LTg1MjctOTBmMTkyYjA5Zjk0"
+            ],
+            "assessedSkillIds": [
+              "U2tpbGw6U2tpbGw6ZDUyM2VlOGItN2FlNy00NmE3LWJiZGItZjNiYWQ3MTlkNjA0"
+            ],
+            "distributionList": {
+              "role": ["AssessedPerson", "Supervisor", "Admin"],
+              "emails": ["manager@company.com", "hr@company.com", "admin@company.com"]
+            }
+          }
+        }
     }
   ];
   const {
@@ -145,7 +201,7 @@ const AssessmentTemplates = () => {
           <TabsContent value="rest-api" className="space-y-6">
               <h2 className="text-2xl font-bold mb-4">REST API</h2>
               <p className="mb-4">
-                Use these REST API endpoints to interact with scenarios programmatically.
+                Use these REST API endpoints to interact with assessment template programmatically.
               </p>
               
               {restApiEndpoints.map((endpoint) => (

@@ -11,34 +11,130 @@ const Projects = () => {
   const [activeTab, setActiveTab] = React.useState("queries");
    const restApiEndpoints = [
     {
-      id: "create-scenario",
-      title: "Create Scenario",
-      description: "Create a new scenario with the specified configuration.",
+      id: "create-project",
+      title: "Create Project",
+      description: "Create a new project with the specified configuration.",
       method: "POST" as const,
-      url: "http://localhost:9000/api/scenarios",
+      url: "https://api.constructionintelligence.com/api/projects",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": " "
+      },
+      body:  {
+        "data": {
+          "name": "sumit hello",
+          "stageId": "UHJvamVjdFN0YWdlOjU1MTkyYTg0LTJmNGYtNGEyNi05NzY1LWJjMjhiZmE4MjExNw==",
+          "projectIdentifier": "sumit12344hseljjjlo",
+          "skillsIds": []
+        },
+        "milestoneCreationData": {
+          "milestoneIds": [],
+          "creationData": []
+        }
+    }
+    },
+    {
+      id: "list-projects",
+      title: "Get all Projects list",
+      description: "Retrieve a list of project with optional filtering.",
+      method: "POST" as const,
+      url: "https://api.constructionintelligence.com/api/projects/list",
       headers: {
         "content-type": "application/json",
         "Authorization": " "
       },
       body: {
-        "name": "Demo rest apis",
-        "projectsRef": [],
-        "isMasterPlan": false
+          "name": null,
+          "excludeIds": null,
+          "alwaysIncludeIds": null,
+          "first": 3,
+          "after": null,
+          "before": null,
+          "showDeactivated": false,
+          "filterByDivisions": null,
+          "filterByStages": null,
+          "filterByRegions": null
       }
     },
     {
-      id: "list-scenarios",
-      title: "Get all Scenarios list",
-      description: "Retrieve a list of scenarios with optional filtering.",
-      method: "POST" as const,
-      url: "http://localhost:9000/api/scenarios/list",
+      id: "delete-projects",
+      title: "Delete Project record",
+      description: "Delete a project record by its ID.",
+      method: "DELETE" as const,
+      url: "https://api.constructionintelligence.com/api/projects/id",
       headers: {
         "content-type": "application/json",
         "Authorization": " "
       },
+       payload: {
+        "id": "UHJvamVjdDphYmMtZGVmLTQ1N2ctODllZi0xMjM0NTY3ODkwYWJ"
+      },
       body: {
-        "first": 20,
-        "filterByName": "Test with sumi12"
+          
+      }
+    },
+    {
+      id: "update-projects",
+      title: "Update Project record",
+      description: "Update a project record by its ID.",
+      method: "PUT" as const,
+      url: "https://api.constructionintelligence.com/api/projects/id",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": " "
+      },
+      payload: {
+        "id": "UHJvamVjdDphYmMtZGVmLTQ1N2ctODllZi0xMjM0NTY3ODkwYWJ"
+      },
+      body: {
+        "data": {
+          "name": "Updated Project Name",
+          "stageId": "UHJvamVjdFN0YWdlOjU1MTkyYTg0LTJmNGYtNGEyNi05NzY1LWJjMjhiZmE4MjExNw==",
+          "projectIdentifier": "PROJ-001-UPDATED",
+          "startDate": "2024-02-01",
+          "endDate": "2024-11-30",
+          "volume": 1500000.00,
+          "generalConditionsPercentage": 18.0,
+          "budgetedLaborCosts": 750000.00,
+          "clientName": "Updated ABC Corporation",
+          "architectName": "Updated XYZ Architects",
+          "address": {
+            "lineOne": "456 Updated Street",
+            "city": "Updated City",
+            "postalCode": "54321",
+            "state": "UT",
+            "country": "USA",
+            "latitude": 40.7589,
+            "longitude": -73.9851
+          },
+          "divisionId": "RGl2aXNpb246ZGVmYXVsdC1kaXZpc2lvbi1pZA==",
+          "regionId": "UmVnaW9uOmRlZmF1bHQtcmVnaW9uLWlk",
+          "comments": "This project has been updated",
+          "skillsIds": []
+        },
+        "milestoneCreationData": {
+          "milestoneIds": [],
+          "creationData": [
+            {
+              "name": "Updated Project Kickoff",
+              "date": "2024-02-01"
+            },
+            {
+              "name": "Updated Design Phase Complete",
+              "date": "2024-04-01"
+            },
+            {
+              "name": "Updated Construction Start",
+              "date": "2024-07-01"
+            },
+            {
+              "name": "Updated Project Completion",
+              "date": "2024-11-30"
+            }
+          ]
+        },
+        "moveAssignmentStartDates": false,
+        "moveAssignmentEndDates": false
       }
     }
   ];
@@ -55,7 +151,7 @@ const Projects = () => {
         
         <section className="mb-8">
           <p className="mb-6">
-            Our GraphQL API provides the following project-related queries that you can use to fetch and manage construction projects:
+            API provides the following project-related queries that you can use to fetch and manage projects:
           </p> 
        </section>
         
@@ -152,7 +248,7 @@ const Projects = () => {
           <TabsContent value="rest-api" className="space-y-6">
               <h2 className="text-2xl font-bold mb-4">REST API</h2>
               <p className="mb-4">
-                Use these REST API endpoints to interact with scenarios programmatically.
+                Use these REST API endpoints to interact with project programmatically.
               </p>
               
               {restApiEndpoints.map((endpoint) => (

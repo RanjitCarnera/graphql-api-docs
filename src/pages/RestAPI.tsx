@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 const RestAPI = () => {
   const generateTokenExamples = {
     javascript: `// Generate API Key
-fetch('http://localhost:9000/api/generate-public-token', {
+fetch('https://api.constructionintelligence.com/api/generate-public-token', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -24,7 +24,7 @@ fetch('http://localhost:9000/api/generate-public-token', {
 .then(data => console.log(data));`,
     python: `import requests
 
-url = 'http://localhost:9000/api/generate-public-token'
+url = 'https://api.constructionintelligence.com/api/generate-public-token'
 headers = {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer YOUR_AUTH_TOKEN'
@@ -40,7 +40,7 @@ print(response.json())`
 
   const listTokensExamples = {
     javascript: `// List API Keys
-fetch('http://localhost:9000/api/token', {
+fetch('https://api.constructionintelligence.com/api/token', {
   method: 'GET',
   headers: {
     'Content-Type': 'application/json',
@@ -51,7 +51,7 @@ fetch('http://localhost:9000/api/token', {
 .then(data => console.log(data));`,
     python: `import requests
 
-url = 'http://localhost:9000/api/token'
+url = 'https://api.constructionintelligence.com/api/token'
 headers = {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer YOUR_AUTH_TOKEN'
@@ -64,7 +64,7 @@ print(response.json())`
   const deleteTokenExamples = {
     javascript: `// Delete API Key
 const tokenId = 'token-id-123';
-fetch(\`http://localhost:9000/api/token/deactivate/\${tokenId}\`, {
+fetch(\`https://api.constructionintelligence.com/api/token/deactivate/\${tokenId}\`, {
   method: 'GET',
   headers: {
     'Content-Type': 'application/json',
@@ -76,7 +76,7 @@ fetch(\`http://localhost:9000/api/token/deactivate/\${tokenId}\`, {
     python: `import requests
 
 token_id = 'token-id-123'
-url = f'http://localhost:9000/api/token/deactivate/{token_id}'
+url = f'https://api.constructionintelligence.com/api/token/deactivate/{token_id}'
 headers = {
     'Content-Type': 'application/json',
     'Authorization': 'Bearer YOUR_AUTH_TOKEN'
@@ -97,7 +97,7 @@ print(response.json())`
             All REST API requests are made to the following base URL:
           </p>
           <code className="block bg-gray-100 p-3 rounded-md font-code mb-6">
-            http://localhost:9000/api
+            https://api.constructionintelligence.com/api
           </code>
         </section>
 

@@ -12,34 +12,82 @@ const AssignmentRoles = () => {
   const [activeTab, setActiveTab] = React.useState("queries");
    const restApiEndpoints = [
     {
-      id: "create-scenario",
-      title: "Create Scenario",
-      description: "Create a new scenario with the specified configuration.",
+      id: "create-assignment-role",
+      title: "Create Assignment Role",
+      description: "Create a new assignment with the specified configuration.",
       method: "POST" as const,
-      url: "http://localhost:9000/api/scenarios",
+      url: "https://api.constructionintelligence.com/api/assignment-roles",
       headers: {
         "content-type": "application/json",
         "Authorization": " "
       },
       body: {
-        "name": "Demo rest apis",
-        "projectsRef": [],
-        "isMasterPlan": false
+          "data": {
+            "name": "Senior Project Manager",
+            "sortOrder": 1,
+            "maxNumberOfProjects": 3,
+            "utilizationProjectionCapInMonths": 12,
+            "countAsFullyAllocatedAtPercentage": 80.0,
+            "countAsOverallocatedAtPercentage": 120.0,
+            "useEndDateOfLastAssignmentOverProjectionCap": true
+          }
+        }
+    },
+    {
+      id: "list-assignment-roles",
+      title: "Get all Assignment role list",
+      description: "Retrieve a list of assignment with optional filtering.",
+      method: "POST" as const,
+      url: "https://api.constructionintelligence.com/api/assignment-roles/list",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": " "
+      },
+      body: {
+          "first": 20,
+          "filterByName": ""
       }
     },
     {
-      id: "list-scenarios",
-      title: "Get all Scenarios list",
-      description: "Retrieve a list of scenarios with optional filtering.",
-      method: "POST" as const,
-      url: "http://localhost:9000/api/scenarios/list",
+      id: "delete-assignment-role",
+      title: "Delete Assignment role record",
+      description: "Delete a assignment role record by its ID.",
+      method: "DELETE" as const,
+      url: "https://api.constructionintelligence.com/api/assignment-roles/id",
       headers: {
         "content-type": "application/json",
         "Authorization": " "
       },
+       payload: {
+        "id": "UHJvamVjdDphYmMtZGVmLTQ1N2ctODllZi0xMjM0NTY3ODkwYWJ"
+      },
       body: {
-        "first": 20,
-        "filterByName": "Test with sumi12"
+          
+      }
+    },
+    {
+      id: "update-assignment-role",
+      title: "Update Assignment role record",
+      description: "Update a assignment role record by its ID.",
+      method: "PUT" as const,
+      url: "https://api.constructionintelligence.com/api/assignment-roles/id",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": " "
+      },
+      payload: {
+        "id": "UHJvamVjdDphYmMtZGVmLTQ1N2ctODllZi0xMjM0NTY3ODkwYWJ"
+      },
+      body: {
+        "data": {
+          "name": "Senior Project Manager Updated",
+          "sortOrder": 2,
+          "maxNumberOfProjects": 5,
+          "utilizationProjectionCapInMonths": 18,
+          "countAsFullyAllocatedAtPercentage": 85.0,
+          "countAsOverallocatedAtPercentage": 125.0,
+          "useEndDateOfLastAssignmentOverProjectionCap": false
+        }
       }
     }
   ];
@@ -146,7 +194,7 @@ const AssignmentRoles = () => {
           <TabsContent value="rest-api" className="space-y-6">
               <h2 className="text-2xl font-bold mb-4">REST API</h2>
               <p className="mb-4">
-                Use these REST API endpoints to interact with scenarios programmatically.
+                Use these REST API endpoints to interact with assignment role programmatically.
               </p>
               
               {restApiEndpoints.map((endpoint) => (
