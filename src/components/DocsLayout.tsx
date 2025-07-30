@@ -43,7 +43,7 @@ function DocsSidebar() {
                 <SidebarMenuButton asChild>
                   <Link to="/">
                     <BookOpen size={18} />
-                    <span>Introduction</span>
+                    <span>Test</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
