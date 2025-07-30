@@ -17,7 +17,7 @@ export default function DocsLayout({ children }: DocsLayoutProps) {
           <div className="flex items-center justify-between mb-6">
             <SidebarTrigger />
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold">GraphQL API Documentation</h1>
+              <h1 className="text-2xl font-bold">API Documentation</h1>
             </div>
           </div>
           <div className="container mx-auto">{children}</div>
@@ -32,7 +32,7 @@ function DocsSidebar() {
     <Sidebar className="bg-docs-sidebar border-r border-docs-border">
       <div className="p-4 border-b border-docs-border">
         <h2 className="text-xl font-bold text-docs-primary">API Docs</h2>
-        <p className="text-sm text-gray-500">v1.0.0</p>
+        <p className="text-sm text-gray-500">Graphql and REST v1.0.0</p>
       </div>
       <SidebarContent>
         <SidebarGroup>
@@ -59,54 +59,28 @@ function DocsSidebar() {
                 <SidebarMenuButton asChild>
                   <Link to="/playground">
                     <Code size={18} />
-                    <span>Playground</span>
+                    <span>API Playground</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-{/*         
-        <SidebarGroup>
-          <SidebarGroupLabel>Schema</SidebarGroupLabel>
+         <SidebarGroup>
+          <SidebarGroupLabel>API References</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link to="/queries">
-                    <Database size={18} />
-                    <span>Queries</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link to="/fragments">
-                    <Puzzle size={18} />
-                    <span>Fragments</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link to="/mutations">
-                    <FileText size={18} />
-                    <span>Mutations</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link to="/types">
-                    <Hash size={18} />
-                    <span>Types</span>
+                  <Link to="/rest-api">
+                    <Globe size={18} />
+                    <span>REST API</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
-        </SidebarGroup> */}
-        
+        </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>Resources</SidebarGroupLabel>
           <SidebarGroupContent>
