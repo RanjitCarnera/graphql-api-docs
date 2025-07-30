@@ -90,7 +90,7 @@ print(response.json())`
 
   return (
     <DocsLayout>
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto text-center">
         <section className="mb-12">
           <h1 className="text-4xl font-bold mb-4 text-blue-600">API Documentation</h1>
           <p className="text-xl text-gray-600 mb-6">
