@@ -7,10 +7,44 @@ import operationsData from '@/data/peopleOperations.json';
 import PeopleIntroduction from '@/components/people/PeopleIntroduction';
 import RelatedResources from '@/components/people/RelatedResources';
 import { useFragmentScroll } from '../lib/utils';
+import RestApiCard from '@/components/RestApiCard';
 
 const People = () => {
 
     const [activeTab, setActiveTab] = React.useState("queries");
+      const restApiEndpoints = [
+    {
+      id: "create-scenario",
+      title: "Create Scenario",
+      description: "Create a new scenario with the specified configuration.",
+      method: "POST" as const,
+      url: "http://localhost:9000/api/scenarios",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": " "
+      },
+      body: {
+        "name": "Demo rest apis",
+        "projectsRef": [],
+        "isMasterPlan": false
+      }
+    },
+    {
+      id: "list-scenarios",
+      title: "Get all Scenarios list",
+      description: "Retrieve a list of scenarios with optional filtering.",
+      method: "POST" as const,
+      url: "http://localhost:9000/api/scenarios/list",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": " "
+      },
+      body: {
+        "first": 20,
+        "filterByName": "Test with sumi12"
+      }
+    }
+  ];
     const {
       fragmentRefs,
       scrollToFragment,
@@ -19,7 +53,7 @@ const People = () => {
 
   return (
     <DocsLayout>
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto text-center">
         <PeopleIntroduction />
         
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full mb-8">
@@ -27,6 +61,7 @@ const People = () => {
             <TabsTrigger value="queries">Queries</TabsTrigger>
             <TabsTrigger value="mutations">Mutations</TabsTrigger>
             <TabsTrigger value="fragments">Fragments</TabsTrigger>
+            <TabsTrigger value="rest-api">REST API</TabsTrigger>
           </TabsList>
           
           <TabsContent value="queries" className="space-y-6">
@@ -111,6 +146,16 @@ const People = () => {
             })}
             </>}
           </TabsContent>
+          <TabsContent value="rest-api" className="space-y-6">
+              <h2 className="text-2xl font-bold mb-4">REST API</h2>
+              <p className="mb-4">
+                Use these REST API endpoints to interact with scenarios programmatically.
+              </p>
+              
+              {restApiEndpoints.map((endpoint) => (
+                <RestApiCard key={endpoint.id} endpoint={endpoint} />
+              ))}
+            </TabsContent>
         </Tabs>
       </div>
     </DocsLayout>

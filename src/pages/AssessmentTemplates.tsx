@@ -4,11 +4,45 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import operationsData from "@/data/assessmentTemplateOperations.json";
 import { useFragmentScroll } from '../lib/utils';
 import OperationCard from '@/components/graphql/OperationCard';
+import RestApiCard from '@/components/RestApiCard';
 
 const AssessmentTemplates = () => {
 
-   const [activeTab, setActiveTab] = React.useState("queries");
-    const {
+  const [activeTab, setActiveTab] = React.useState("queries");
+   const restApiEndpoints = [
+    {
+      id: "create-scenario",
+      title: "Create Scenario",
+      description: "Create a new scenario with the specified configuration.",
+      method: "POST" as const,
+      url: "http://localhost:9000/api/scenarios",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": " "
+      },
+      body: {
+        "name": "Demo rest apis",
+        "projectsRef": [],
+        "isMasterPlan": false
+      }
+    },
+    {
+      id: "list-scenarios",
+      title: "Get all Scenarios list",
+      description: "Retrieve a list of scenarios with optional filtering.",
+      method: "POST" as const,
+      url: "http://localhost:9000/api/scenarios/list",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": " "
+      },
+      body: {
+        "first": 20,
+        "filterByName": "Test with sumi12"
+      }
+    }
+  ];
+  const {
       fragmentRefs,
       scrollToFragment,
       fragmentIdToRefKey
@@ -16,7 +50,7 @@ const AssessmentTemplates = () => {
 
   return (
     <DocsLayout>
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto text-center">
         <h1 className="text-3xl font-bold mb-6">Assessment Templates API</h1>
         <section className="mb-8">
           <p className="mb-6">
@@ -30,6 +64,7 @@ const AssessmentTemplates = () => {
             <TabsTrigger value="queries">Queries</TabsTrigger>
             <TabsTrigger value="mutations">Mutations</TabsTrigger>
             <TabsTrigger value="fragments">Fragments</TabsTrigger>
+            <TabsTrigger value="rest-api">REST API</TabsTrigger>
           </TabsList>
 
           <TabsContent value="queries" className="space-y-6">
@@ -107,6 +142,16 @@ const AssessmentTemplates = () => {
               );              
             })}
           </TabsContent>
+          <TabsContent value="rest-api" className="space-y-6">
+              <h2 className="text-2xl font-bold mb-4">REST API</h2>
+              <p className="mb-4">
+                Use these REST API endpoints to interact with scenarios programmatically.
+              </p>
+              
+              {restApiEndpoints.map((endpoint) => (
+                <RestApiCard key={endpoint.id} endpoint={endpoint} />
+              ))}
+            </TabsContent>
         </Tabs>
       </div>
     </DocsLayout>
