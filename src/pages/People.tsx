@@ -14,35 +14,43 @@ const People = () => {
     const [activeTab, setActiveTab] = React.useState("queries");
       const restApiEndpoints = [
     {
-      id: "create-scenario",
-      title: "Create Scenario",
-      description: "Create a new scenario with the specified configuration.",
+      id: "create-people",
+      title: "Create People",
+      description: "Create a new people with their details.",
       method: "POST" as const,
-      url: "http://localhost:9000/api/scenarios",
+      url: "https://api.constructionintelligence.com/api/person",
       headers: {
         "content-type": "application/json",
         "Authorization": " "
       },
       body: {
-        "name": "Demo rest apis",
-        "projectsRef": [],
-        "isMasterPlan": false
-      }
+        "data": {
+            "name": "ironMan",
+            "email": "ironman@mail.com",
+            "phone": "2122122122",
+            "startDate": "2025-05-18",
+            "salary": 212,
+            "laborBurdenMultiplier": 1.32,
+            "assignmentRoleRef": "QXNzaWdubWVudFJvbGU6QXNzaWdubWVudFJvbGU6ZTA4MDU4N2UtZDMzOC00NGNjLWI0OTMtZDkzM2E4YWFmZWQ3",
+            "associatedWithRegionsRef": ["UmVnaW9uOlJlZ2lvbjozNDBiMTE1Yy01YjhmLTQ1N2QtODA3Yy0wNjMwNGM3YjAzNzI="],
+            "associatedWithDivisionsRef": ["RGl2aXNpb246RGl2aXNpb246MTg5YTVlMzEtZDYyNS00NTU2LWFhYjItNjUyYjQzM2M4ZGYx"],
+            "comment": "comment",
+            "employeeId": "12345",
+            "superVisorsRef": ["UGVyc29uOlBlcnNvbjozYWZhM2VhMS01MzM5LTRlZTMtYmIwYi1lNTViMjkwYjMwZmI="]
+        }
+    }
     },
     {
-      id: "list-scenarios",
-      title: "Get all Scenarios list",
-      description: "Retrieve a list of scenarios with optional filtering.",
+      id: "list-People",
+      title: "Get all People list",
+      description: "Retrieve a list of people with optional filtering.",
       method: "POST" as const,
-      url: "http://localhost:9000/api/scenarios/list",
+      url: "https://api.constructionintelligence.com/api/people/list",
       headers: {
         "content-type": "application/json",
         "Authorization": " "
       },
-      body: {
-        "first": 20,
-        "filterByName": "Test with sumi12"
-      }
+      body: {"first":250,"filterByName":""}
     }
   ];
     const {
@@ -149,7 +157,7 @@ const People = () => {
           <TabsContent value="rest-api" className="space-y-6">
               <h2 className="text-2xl font-bold mb-4">REST API</h2>
               <p className="mb-4">
-                Use these REST API endpoints to interact with scenarios programmatically.
+                Use these REST API endpoints to interact with people programmatically.
               </p>
               
               {restApiEndpoints.map((endpoint) => (
