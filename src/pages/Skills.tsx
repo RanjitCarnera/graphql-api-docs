@@ -11,34 +11,99 @@ const Skills = () => {
     const [activeTab, setActiveTab] = React.useState("queries");
      const restApiEndpoints = [
     {
-      id: "create-scenario",
-      title: "Create Scenario",
-      description: "Create a new scenario with the specified configuration.",
+      id: "create-skills",
+      title: "Create Skills",
+      description: "Create a new skills with the specified configuration.",
       method: "POST" as const,
-      url: "https://api.constructionintelligence.com/api/scenarios",
+      url: "http://localhost:9000/api/skills",
       headers: {
         "content-type": "application/json",
         "Authorization": " "
       },
       body: {
-        "name": "Demo rest apis",
-        "projectsRef": [],
-        "isMasterPlan": false
+          "data": {
+            "skillCategoryId": "U2tpbGxDYXRlZ29yeTpTa2lsbENhdGVnb3J5OjEyMzQ1Njc4OTBhYmNkZWY=",
+            "name": "Project Management",
+            "description": "Ability to manage complex projects effectively",
+            "dimension": {
+              "kind": "numerical",
+              "dimensionCount": 5,
+              "dimensionExplanations": [
+                "Beginner - Basic project coordination",
+                "Intermediate - Team leadership",
+                "Advanced - Complex project management",
+                "Expert - Strategic project planning",
+                "Master - Enterprise-level project governance"
+              ]
+            }
+          }
+        }
+    },
+    {
+      id: "list-skills",
+      title: "Get all Skills list",
+      description: "Retrieve a list of skills with optional filtering.",
+      method: "POST" as const,
+      url: "http://localhost:9000/api/skills/list",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": " "
+      },
+      body: {
+          "first": 20,
+          "filterByName": null,
+          "filterBySkillCategoryRef": null
       }
     },
     {
-      id: "list-scenarios",
-      title: "Get all Scenarios list",
-      description: "Retrieve a list of scenarios with optional filtering.",
-      method: "POST" as const,
-      url: "https://api.constructionintelligence.com/api/scenarios/list",
+      id: "delete-skills",
+      title: "Delete Skills record",
+      description: "Delete a skill record by its ID.",
+      method: "DELETE" as const,
+      url: "http://localhost:9000/api/skills/id",
       headers: {
         "content-type": "application/json",
         "Authorization": " "
       },
+       payload: {
+        "id": "UHJvamVjdDphYmMtZGVmLTQ1N2ctODllZi0xMjM0NTY3ODkwYWJ"
+      },
       body: {
-        "first": 20,
-        "filterByName": "Test with sumi12"
+          
+      }
+    },
+    {
+      id: "update-skills",
+      title: "Update Skills record",
+      description: "Update a skill record by its ID.",
+      method: "PUT" as const,
+      url: "http://localhost:9000/api/skills/id",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": " "
+      },
+      payload: {
+        "id": "UHJvamVjdDphYmMtZGVmLTQ1N2ctODllZi0xMjM0NTY3ODkwYWJ"
+      },
+      body: {
+        "data": {
+          "skillCategoryId": "U2tpbGxDYXRlZ29yeTpTa2lsbENhdGVnb3J5OjEyMzQ1Njc4OTBhYmNkZWY=",
+          "name": "Advanced Project Management",
+          "description": "Expert-level project management capabilities",
+          "dimension": {
+            "kind": "numerical",
+            "dimensionCount": 7,
+            "dimensionExplanations": [
+              "Novice - Basic understanding",
+              "Beginner - Simple project tasks",
+              "Intermediate - Team coordination",
+              "Advanced - Complex project leadership",
+              "Expert - Strategic project management",
+              "Master - Enterprise project governance",
+              "Grand Master - Industry thought leadership"
+            ]
+          }
+        }
       }
     }
   ];
@@ -149,16 +214,14 @@ const Skills = () => {
             </>}
           </TabsContent>
           <TabsContent value="rest-api" className="space-y-6">
-              <div className="max-w-4xl mx-auto"> 
-                <h2 className="text-2xl font-bold mb-4">REST API</h2>
-                <section className="docs-section mb-8">
-                  <h2 className="text-2xl font-bold mb-4">Coming Soon</h2>
-                  <p className="mb-6">
-                    Documentation for this section is currently under development. Check back soon for detailed
-                    information on querying and managing tags.
-                  </p>
-                </section>
-              </div>
+              <h2 className="text-2xl font-bold mb-4">REST API</h2>
+              <p className="mb-4">
+                Use these REST API endpoints to interact with skills programmatically.
+              </p>
+              
+              {restApiEndpoints.map((endpoint) => (
+                <RestApiCard key={endpoint.id} endpoint={endpoint} />
+              ))}
             </TabsContent>
         </Tabs>
       </div>

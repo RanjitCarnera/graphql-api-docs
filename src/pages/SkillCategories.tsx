@@ -13,34 +13,70 @@ const SkillCategories = () => {
     const [activeTab, setActiveTab] = React.useState("queries");
      const restApiEndpoints = [
     {
-      id: "create-scenario",
-      title: "Create Scenario",
-      description: "Create a new scenario with the specified configuration.",
+      id: "create-skill-categories",
+      title: "Create Skill Category",
+      description: "Create a new skill categories with the specified configuration.",
       method: "POST" as const,
-      url: "https://api.constructionintelligence.com/api/scenarios",
+      url: "http://localhost:9000/api/skill-categories",
       headers: {
         "content-type": "application/json",
         "Authorization": " "
       },
       body: {
-        "name": "Demo rest apis",
-        "projectsRef": [],
-        "isMasterPlan": false
+          "data": {
+            "name": "Technical Skills"
+          }
+        }
+    },
+    {
+      id: "list-skill-categories",
+      title: "Get all Skill Categories list",
+      description: "Retrieve a list of skill categories with optional filtering.",
+      method: "POST" as const,
+      url: "http://localhost:9000/api/skill-categorie/list",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": " "
+      },
+      body: {
+          "filterByName": "j",
+          "alwaysIncludeIds": null
       }
     },
     {
-      id: "list-scenarios",
-      title: "Get all Scenarios list",
-      description: "Retrieve a list of scenarios with optional filtering.",
-      method: "POST" as const,
-      url: "https://api.constructionintelligence.com/api/scenarios/list",
+      id: "delete-skill-categories",
+      title: "Delete Skill Categories record",
+      description: "Delete a skill categories record by its ID.",
+      method: "DELETE" as const,
+      url: "http://localhost:9000/api/skill-categories/id",
       headers: {
         "content-type": "application/json",
         "Authorization": " "
       },
+       payload: {
+        "id": "U2tpbGxDYXRlZ29yeTpTa2lsbENhdGVnb3J5OjEyMzQ1Njc4OTBhYmNkZWY="
+      },
       body: {
-        "first": 20,
-        "filterByName": "Test with sumi12"
+          
+      }
+    },
+    {
+      id: "update-skill-categories",
+      title: "Update Skills Categories record",
+      description: "Update a skill categories record by its ID.",
+      method: "PUT" as const,
+      url: "http://localhost:9000/api/skill-categories/id",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": " "
+      },
+      payload: {
+        "id": "UHJvamVjdDphYmMtZGVmLTQ1N2ctODllZi0xMjM0NTY3ODkwYWJ"
+      },
+      body: {
+        "data": {
+          "name": "Advanced Technical Skills"
+        }
       }
     }
   ];
@@ -152,16 +188,14 @@ const SkillCategories = () => {
             </>}
           </TabsContent>
           <TabsContent value="rest-api" className="space-y-6">
-               <div className="max-w-4xl mx-auto"> 
-                <h2 className="text-2xl font-bold mb-4">REST API</h2>
-                <section className="docs-section mb-8">
-                  <h2 className="text-2xl font-bold mb-4">Coming Soon</h2>
-                  <p className="mb-6">
-                    Documentation for this section is currently under development. Check back soon for detailed
-                    information on querying and managing tags.
-                  </p>
-                </section>
-              </div>
+               <h2 className="text-2xl font-bold mb-4">REST API</h2>
+                <p className="mb-4">
+                  Use these REST API endpoints to interact with skill categories programmatically.
+                </p>
+                
+                {restApiEndpoints.map((endpoint) => (
+                  <RestApiCard key={endpoint.id} endpoint={endpoint} />
+                ))}
             </TabsContent>
         </Tabs>
       
