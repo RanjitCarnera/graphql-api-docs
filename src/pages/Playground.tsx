@@ -5,6 +5,7 @@ import GraphQLPlayground from '@/components/GraphQLPlayground';
 // import GraphQLSearch from '@/components/GraphQLSearch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import RestApiExplorer from '@/components/RestApiExplorer';
 
 const Playground = () => {
   return (
@@ -30,19 +31,7 @@ const Playground = () => {
           </TabsContent>
           
           <TabsContent value="rest" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>REST API Explorer</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8">
-                  <p className="text-gray-500 mb-4">REST API explorer coming soon!</p>
-                  <p className="text-sm text-gray-400">
-                    In the meantime, you can use tools like Postman or curl to test our REST endpoints.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
+            <RestApiExplorer />
             
             <Card>
               <CardHeader>
