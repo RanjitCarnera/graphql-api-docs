@@ -1,0 +1,120 @@
+{
+  "queries": [
+    {
+      "id": "defaultSetTagsInputField",
+      "title": "defaultSetTagsInputField_Query",
+      "description": "Query to fetch tags by name with inline fragment for tag details.",
+      "code": "query defaultSetTagsInputField_Query($name: String) {\n    Tag {\n        GetTagsByName(name: $name, first: 50) {\n            edges {\n                node {\n                    ...defaultSetTagsInputField_TagInlineFragment\n                }\n            }\n        }\n    }\n}",
+      "usedFragments": ["defaultSetTagsInputField_TagInlineFragment"]
+    },
+    {
+      "id": "FileSelectionField",
+      "title": "FileSelectionField_Query",
+      "description": "Query to retrieve a file by ID and a list of files using the FilesTable fragment.",
+      "code": "query FileSelectionField_Query(\n    $fileId: ID!\n    $skip: Boolean!\n    $filterByFileTypes: [String!]\n    $tagsIncluded: [String!]\n) {\n    ...FilesTable_FilesListFragment @arguments(filterByFileTypes: $filterByFileTypes, tagsIncluded: $tagsIncluded)\n\n    node(id: $fileId) @skip(if: $skip) {\n        ... on File {\n            name\n            url\n        }\n    }\n}",
+      "usedFragments": ["FilesTable_FilesListFragment"]
+    },
+    {
+      "id": "tagsSelect",
+      "title": "tagsSelect_Query",
+      "description": "Query to retrieve tags for a dropdown select component.",
+      "code": "query tagsSelect_Query($name: String) {\n    Tag {\n        GetTagsByName(name: $name, first: 20) @connection(key: \"tagsSelect_GetTagsByName\") {\n            edges {\n                node {\n                    ...tagsSelect_TagInlineFragment\n                }\n            }\n        }\n    }\n}",
+      "usedFragments": ["tagsSelect_TagInlineFragment"]
+    },
+    {
+      "id": "tagsTable",
+      "title": "tagsTable_Query",
+      "description": "Query for paginated tag list with inline and edit tag button fragments.",
+      "code": "query tagsTable_Query($name: String) {\n    ...tagsTable_QueryFragment @arguments(name: $name)\n}",
+      "usedFragments": ["tagsTable_QueryFragment"]
+    }
+  ],
+  "mutations": [
+    {
+      "id": "createTagButton",
+      "title": "createTagButton_createTagFromNameMutation",
+      "description": "Mutation to create a new tag using a name, with support for appending new tags to a list.",
+      "code": "mutation createTagButton_createTagFromNameMutation(\n    $input: CreateTagFromNameInput!\n    $connections: [ID!]!\n) {\n    Tag {\n        createTagFromName(input: $input) {\n            createdTag @appendEdge(connections: $connections) {\n                node {\n                    ...tagsTable_TagInlineFragment\n                }\n            }\n            cleanedTags {\n                node {\n                    ...tagsTable_TagInlineFragment\n                }\n            }\n        }\n    }\n}",
+      "usedFragments": ["tagsTable_TagInlineFragment"]
+    },
+    {
+      "id": "deleteTagButton",
+      "title": "deleteTagButton_deleteTagMutation",
+      "description": "Mutation to soft-delete tags and return cleaned tag data.",
+      "code": "mutation deleteTagButton_deleteTagMutation($input: SoftDeleteTagsInput!, $connections: [ID!]!) {\n    Tag {\n        softDeleteTags(input: $input) {\n            deletedIds @deleteEdge(connections: $connections)\n            cleanedTags {\n                node {\n                    ...tagsTable_TagInlineFragment\n                }\n            }\n        }\n    }\n}",
+      "usedFragments": ["tagsTable_TagInlineFragment"]
+    },
+    {
+      "id": "editTagButton",
+      "title": "editTagButton_editTagDataMutation",
+      "description": "Mutation to edit partial tag data like name, color, and sort order.",
+      "code": "mutation editTagButton_editTagDataMutation($input: EditPartialTagDataInput!) {\n    Tag {\n        editPartialTagData(input: $input) {\n            cleanedTags {\n                node {\n                    ...editTagButton_TagFragment\n                }\n            }\n        }\n    }\n}",
+      "usedFragments": ["editTagButton_TagFragment"]
+    },
+    {
+      "id": "exportTagsButton",
+      "title": "exportTagsButton_executeDocumentBuilderMutation",
+      "description": "Mutation to export tags via the document builder.",
+      "code": "mutation exportTagsButton_executeDocumentBuilderMutation($input: ExecuteDocumentBuilderInput!) {\n    DocumentBuilder {\n        executeDocumentBuilder(input: $input) {\n            file {\n                url\n            }\n        }\n    }\n}",
+      "usedFragments": []
+    },
+    {
+      "id": "importTagsButton",
+      "title": "importTagsButton_importTagsMutation",
+      "description": "Mutation to import tags, returning information about issues and new/edited entities.",
+      "code": "mutation importTagsButton_importTagsMutation($input: ImportTagsInput!) {\n    Tag {\n        importTags(input: $input) {\n            result {\n                issues {\n                    issue\n                    row\n                }\n                editedEntities\n                newEntities\n            }\n        }\n    }\n}",
+      "usedFragments": []
+    },
+    {
+      "id": "tagsTable",
+      "title": "tagsTable_SetTagsSortOrderMutation",
+      "description": "Mutation to set the sort order of tags and return the changed tags.",
+      "code": "mutation tagsTable_SetTagsSortOrderMutation($input: SetTagSortOrderInput!) {\n    Tag {\n        setTagSortOrder(input: $input) {\n            changedTags {\n                ...tagsTable_TagInlineFragment\n            }\n        }\n    }\n}",
+      "usedFragments": ["tagsTable_TagInlineFragment"]
+    }
+  ],
+  "fragments": [
+    {
+      "id": "defaultSetTagsInputField",
+      "title": "defaultSetTagsInputField_TagInlineFragment",
+      "description": "Inline fragment for tag containing ID, name, and color.",
+      "code": "fragment defaultSetTagsInputField_TagInlineFragment on Tag @inline {\n    id\n    data {\n        name\n        color\n    }\n}",
+      "fragmentId": "defaultSetTagsInputField_TagInlineFragment"
+    },
+    {
+      "id": "FilesTable",
+      "title": "FilesTable_FilesListFragment",
+      "description": "Fragment to retrieve list of files with pagination and filtering support.",
+      "code": "fragment FilesTable_FilesListFragment on Query\n    @refetchable(queryName: \"FilesTable_Refetch\")\n    @argumentDefinitions(\n        first: { type: \"Int\", defaultValue: 20 }\n        after: { type: \"String\" }\n        filterByName: { type: \"String\" }\n        filterByFileTypes: { type: \"[String!]\" }\n        filterByFromDateTimeInclusive: { type: \"ZonedDateTIme\" }\n        filterByToDateTimeInclusive: { type: \"ZonedDateTIme\" }\n        tagsIncluded: { type: \"[String!]\" }\n    ) {\n        Admin {\n            Files {\n                Files(\n                    first: $first\n                    after: $after\n                    name: $filterByName\n                    fileType: $filterByFileTypes\n                    fromDateTimeInclusive: $filterByFromDateTimeInclusive\n                    toDateTimeInclusive: $filterByToDateTimeInclusive\n                    tagsIncluded: $tagsIncluded\n                ) @connection(key: \"FilesTable_Files\") {\n                    __id\n                    pageInfo {\n                        endCursor\n                        hasPreviousPage\n                        hasNextPage\n                        startCursor\n                    }\n                    edges {\n                        node {\n                            id\n                            name\n                            fileType\n                            accessType\n                            uploadDateTime\n                            thumbnail\n                            url\n                        }\n                    }\n                }\n            }\n        }\n    }",
+      "fragmentId": "FilesTable_FilesListFragment"
+    },
+    {
+      "id": "tagsSelect",
+      "title": "tagsSelect_TagInlineFragment",
+      "description": "Inline fragment for tag with name and color for selection dropdowns.",
+      "code": "fragment tagsSelect_TagInlineFragment on Tag @inline {\n    id\n    data {\n        name\n        color\n    }\n}",
+      "fragmentId": "tagsSelect_TagInlineFragment"
+    },
+    {
+      "id": "tagsTableQuery",
+      "title": "tagsTable_QueryFragment",
+      "description": "Fragment to fetch a paginated list of tags by name, includes inline tag fragment and edit button fragment.",
+      "code": "fragment tagsTable_QueryFragment on Query\n    @refetchable(queryName: \"tagsTable_Refetch\")\n    @argumentDefinitions(\n        first: { type: \"Int\", defaultValue: 20 }\n        after: { type: \"String\" }\n        name: { type: \"String\" }\n    ) {\n        Tag {\n            GetTagsByName(name: $name, first: $first, after: $after)\n                @connection(key: \"tagsTable_GetTagsByName\") {\n                __id\n                edges {\n                    node {\n                        ...tagsTable_TagInlineFragment\n                    }\n                }\n            }\n        }\n    }",
+      "fragmentId": "tagsTable_QueryFragment"
+    },
+    {
+      "id": "tagsTableInline",
+      "title": "tagsTable_TagInlineFragment",
+      "description": "Inline fragment for tag list row, including color and sort order along with editTagButton fragment.",
+      "code": "fragment tagsTable_TagInlineFragment on Tag @inline {\n    id\n    data {\n        name\n        sortOrder\n        color\n    }\n    ...editTagButton_TagFragment\n}",
+      "fragmentId": "tagsTable_TagInlineFragment"
+    },
+    {
+      "id": "editTagButton",
+      "title": "editTagButton_TagFragment",
+      "description": "Fragment for edit button, exposing tag ID, name, color, and sort order.",
+      "code": "fragment editTagButton_TagFragment on Tag {\n    id\n    data {\n        name\n        color\n        sortOrder\n    }\n}",
+      "fragmentId": "editTagButton_TagFragment"
+    }
+  ]
+}

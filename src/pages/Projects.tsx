@@ -136,6 +136,83 @@ const Projects = () => {
         "moveAssignmentStartDates": false,
         "moveAssignmentEndDates": false
       }
+    },
+    {
+      id: "create-project-stage",
+      title: "Create Project Stage",
+      description: "Create a new project stage with the specified configuration.",
+      method: "POST" as const,
+      url: "https://api.constructionintelligence.com/api/project-stage",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": " "
+      },
+      body:  {
+          "data": {
+              "name": "project1",
+              "reverseProjectOrderInReports": true,
+              "sortOrder": 0,
+              "color": "#214ce2"
+          },
+        "milestoneCreationData": {
+          "milestoneIds": [],
+          "creationData": []
+        }
+    }
+    },
+    {
+      id: "list-project-stages",
+      title: "Get all Project Stages list",
+      description: "Retrieve a list of project stages with optional filtering.",
+      method: "POST" as const,
+      url: "https://api.constructionintelligence.com/api/project-stages",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": " "
+      },
+      body: {
+          "name": "",
+          "first": 20
+        }
+    },
+    {
+      id: "delete-project-stage",
+      title: "Delete Project Stage record",
+      description: "Delete a project stage record by its ID.",
+      method: "DELETE" as const,
+      url: "https://api.constructionintelligence.com/api/project-stages/id",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": " "
+      },
+       payload: {
+        "id": "UHJvamVjdDphYmMtZGVmLTQ1N2ctODllZi0xMjM0NTY3ODkwYWJ"
+      },
+      body: {
+          
+      }
+    },
+    {
+      id: "update-project-stage",
+      title: "Update Project Stage record",
+      description: "Update a project stage record by its ID.",
+      method: "PUT" as const,
+      url: "https://api.constructionintelligence.com/api/project-stages/id",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": " "
+      },
+      payload: {
+        "id": "UHJvamVjdDphYmMtZGVmLTQ1N2ctODllZi0xMjM0NTY3ODkwYWJ"
+      },
+      body: {
+        "data": {
+            "name": "Preconstruction3.0",
+            "reverseProjectOrderInReports": true,
+            "sortOrder": 1,
+            "color": "#3d4fdb"
+        }
+    }
     }
   ];
   const {
@@ -248,7 +325,7 @@ const Projects = () => {
           <TabsContent value="rest-api" className="space-y-6">
               <h2 className="text-2xl font-bold mb-4">REST API</h2>
               <p className="mb-4">
-                Use these REST API endpoints to interact with project programmatically.
+                Use these REST API endpoints to interact with project and project stages programmatically.
               </p>
               
               {restApiEndpoints.map((endpoint) => (
