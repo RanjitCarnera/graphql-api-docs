@@ -13,35 +13,20 @@ const AccountUsers = () => {
   const [activeTab, setActiveTab] = React.useState("queries");
    const restApiEndpoints = [
     {
-      id: "create-scenario",
-      title: "Create Scenario",
-      description: "Create a new scenario with the specified configuration.",
+      id: "list-users-in-account",
+      title: "Get all Account users list",
+      description: "Retrieve a list of account users with optional filtering.",
       method: "POST" as const,
-      url: "https://api.constructionintelligence.com/api/scenarios",
+      url: "https://api.constructionintelligence.com/api/users-in-account",
       headers: {
         "content-type": "application/json",
         "Authorization": " "
       },
       body: {
-        "name": "Demo rest apis",
-        "projectsRef": [],
-        "isMasterPlan": false
-      }
-    },
-    {
-      id: "list-scenarios",
-      title: "Get all Scenarios list",
-      description: "Retrieve a list of scenarios with optional filtering.",
-      method: "POST" as const,
-      url: "https://api.constructionintelligence.com/api/scenarios/list",
-      headers: {
-        "content-type": "application/json",
-        "Authorization": " "
-      },
-      body: {
-        "first": 20,
-        "filterByName": "Test with sumi12"
-      }
+         "first": 20,
+         "filterByName": "",
+         "filterByEmail": ""
+        }
     }
   ];
   const {
@@ -66,7 +51,7 @@ const AccountUsers = () => {
             <TabsTrigger value="queries">Queries</TabsTrigger>
             <TabsTrigger value="mutations">Mutations</TabsTrigger>
             <TabsTrigger value="fragments">Fragments</TabsTrigger>
-            {/* <TabsTrigger value="rest-api">REST API</TabsTrigger> */}
+            <TabsTrigger value="rest-api">REST API</TabsTrigger>
           </TabsList>
           
           <TabsContent value="queries" className="space-y-6">
@@ -162,6 +147,15 @@ const AccountUsers = () => {
                   </p>
                 </section>
               </div>
+            </TabsContent>
+            <TabsContent value="rest-api" className="space-y-6">
+              <h2 className="text-2xl font-bold mb-4">REST API</h2>
+              <p className="mb-4">
+                Use these REST API endpoints to interact with account users programmatically.
+              </p>  
+              {restApiEndpoints.map((endpoint) => (
+                <RestApiCard key={endpoint.id} endpoint={endpoint} />
+              ))}
             </TabsContent>
         </Tabs>
       </div>

@@ -1,12 +1,6 @@
 {
     "queries": [
-      {
-        "id": "fileSelectionField",
-        "title": "FileSelectionField_Query",
-        "description": "Fetches file metadata by ID and lists available files filtered by file types and tags.",
-        "code": "query FileSelectionField_Query($fileId: ID!, $skip: Boolean!, $filterByFileTypes: [String!], $tagsIncluded: [String!]) {\n  ...FilesTable_FilesListFragment @arguments(filterByFileTypes:$filterByFileTypes, tagsIncluded: $tagsIncluded)\n\n  node(id: $fileId) @skip(if: $skip) {\n    ...on File {\n      name\n      url\n    }\n  }\n}",
-        "usedFragments": ["FilesTable_FilesListFragment"]
-      }
+      
     ],
     "mutations": [
       {
@@ -193,13 +187,6 @@
         "description": "Basic ID and name information about the project in scenario.",
         "code": "fragment projectDetailsButton_ProjectInScenario on ProjectInScenario {\n  project {\n    id\n    name\n  }\n}",
         "fragmentId": "projectDetailsButton_ProjectInScenario"
-      },
-      {
-        "id": "FilesTable",
-        "title": "FilesTable_FilesListFragment",
-        "description": "Fragment used to fetch a paginated list of files with filters such as name, file type, date ranges, and tags.",
-        "code": "fragment FilesTable_FilesListFragment on Query\n@refetchable(queryName: \"FilesTable_Refetch\")\n@argumentDefinitions(\n    first: { type: \"Int\", defaultValue: 20 },\n    after: { type: \"String\" },\n    filterByName: { type: \"String\" },\n    filterByFileTypes: { type: \"[String!]\" },\n    filterByFromDateTimeInclusive: { type: \"ZonedDateTIme\" },\n    filterByToDateTimeInclusive: { type: \"ZonedDateTIme\" },\n    tagsIncluded: { type: \"[String!]\" }\n) {\n  Admin {\n    Files {\n      Files(\n        first: $first,\n        after: $after,\n        name: $filterByName,\n        fileType: $filterByFileTypes,\n        fromDateTimeInclusive: $filterByFromDateTimeInclusive,\n        toDateTimeInclusive: $filterByToDateTimeInclusive,\n        tagsIncluded: $tagsIncluded\n      ) @connection(key: \"FilesTable_Files\") {\n        __id\n        pageInfo {\n          endCursor\n          hasPreviousPage\n          hasNextPage\n          startCursor\n        }\n        edges {\n          node {\n            id\n            name\n            fileType\n            accessType\n            uploadDateTime\n            thumbnail\n            url\n          }\n        }\n      }\n    }\n  }\n}",
-        "fragmentId": "FilesTable_FilesListFragment"
       }
       
     ]

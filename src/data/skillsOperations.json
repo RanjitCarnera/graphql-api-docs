@@ -55,6 +55,13 @@
         "usedFragments": [
           "editPersonSkillAssociationsModalContent_SkillInlineFragment"
         ]
+      },
+      {
+        "id": "fileSelectionField",
+        "title": "FileSelectionField_Query",
+        "description": "Fetches file metadata by ID and lists available files filtered by file types and tags.",
+        "code": "query FileSelectionField_Query($fileId: ID!, $skip: Boolean!, $filterByFileTypes: [String!], $tagsIncluded: [String!]) {\n  ...FilesTable_FilesListFragment @arguments(filterByFileTypes:$filterByFileTypes, tagsIncluded: $tagsIncluded)\n\n  node(id: $fileId) @skip(if: $skip) {\n    ...on File {\n      name\n      url\n    }\n  }\n}",
+        "usedFragments": ["FilesTable_FilesListFragment"]
       }
     ],
     "mutations": [
@@ -277,7 +284,14 @@
         "description": "Fragment to fetch details of a binary skill association, including skill information, category, and value.",
         "code": "fragment editBinarySkillAssociationModal_SkillAssociationFragment on SkillAssociation {\n    id\n    data {\n        value {\n            ... on BinaryAssessmentValue {\n                kind\n                hasSkill\n            }\n            ... on NumericalAssessmentValue {\n                kind\n                number\n            }\n        }\n        skill {\n            id\n            name\n            skillCategory {\n                name\n            }\n            dimension {\n                ... on BinaryDimension {\n                    kind\n                }\n                ... on NumericalDimension {\n                    dimensionCount\n                    kind\n                }\n            }\n        }\n    }\n}",
         "fragmentId": "editBinarySkillAssociationModal_SkillAssociationFragment"
-    }
+    },
+    {
+        "id": "FilesTable",
+        "title": "FilesTable_FilesListFragment",
+        "description": "Fragment used to fetch a paginated list of files with filters such as name, file type, date ranges, and tags.",
+        "code": "fragment FilesTable_FilesListFragment on Query\n@refetchable(queryName: \"FilesTable_Refetch\")\n@argumentDefinitions(\n    first: { type: \"Int\", defaultValue: 20 },\n    after: { type: \"String\" },\n    filterByName: { type: \"String\" },\n    filterByFileTypes: { type: \"[String!]\" },\n    filterByFromDateTimeInclusive: { type: \"ZonedDateTIme\" },\n    filterByToDateTimeInclusive: { type: \"ZonedDateTIme\" },\n    tagsIncluded: { type: \"[String!]\" }\n) {\n  Admin {\n    Files {\n      Files(\n        first: $first,\n        after: $after,\n        name: $filterByName,\n        fileType: $filterByFileTypes,\n        fromDateTimeInclusive: $filterByFromDateTimeInclusive,\n        toDateTimeInclusive: $filterByToDateTimeInclusive,\n        tagsIncluded: $tagsIncluded\n      ) @connection(key: \"FilesTable_Files\") {\n        __id\n        pageInfo {\n          endCursor\n          hasPreviousPage\n          hasNextPage\n          startCursor\n        }\n        edges {\n          node {\n            id\n            name\n            fileType\n            accessType\n            uploadDateTime\n            thumbnail\n            url\n          }\n        }\n      }\n    }\n  }\n}",
+        "fragmentId": "FilesTable_FilesListFragment"
+      }
     ]
   }
   
