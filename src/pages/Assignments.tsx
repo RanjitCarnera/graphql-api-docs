@@ -12,36 +12,82 @@ const Assignments = () => {
    const [activeTab, setActiveTab] = React.useState("queries");
     const restApiEndpoints = [
     {
-      id: "create-scenario",
-      title: "Create Scenario",
-      description: "Create a new scenario with the specified configuration.",
+      id: "create-assignment",
+      title: "Create Assignment",
+      description: "Create a new assignment with the specified configuration.",
       method: "POST" as const,
-      url: "https://api.constructionintelligence.com/api/scenarios",
+      url: "https://api.constructionintelligence.com/api/assignments",
       headers: {
         "content-type": "application/json",
         "Authorization": " "
       },
       body: {
-        "name": "Demo rest apis",
-        "projectsRef": [],
-        "isMasterPlan": false
+          "scenarioId": "sample-scenario-id",
+          "projectId": "sample-project-id",
+          "data": {
+            "validAssignmentRolesRef": ["sample-role-ref-id"],
+            "startDate": "2026-08-28",
+            "endDate": "2026-11-29",
+            "personRef": "sample-person-ref-id",
+            "isExecutive": false,
+            "comment": null,
+            "weight": null
+          },
+          "setTagsInput": {
+            "tagsRef": [],
+            "tagNames": []
+          }
+        }
+    },
+    {
+      id: "assignments-in-project",
+      title: "Get Assignments in specific project",
+      description: "Retrieve assignments records within specific project.",
+      method: "POST" as const,
+      url: "https://api.constructionintelligence.com/api/assignments/project/projectId",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": " "
+      },
+      body: {
+        'projectId': 'project-id',
+      }
+    },
+     {
+      id: "delete-assignment",
+      title: "Delete Assignment record",
+      description: "Delete a assignment record by its ID.",
+      method: "DELETE" as const,
+      url: "https://api.constructionintelligence.com/api/assignments/id",
+      headers: {
+        "content-type": "application/json",
+        "Authorization": " "
+      },
+       payload: {
+        "id": "UHJvamVjdDphYmMtZGVmLTQ1N2ctODllZi0xMjM0NTY3ODkwYWJ"
+      },
+      body: {
+          
       }
     },
     {
-      id: "list-scenarios",
-      title: "Get all Scenarios list",
-      description: "Retrieve a list of scenarios with optional filtering.",
+      id: "Assign-people-to-assignment",
+      title: "Assign poeple to assignment",
+      description: "Assign people to an assignment with the specified configuration.",
       method: "POST" as const,
-      url: "https://api.constructionintelligence.com/api/scenarios/list",
+      url: "https://api.constructionintelligence.com/api/assignments/fill",
       headers: {
         "content-type": "application/json",
         "Authorization": " "
       },
+      payload: {
+        "id": "UHJvamVjdDphYmMtZGVmLTQ1N2ctODllZi0xMjM0NTY3ODkwYWJ"
+      },
       body: {
-        "first": 20,
-        "filterByName": "Test with sumi12"
+        "assignmentId": "assignment-id",
+        "personId": "person-id"
       }
-    }
+    },
   ];
    const {
      fragmentRefs,
@@ -66,11 +112,11 @@ const Assignments = () => {
             <TabsTrigger value="queries">Queries</TabsTrigger>
             <TabsTrigger value="mutations">Mutations</TabsTrigger>
             <TabsTrigger value="fragments">Fragments</TabsTrigger>
-            {/* <TabsTrigger value="rest-api">REST API</TabsTrigger> */}
+            <TabsTrigger value="rest-api">REST API</TabsTrigger>
           </TabsList>
           
           <TabsContent value="queries" className="space-y-6">
-            <h2 className="text-2xl font-bold mb-4">Queries</h2>
+           {operationsData.queries.length > 0 ? <> <h2 className="text-2xl font-bold mb-4">Queries</h2>
             <p className="mb-4">Use these queries to fetch information about assignments in different formats and contexts.</p>
             
             {operationsData.queries.map((query) => (
@@ -90,7 +136,12 @@ const Assignments = () => {
                     : null
                 }
               />
-            ))}
+            ))}</>
+          :
+          <div>
+            <h2 className="text-2xl font-bold mb-4">Queries</h2>
+            <p className="mb-4">No queries available for this API.</p>
+          </div>}
           </TabsContent>
           
           <TabsContent value="mutations" className="space-y-6">
@@ -145,17 +196,14 @@ const Assignments = () => {
             })}
           </TabsContent>
           <TabsContent value="rest-api" className="space-y-6">
-               <div className="max-w-4xl mx-auto"> 
-                <h2 className="text-2xl font-bold mb-4">REST API</h2>
-                <section className="docs-section mb-8">
-                  <h2 className="text-2xl font-bold mb-4">Coming Soon</h2>
-                  <p className="mb-6">
-                    Documentation for this section is currently under development. Check back soon for detailed
-                    information on querying and managing tags.
-                  </p>
-                </section>
-              </div>
-            </TabsContent>
+            <h2 className="text-2xl font-bold mb-4">REST API</h2>
+            <p className="mb-4">
+              Use these REST API endpoints to interact with assignments programmatically.
+            </p>  
+            {restApiEndpoints.map((endpoint) => (
+              <RestApiCard key={endpoint.id} endpoint={endpoint} />
+            ))}
+          </TabsContent>
         </Tabs>
       </div>
     </DocsLayout>
